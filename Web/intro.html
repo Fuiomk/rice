@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fuiomk @ BNE</title>
+    <!-- 引入 JetBrains Mono 字体与中文衬线/无衬线 fallback -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -85,7 +86,7 @@
         }
 
         .window-actions {
-            width: 52px; /* 保持对称平衡 */
+            width: 52px;
         }
 
         /* 终端主体双栏布局 */
@@ -234,7 +235,7 @@
             color: var(--kotlin-purple);
         }
 
-        /* 代码高亮样式 (Kotlin 风格) */
+        /* 代码高亮样式 */
         .code-block {
             color: var(--text-main);
             background-color: #1e1f29;
@@ -250,49 +251,6 @@
         .str { color: #f1fa8c; } /* string */
         .cm { color: var(--text-muted); font-style: italic; } /* comment */
         .typ { color: #8be9fd; } /* type */
-
-        /* 模拟 WakaTime 进度条样式 */
-        .waka-section {
-            background-color: #1e1f29;
-            border: 1px solid var(--window-border);
-            border-radius: 6px;
-            padding: 20px;
-        }
-
-        .waka-title {
-            font-size: 14px;
-            color: var(--yellow);
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px dashed var(--window-border);
-            padding-bottom: 5px;
-        }
-
-        .stat-item {
-            margin-bottom: 12px;
-        }
-
-        .stat-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
-        .stat-bar-bg {
-            height: 10px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .stat-bar-fill {
-            height: 100%;
-            border-radius: 3px;
-        }
 
         /* 交互提示符光标 */
         .cursor {
@@ -339,20 +297,21 @@
             
             <!-- 左侧 Fastfetch 硬件/软件系统信息 -->
             <div class="left-pane">
-                <!-- 头像区域 (仅引用 img/intro.png) -->
+                <!-- 头像区域 (已修正路径为 ../img/intro.png) -->
                 <div class="avatar-sticker">
-                    <img src="img/intro.png" alt="intro.png" onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Y64vG7F4B-37q_G_1W-7Xyv4M7rEaJ93Mw&s'">
+                    <img src="../img/intro.png" alt="intro.png">
                 </div>
                 
                 <div class="fetch-list">
                     <div class="fetch-header">fuiomk@BNE</div>
-                    <div class="fetch-line"><span class="fetch-label">OS: </span>Windows (WakaTime 100.0%)</div>
+                    <div class="fetch-line"><span class="fetch-label">OS: </span>Windows 11</div>
                     <div class="fetch-line"><span class="fetch-label">Host: </span>High School Student</div>
-                    <div class="fetch-line"><span class="fetch-label">Target: </span>University Entrance Exam</div>
-                    <div class="fetch-line"><span class="fetch-label">Stack: </span>Kotlin, Java, Backend</div>
+                    <div class="fetch-line"><span class="fetch-label">IDE: </span>IntelliJ IDEA</div>
+                    <div class="fetch-line"><span class="fetch-label">Target: </span>College Entrance & Kotlin</div>
+                    <div class="fetch-line"><span class="fetch-label">Stack: </span>KMP, CMP, Spring Boot</div>
                     <div class="fetch-line"><span class="fetch-label">Motto: </span>Done is better than perfect.</div>
                     <div class="fetch-line"><span class="fetch-label">Location: </span>BNE (Brisbane)</div>
-                    <div class="fetch-line"><span class="fetch-label">Status: </span>Constantly Learning...</div>
+                    <div class="fetch-line"><span class="fetch-label">Status: </span>Active Learning</div>
                 </div>
 
                 <!-- ANSI 终端调色盘 -->
@@ -370,7 +329,7 @@
             <div class="right-pane">
                 <div class="tabs-header">
                     <button class="tab-btn active" onclick="switchTab('about')">about_me.kt</button>
-                    <button class="tab-btn" onclick="switchTab('stats')">wakatime.sh</button>
+                    <button class="tab-btn" onclick="switchTab('stack')">build.gradle.kts</button>
                     <button class="tab-btn" onclick="switchTab('motto')">motto.txt</button>
                 </div>
 
@@ -404,61 +363,50 @@
 }</div>
                     </div>
 
-                    <!-- TAB 2: WakaTime 真实统计渲染 -->
-                    <div id="tab-stats" class="tab-content">
-                        <div class="waka-section">
-                            <div class="waka-title">Languages Used (Most Active)</div>
-                            
-                            <!-- Kotlin -->
-                            <div class="stat-item">
-                                <div class="stat-meta"><span>Kotlin (4h 35m)</span><span>63.28%</span></div>
-                                <div class="stat-bar-bg">
-                                    <div class="stat-bar-fill" style="width: 63.28%; background-color: var(--kotlin-purple);"></div>
-                                </div>
-                            </div>
-                            
-                            <!-- HTML -->
-                            <div class="stat-item">
-                                <div class="stat-meta"><span>HTML (58m)</span><span>13.51%</span></div>
-                                <div class="stat-bar-bg">
-                                    <div class="stat-bar-fill" style="width: 13.51%; background-color: var(--kotlin-orange);"></div>
-                                </div>
-                            </div>
+                    <!-- TAB 2: build.gradle.kts (展示个人技术栈与工具) -->
+                    <div id="tab-stack" class="tab-content">
+<div class="code-block">plugins {
+    kotlin(<span class="str">"multiplatform"</span>) version <span class="str">"2.0.0"</span>
+    id(<span class="str">"org.springframework.boot"</span>) version <span class="str">"3.2.5"</span>
+    id(<span class="str">"org.jetbrains.compose"</span>) version <span class="str">"1.6.10"</span>
+}
 
-                            <!-- Markdown -->
-                            <div class="stat-item">
-                                <div class="stat-meta"><span>Markdown (53m)</span><span>12.25%</span></div>
-                                <div class="stat-bar-bg">
-                                    <div class="stat-bar-fill" style="width: 12.25%; background-color: var(--cyan);"></div>
-                                </div>
-                            </div>
+kotlin {
+    <span class="cm">// 1. Kotlin 跨平台多端开发支持</span>
+    androidTarget()
+    jvm(<span class="str">"desktop"</span>) <span class="cm">// JVM桌面端运行环境</span>
+    iosConnector()  <span class="cm">// 保持iOS编译链兼容</span>
 
-                            <!-- Python -->
-                            <div class="stat-item">
-                                <div class="stat-meta"><span>Python (47m)</span><span>10.82%</span></div>
-                                <div class="stat-bar-bg">
-                                    <div class="stat-bar-fill" style="width: 10.82%; background-color: var(--yellow);"></div>
-                                </div>
-                            </div>
+    sourceSets {
+        <span class="kw">val</span> commonMain <span class="kw">by</span> getting {
+            dependencies {
+                <span class="cm">// Compose Multiplatform (CMP) 用于共享UI</span>
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
 
-                            <div class="waka-title" style="margin-top: 20px;">Top Editors</div>
-                            
-                            <!-- IntelliJ -->
-                            <div class="stat-item">
-                                <div class="stat-meta"><span>IntelliJ IDEA (5h 26m)</span><span>75.09%</span></div>
-                                <div class="stat-bar-bg">
-                                    <div class="stat-bar-fill" style="width: 75.09%; background-color: var(--cyan);"></div>
-                                </div>
-                            </div>
+                <span class="cm">// 异步计算与协程支持</span>
+                implementation(<span class="str">"org.jetbrains.kotlinx:kotlinx-coroutines-core"</span>)
+            }
+        }
 
-                            <!-- VS Code -->
-                            <div class="stat-item">
-                                <div class="stat-meta"><span>VS Code (58m)</span><span>13.51%</span></div>
-                                <div class="stat-bar-bg">
-                                    <div class="stat-bar-fill" style="width: 13.51%; background-color: #007acc;"></div>
-                                </div>
-                            </div>
-                        </div>
+        <span class="kw">val</span> androidMain <span class="kw">by</span> getting {
+            dependencies {
+                <span class="cm">// Android 原生 Jetpack Compose 依赖</span>
+                implementation(<span class="str">"androidx.compose.ui:ui"</span>)
+                implementation(<span class="str">"androidx.compose.material:material"</span>)
+            }
+        }
+
+        <span class="kw">val</span> jvmMain <span class="kw">by</span> getting {
+            dependencies {
+                <span class="cm">// JVM/Java 后端探索：Spring Boot 核心框架</span>
+                implementation(<span class="str">"org.springframework.boot:spring-boot-starter-web"</span>)
+                implementation(<span class="str">"org.springframework.boot:spring-boot-starter-data-jpa"</span>)
+            }
+        }
+    }
+}</div>
                     </div>
 
                     <!-- TAB 3: 座右铭 -->
@@ -484,7 +432,7 @@
         // Tab 点击指令映射表
         const tabCommands = {
             'about': 'cat about_me.kt',
-            'stats': './wakatime.sh --range-7days',
+            'stack': 'cat build.gradle.kts',
             'motto': 'cat motto.txt'
         };
 
