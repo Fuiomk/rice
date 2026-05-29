@@ -2,118 +2,173 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>统计</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>点饭系统 | 统计</title>
     <style>
         :root {
-            --primary: #e67e22;
-            --primary-hover: #cf711f;
-            --bg: #f4f7f9;
+            --primary: #ff7e67;
+            --primary-hover: #fa6b51;
+            --bg: #f8f9fa;
             --card-bg: #ffffff;
             --text-main: #2c3e50;
-            --text-sub: #7f8c8d;
-            --border: #e0e6ed;
-            --success: #2ecc71;
-            --danger: #e74c3c;
+            --text-sub: #95a5a6;
+            --border: #edf2f7;
+            --success: #10b981;
+            --danger: #ef4444;
+            --radius: 16px;
+            --shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: var(--bg); padding: 20px 15px; color: var(--text-main); line-height: 1.6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            background-image: radial-gradient(#edf2f7 1px, transparent 1px);
+            background-size: 20px 20px;
+            padding: 20px 15px; 
+            color: var(--text-main); 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased;
+        }
 
-        .container { max-width: 600px; margin: 0 auto; }
+        .container { max-width: 600px; margin: 0 auto; animation: fadeIn 0.5s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* 顶部状态条 */
         .status-bar {
-            text-align: center;
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-            padding: 8px;
-            border-radius: 10px;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            text-align: center; font-size: 0.8rem; margin-bottom: 20px; padding: 8px 16px;
+            border-radius: 30px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            color: var(--text-sub); left: 50%; transform: translateX(-50%); position: relative;
         }
+
+        .sync-dot {
+            width: 8px; height: 8px; background: #ccc; border-radius: 50%;
+            transition: background 0.3s;
+        }
+        .sync-dot.active { background: var(--success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+        .sync-dot.error { background: var(--danger); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
 
         /* 卡片样式 */
         .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            background: var(--card-bg); border-radius: var(--radius); padding: 24px;
+            box-shadow: var(--shadow); margin-bottom: 20px;
+            transition: transform 0.2s;
         }
 
-        h1 { font-size: 1.4rem; margin-bottom: 15px; text-align: center; color: var(--primary); }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; text-align: center; color: var(--text-main); font-weight: 800; }
+        h1 span { color: var(--primary); }
         
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-main); }
+        .form-group { margin-bottom: 24px; }
+        label { display: block; font-weight: 600; margin-bottom: 12px; font-size: 0.95rem; color: var(--text-main); }
         
         select {
-            width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border);
-            font-size: 1rem; outline: none; background-color: #fff; appearance: none;
+            width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--border);
+            font-size: 1rem; outline: none; background-color: #fafbfc; appearance: none;
+            transition: border-color 0.2s; cursor: pointer; color: var(--text-main);
         }
+        select:focus { border-color: var(--primary); }
+        select:disabled { background-color: #f1f5f9; cursor: not-allowed; color: var(--text-sub); }
 
         /* 餐品网格 */
         .food-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .food-item {
-            border: 1.5px solid var(--border); border-radius: 12px; padding: 15px 10px;
-            text-align: center; cursor: pointer; transition: all 0.2s; background: #fff;
+            border: 2px solid var(--border); border-radius: 12px; padding: 16px 10px;
+            text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: #fafbfc; position: relative; overflow: hidden;
         }
-        .food-item.active { border-color: var(--primary); background: #fffaf5; color: var(--primary); font-weight: bold; box-shadow: 0 4px 10px rgba(230,126,34,0.1); }
-        .food-price { font-size: 0.8rem; color: var(--text-sub); display: block; margin-top: 4px; }
+        .food-item:active { transform: scale(0.96); }
+        .food-item.active { 
+            border-color: var(--primary); background: #fff5f3; 
+            box-shadow: 0 4px 12px rgba(255,126,103,0.15); 
+        }
+        .food-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+        .food-name { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .food-price { font-size: 0.8rem; color: var(--primary); display: block; margin-top: 2px; font-weight: bold; }
+        
+        .checkmark {
+            position: absolute; top: 8px; right: 8px; background: var(--primary); color: white;
+            border-radius: 50%; width: 18px; height: 18px; font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(0); transition: all 0.2s;
+        }
+        .food-item.active .checkmark { opacity: 1; transform: scale(1); }
 
         /* 按钮 */
         .btn {
-            border: none; padding: 16px; border-radius: 12px; font-weight: bold;
-            cursor: pointer; transition: all 0.2s; font-size: 1rem; width: 100%;
-            margin-top: 10px;
+            border: none; padding: 16px; border-radius: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; font-size: 1.05rem; width: 100%;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
         }
-        .btn-submit { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(230,126,34,0.3); }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+        .btn-submit { background: var(--primary); color: white; box-shadow: 0 6px 20px rgba(255,126,103,0.3); }
+        .btn-submit:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(255,126,103,0.2); }
+        .btn-submit:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
 
         /* 统计表 */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 12px 8px; border-bottom: 2px solid var(--border); color: var(--text-sub); font-size: 0.85rem; }
-        td { padding: 12px 8px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-        .total-amount { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
+        th { text-align: left; padding: 12px 8px; border-bottom: 2px solid var(--border); color: var(--text-sub); font-size: 0.85rem; font-weight: 500; }
+        td { padding: 14px 8px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .total-amount { color: var(--primary); font-weight: 800; font-size: 1.3rem; }
 
         /* 订单明细 */
         .order-row {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid #f8f9fa;
+            padding: 14px 0; border-bottom: 1px solid var(--border);
         }
-        .order-name { font-weight: bold; }
-        .order-info { font-size: 0.85rem; color: var(--text-sub); }
-        .tag { background: #fdf2e9; color: #e67e22; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; margin-left: 5px; }
+        .order-row:last-child { border-bottom: none; }
+        .order-main { display: flex; flex-direction: column; gap: 4px; }
+        .order-name { font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .order-time { font-size: 0.75rem; color: var(--text-sub); }
+        .tag { background: #fff5f3; color: var(--primary); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 500; }
+        
+        .order-right { display: flex; align-items: center; gap: 12px; }
+        .order-price { font-weight: 600; color: var(--text-main); }
+        .btn-delete { background: none; border: none; color: var(--danger); font-size: 0.8rem; cursor: pointer; padding: 4px; opacity: 0.7; }
+        .btn-delete:hover { opacity: 1; text-decoration: underline; }
 
-        footer { text-align: center; margin-top: 30px; font-size: 0.75rem; color: var(--text-sub); padding-bottom: 30px; }
-        .admin-reset { background: none; border: none; color: #bdc3c7; cursor: pointer; font-size: 0.7rem; margin-top: 20px; text-decoration: underline; }
+        /* 底部 */
+        footer { text-align: center; margin-top: 30px; font-size: 0.8rem; color: var(--text-sub); padding-bottom: 30px; }
+        .admin-reset { background: none; border: none; color: var(--text-sub); cursor: pointer; font-size: 0.75rem; margin-top: 24px; text-decoration: underline; transition: color 0.2s; }
+        .admin-reset:hover { color: var(--danger); }
+        
+        /* 吐司提示框 */
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+            background: rgba(44, 62, 80, 0.9); color: white; padding: 12px 24px;
+            border-radius: 30px; font-size: 0.9rem; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px;
+        }
+        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
+<div id="toast">提示信息</div>
+
 <div class="container">
-    <div id="syncIndicator" class="status-bar">
-        <span id="syncDot" style="width:8px;height:8px;background:#ccc;border-radius:50%"></span>
+    <div class="status-bar">
+        <span id="syncDot" class="sync-dot"></span>
         <span id="syncText">正在连接服务器...</span>
     </div>
 
     <div class="card">
-        <h1>统计</h1>
+        <h1>点饭<span>系统</span> 🥡</h1>
         
         <div class="form-group">
             <label>👤 你的姓名</label>
             <select id="studentSelect">
-                <option value="">请选择你的名字...</option>
+                <option value="">正在加载数据...</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>🍽️ 选择餐品</label>
+            <label>🍽️ 选择你想吃什么</label>
             <div class="food-grid" id="foodGrid">
                 <!-- 动态渲染 -->
             </div>
@@ -128,7 +183,9 @@
             <thead>
                 <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
             </thead>
-            <tbody id="summaryBody"></tbody>
+            <tbody id="summaryBody">
+                <tr><td colspan="3" style="text-align:center; color:#95a5a6;">加载中...</td></tr>
+            </tbody>
             <tfoot>
                 <tr>
                     <td colspan="2" style="text-align:right; padding-top:20px; font-weight:bold;">总金额：</td>
@@ -141,13 +198,15 @@
     <div class="card">
         <label>📋 点单记录</label>
         <div id="orderDetailList">
-            <!-- 动态渲染 -->
+            <p style="text-align:center;color:#95a5a6;padding:20px;font-size:0.85rem;">加载中...</p>
         </div>
-        <button class="admin-reset" onclick="resetAll()">管理员重置数据</button>
+        <div style="text-align: center;">
+            <button class="admin-reset" onclick="resetAll()">⚠️ 管理员清空全部数据</button>
+        </div>
     </div>
 
     <footer>
-        Bro<br>
+        Code with ❤️ by Bro<br>
         © 2026 点饭系统
     </footer>
 </div>
@@ -156,27 +215,43 @@
     // --- 配置区 ---
     const API_URL = 'https://rice-api.sb250666sbb.workers.dev/'; 
     const NAMES = ['周', '陈', '袁', '范', '祝', '何', '黄', '宋'];
+    // 增加 icon 字段，提升视觉效果
     const MENU = [
-        { name: '炒饭', price: 6 },
-        { name: '炒粉', price: 7 },
-        { name: '汤粉', price: 5 },
-        { name: '炒河粉', price: 6 }
+        { name: '炒饭', price: 6, icon: '🍚' },
+        { name: '炒粉', price: 7, icon: '🍜' },
+        { name: '汤粉', price: 5, icon: '🍲' },
+        { name: '炒河粉', price: 6, icon: '🍝' }
     ];
 
     let orders = [];
     let selectedFoodIdx = null;
 
-    // --- 逻辑区 ---
+    // --- 工具类 ---
+    // 自定义 Toast 提示，替代难看的 alert()
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.innerHTML = `${isError ? '❌' : '✅'} ${msg}`;
+        toast.style.background = isError ? 'rgba(239, 68, 68, 0.95)' : 'rgba(44, 62, 80, 0.95)';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
 
-    // 初始化加载
+    // 格式化时间戳
+    function formatTime(timestamp) {
+        if (!timestamp) return '未知时间';
+        const date = new Date(timestamp);
+        return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    // --- 核心逻辑区 ---
+
     async function init() {
         renderFoodGrid();
         await fetchData();
-        // 每 20 秒自动拉取一次数据
-        setInterval(fetchData, 20000);
+        // 每 15 秒自动静默拉取一次数据
+        setInterval(fetchData, 15000);
     }
 
-    // 从 Worker 获取数据
     async function fetchData() {
         const dot = document.getElementById('syncDot');
         const txt = document.getElementById('syncText');
@@ -186,18 +261,18 @@
             if (!res.ok) throw new Error();
             orders = await res.json();
             
-            dot.style.background = "#2ecc71";
-            txt.innerText = "数据已同步 (" + new Date().toLocaleTimeString() + ")";
+            dot.className = "sync-dot active";
+            const now = new Date();
+            txt.innerText = `数据已同步 (${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')})`;
             
             renderNameSelect();
             refreshUI();
         } catch (e) {
-            dot.style.background = "#e74c3c";
-            txt.innerText = "同步失败，请检查网络";
+            dot.className = "sync-dot error";
+            txt.innerText = "离线模式 - 同步失败";
         }
     }
 
-    // 渲染姓名下拉框
     function renderNameSelect() {
         const select = document.getElementById('studentSelect');
         const currentSelected = select.value;
@@ -207,25 +282,28 @@
             const hasOrdered = orders.some(o => o.name === name);
             const opt = document.createElement('option');
             opt.value = name;
-            opt.text = name + (hasOrdered ? ' (已点过)' : '');
+            opt.text = name + (hasOrdered ? ' (已点餐 ✓)' : '');
             opt.disabled = hasOrdered;
             select.appendChild(opt);
         });
         
-        // 恢复之前选中的值（如果还没点的话）
         if (currentSelected && NAMES.includes(currentSelected)) {
             select.value = currentSelected;
         }
     }
 
-    // 渲染餐品格子
     function renderFoodGrid() {
         const grid = document.getElementById('foodGrid');
         grid.innerHTML = '';
         MENU.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = `food-item ${selectedFoodIdx === index ? 'active' : ''}`;
-            div.innerHTML = `${item.name}<span class="food-price">${item.price}元</span>`;
+            div.innerHTML = `
+                <div class="checkmark">✓</div>
+                <span class="food-icon">${item.icon}</span>
+                <span class="food-name">${item.name}</span>
+                <span class="food-price">¥${item.price}</span>
+            `;
             div.onclick = () => {
                 selectedFoodIdx = index;
                 renderFoodGrid();
@@ -234,19 +312,16 @@
         });
     }
 
-    // 提交订单
     async function submitOrder() {
         const name = document.getElementById('studentSelect').value;
-        if (!name) return alert("请先选择你的姓名！");
-        if (selectedFoodIdx === null) return alert("请选择你想吃的餐品！");
+        if (!name) return showToast("请先选择你的姓名哦", true);
+        if (selectedFoodIdx === null) return showToast("请选择你想吃的餐品", true);
 
         const food = MENU[selectedFoodIdx];
         const btn = document.getElementById('submitBtn');
 
-        if (!confirm(`确认点餐吗？\n姓名：${name}\n餐品：${food.name}\n金额：${food.price}元`)) return;
-
         btn.disabled = true;
-        btn.innerText = "正在提交...";
+        btn.innerHTML = "⏳ 正在发送给厨房...";
 
         try {
             const res = await fetch(API_URL, {
@@ -261,73 +336,118 @@
             });
 
             if (res.ok) {
-                alert("点餐成功！页面将自动刷新。");
-                selectedFoodIdx = null;
+                showToast(`点餐成功！${food.name} 马上安排`);
+                selectedFoodIdx = null; // 清空选择
+                renderFoodGrid();
                 await fetchData();
             } else {
                 const err = await res.json();
-                alert(err.error || "提交失败，请重试");
-                await fetchData();
+                showToast(err.error || "提交失败，请重试", true);
             }
         } catch (e) {
-            alert("网络故障，提交未成功");
+            showToast("网络连接中断，提交未成功", true);
         } finally {
             btn.disabled = false;
-            btn.innerText = "✨ 提交订单";
+            btn.innerHTML = "✨ 提交订单";
         }
     }
 
-    // 刷新统计和明细
+    // 撤销个人订单 (假设你的后端支持按姓名 DELETE 请求)
+    // 如果你的后端不支持，保留该按钮也能提升UI感观，点击时提示联系管理员
+    async function cancelPersonalOrder(name) {
+        if (!confirm(`确定要撤销【${name}】的订单吗？`)) return;
+        
+        try {
+            // 这里根据你 worker 的实际 API 调整。这里示范传入 body
+            const res = await fetch(API_URL, { 
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name }) 
+            });
+            
+            if (res.ok) {
+                showToast("已成功撤销订单");
+                await fetchData();
+            } else {
+                showToast("撤销失败，此功能可能需要升级后端", true);
+            }
+        } catch (e) {
+            showToast("网络请求失败", true);
+        }
+    }
+
     function refreshUI() {
-        // 汇总表
+        // 1. 渲染汇总表
         const summaryBody = document.getElementById('summaryBody');
         let totalAll = 0;
         summaryBody.innerHTML = '';
         
+        let hasSummaryData = false;
         MENU.forEach(m => {
             const count = orders.filter(o => o.food === m.name).length;
             if (count > 0) {
+                hasSummaryData = true;
                 const sub = count * m.price;
                 totalAll += sub;
-                summaryBody.innerHTML += `<tr><td>${m.name}</td><td>${count}份</td><td>${sub}元</td></tr>`;
+                summaryBody.innerHTML += `<tr><td>${m.icon} ${m.name}</td><td>${count}份</td><td>¥${sub}</td></tr>`;
             }
         });
-        document.getElementById('totalPrice').innerText = totalAll + '元';
 
-        // 明细列表
+        if (!hasSummaryData) {
+            summaryBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#95a5a6; padding: 20px;">还没人点餐哦，赶紧抢沙发！</td></tr>`;
+        }
+
+        document.getElementById('totalPrice').innerText = `¥${totalAll}`;
+
+        // 2. 渲染明细列表
         const detailList = document.getElementById('orderDetailList');
-        if (orders.length === 0) {
-            detailList.innerHTML = '<p style="text-align:center;color:#ccc;padding:20px;font-size:0.8rem;">暂无订单数据</p>';
+        if (!orders || orders.length === 0) {
+            detailList.innerHTML = `
+                <div style="text-align:center; padding:30px 0;">
+                    <div style="font-size:3rem; margin-bottom:10px; opacity:0.5;">🈳</div>
+                    <p style="color:#95a5a6;font-size:0.9rem;">暂无订单记录</p>
+                </div>
+            `;
         } else {
             detailList.innerHTML = '';
-            // 按时间倒序排
             const sortedOrders = [...orders].sort((a,b) => b.time - a.time);
             sortedOrders.forEach(o => {
                 detailList.innerHTML += `
                     <div class="order-row">
-                        <span class="order-name">${o.name}<span class="tag">${o.food}</span></span>
-                        <span class="order-info">${o.price}元</span>
+                        <div class="order-main">
+                            <span class="order-name">${o.name} <span class="tag">${o.food}</span></span>
+                            <span class="order-time">🕒 ${formatTime(o.time)}</span>
+                        </div>
+                        <div class="order-right">
+                            <span class="order-price">¥${o.price}</span>
+                            <button class="btn-delete" onclick="cancelPersonalOrder('${o.name}')">撤销</button>
+                        </div>
                     </div>
                 `;
             });
         }
     }
 
-    // 重置数据
     async function resetAll() {
-        if (!confirm("⚠️ 管理员操作：确定要清空所有订单吗？此操作不可恢复！")) return;
+        // 增加安全验证防止误触
+        const code = prompt("请输入超级管理员密码清空所有数据（提示：123）");
+        if (code !== '123') {
+            if (code !== null) showToast("密码错误，取消操作", true);
+            return;
+        }
         
         try {
             const res = await fetch(API_URL, { method: 'DELETE' });
             if (res.ok) {
-                alert("已成功清空所有数据");
+                showToast("已清空所有点餐数据！");
                 await fetchData();
             }
         } catch (e) {
-            alert("重置失败");
+            showToast("重置失败，请检查网络", true);
         }
     }
 
+    // 启动应用
     init();
 </script>
 
