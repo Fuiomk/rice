@@ -154,6 +154,7 @@
             if(e.target.tagName.toLowerCase() === 'a') return;
 
             const img = document.createElement('img');
+            img.referrerPolicy = 'no-referrer';   
             
             const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
             img.src = randomSticker;
