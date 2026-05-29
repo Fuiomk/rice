@@ -146,26 +146,26 @@ body::before{
     }
 }
 
-/* ================== 两侧漂浮装饰样式 ================== */
+/* ================== 新增：两侧御札（符卡）悬挂与魔法阵装饰 ================== */
 .side-decor {
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
     pointer-events: none;
-    opacity: 0.22;
+    opacity: 0.25;
     transition: opacity 0.3s;
 }
 
 .left-decor {
-    left: 4%;
+    left: 4.5%;
 }
 
 .right-decor {
-    right: 4%;
+    right: 4.5%;
 }
 
-/* 纯 CSS 绘制阴阳玉 */
+/* 纯 CSS 阴阳玉 */
 .yin-yang-css {
     width: 110px;
     height: 110px;
@@ -196,7 +196,7 @@ body::before{
     box-shadow: inset 0 0 0 14px #fff;
 }
 
-/* 纯 CSS 绘制八卦魔法阵 */
+/* 纯 CSS 八卦魔法阵 */
 .magic-circle-css {
     width: 130px;
     height: 130px;
@@ -223,6 +223,70 @@ body::before{
     border-radius: 50%;
 }
 
+/* 博丽神社悬挂符札 */
+.talisman {
+    position: fixed;
+    top: 20%;
+    width: 54px;
+    height: 140px;
+    background: #fffdf0;
+    border: 2px solid #e63946;
+    box-shadow: 0 10px 30px rgba(230, 57, 70, 0.25);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    opacity: 0.55;
+    pointer-events: none;
+    transform-origin: top center;
+    animation: swayTalisman 6s ease-in-out infinite alternate;
+}
+
+.talisman-left {
+    left: 2%;
+}
+
+.talisman-right {
+    right: 2%;
+    animation-delay: -3s;
+}
+
+.talisman::before {
+    writing-mode: vertical-rl;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 900;
+    color: #e63946;
+    font-size: 1rem;
+    letter-spacing: 5px;
+    border: 1px solid #e63946;
+    padding: 6px 3px;
+    border-radius: 2px;
+}
+
+.talisman-left::before {
+    content: '退治';
+}
+
+.talisman-right::before {
+    content: '结界';
+}
+
+.talisman::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    width: 10px;
+    height: 10px;
+    background: #e63946;
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+}
+
+@keyframes swayTalisman {
+    0% { transform: rotate(-6deg); }
+    100% { transform: rotate(6deg); }
+}
+
 @keyframes rotateClockwise {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -232,9 +296,39 @@ body::before{
     to { transform: rotate(0deg); }
 }
 
+/* 樱花瓣降落的基础样式（仅限两侧飘落） */
+.petal {
+    position: fixed;
+    z-index: 1;
+    background: radial-gradient(circle, #ffb3d1, #ff77a8);
+    border-radius: 150% 0px 150% 150%;
+    opacity: 0.7;
+    pointer-events: none;
+    animation-name: petalFall;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes petalFall {
+    0% {
+        transform: translateY(-20px) rotate(0deg) translateX(0);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(105vh) rotate(720deg) translateX(45px);
+        opacity: 0;
+    }
+}
+
 @media(max-width: 1350px) {
-    .side-decor {
-        display: none;
+    .side-decor, .talisman, .petal {
+        display: none !important;
     }
 }
 /* =================================================== */
@@ -242,7 +336,7 @@ body::before{
 .wrap{
     position:relative;
     z-index:2;
-    width:min(1080px,92%); /* 适度拓宽大屏布局 */
+    width:min(1080px,92%);
     margin:50px auto;
     transition: width 0.3s ease;
 }
@@ -415,6 +509,8 @@ body::before{
     filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));
     transition:.4s;
     pointer-events:none;
+    /* 新增：滤除自定义立绘的深色背景，使其完美融入玻璃容器 */
+    mix-blend-mode: screen; 
 }
 
 .card:hover .portrait{
@@ -591,7 +687,7 @@ footer{
 
 <div class="sparkles" id="sparkles"></div>
 
-<!-- 宽屏下的两侧漂浮装饰 -->
+<!-- 宽屏下的两侧漂浮魔法阵 -->
 <div class="side-decor left-decor">
     <div class="magic-circle-css"></div>
 </div>
@@ -599,9 +695,13 @@ footer{
     <div class="yin-yang-css"></div>
 </div>
 
+<!-- 两侧悬挂式和风退治符卡 -->
+<div class="talisman talisman-left"></div>
+<div class="talisman talisman-right"></div>
+
 <div class="wrap">
 
-<!-- 悬浮标签移至容器子级，以便在宽屏下实现向外侧位移的排布 -->
+<!-- 悬浮标签外拉排布 -->
 <div class="floating-ui float1">
 ✨ 幻想粒子同步中
 </div>
@@ -716,8 +816,8 @@ window.addEventListener('mousemove',e=>{
     light.style.top = e.clientY + 'px'
 })
 
+// 原有背景星光生成
 const sparkles = document.getElementById('sparkles')
-
 for(let i=0;i<45;i++){
     const s = document.createElement('div')
     s.className='sparkle'
@@ -734,6 +834,31 @@ for(let i=0;i<45;i++){
 
     sparkles.appendChild(s)
 }
+
+// ================== 新增：两侧樱花瓣轻柔下落动画 ==================
+const maxPetals = 20;
+for (let i = 0; i < maxPetals; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    
+    // 只分布在两侧区域（左边 0~12%，右边 88~100%）
+    const onLeft = Math.random() > 0.5;
+    p.style.left = onLeft ? (Math.random() * 12 + '%') : (Math.random() * 12 + 88 + '%');
+    p.style.top = (Math.random() * -30) + 'px';
+    
+    const size = Math.random() * 12 + 10; // 花瓣尺寸 10px 到 22px
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    
+    p.style.animationDuration = (Math.random() * 8 + 6) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    
+    // 随机初始旋转角度与倾斜弧度
+    p.style.transform = `rotate(${Math.random() * 360}deg)`;
+    
+    document.body.appendChild(p);
+}
+// =============================================================
 
 const fortunes=[
 '🌸 超大吉',
