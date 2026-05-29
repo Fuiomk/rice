@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rice - 幻想乡入口</title>
+    <style>
+        /* 引入优雅的衬线字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Noto Serif SC', serif; 
+            /* 深邃的紫红色背景，类似八云紫的间隙或红魔馆夜空 */
+            background-color: #1a0b16; 
+            color: #fce4ec;
+            overflow: hidden; /* 防止滚动条影响动画 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 动态氛围背景光晕 */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(200, 50, 80, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(100, 50, 150, 0.15) 0%, transparent 50%);
+        }
+
+        /* 飘落粒子的容器 */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        /* 粒子飘落动画（模拟樱花或微小弹幕） */
+        @keyframes float {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* 中心的玻璃拟态卡片 */
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            background: rgba(40, 20, 35, 0.6);
+            padding: 4rem 6rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 150, 200, 0.2);
+            box-shadow: 0 0 30px rgba(200, 50, 100, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); /* 毛玻璃效果 */
+            transition: all 0.5s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 0 50px rgba(255, 50, 120, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        /* 旋转的阴阳玉 */
+        .yinyang {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            animation: spin 5s linear infinite;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            color: #ffb7c5; /* 樱花粉色 */
+            user-select: none;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: 8px;
+            /* 渐变文字 */
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(255,154,158,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            color: #d8b4e2; /* 淡紫色 */
+            letter-spacing: 4px;
+        }
+
+        /* 底部链接按钮 */
+        .links {
+            margin-top: 40px;
+        }
+
+        .links a {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+        }
+
+        .links a::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.4s;
+        }
+
+        .links a:hover::before {
+            left: 100%;
+        }
+
+        .links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffb7c5;
+            color: #ffb7c5;
+            box-shadow: 0 0 15px rgba(255, 183, 197, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="yinyang">☯</div>
+        <h1>rice</h1>
+        <div class="subtitle">—— 少女祈祷中 ——</div>
+        
+        <div class="links">
+            <a href="#">进 入</a>
+            <a href="https://github.com/Fuiomk/rice">源 码</a>
+        </div>
+    </div>
+
+    <script>
+        // 生成飘落的粒子（模拟樱花/弹幕）
+        const particleContainer = document.getElementById('particles');
+        const particleCount = 40; // 粒子数量
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // 随机大小、位置、动画时长、延迟
+            const size = Math.random() * 6 + 3 + 'px';
+            particle.style.width = size;
+            particle.style.height = size;
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = Math.random() * 12 + 6 + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            
+            // 随机颜色 (偏粉/紫/白，充满幻想乡气息)
+            const colors = [
+                'rgba(255, 183, 197, 0.6)', // 樱花粉
+                'rgba(216, 180, 226, 0.6)', // 桔梗紫
+                'rgba(255, 255, 255, 0.4)'  // 星光白
+            ];
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+            particleContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>
