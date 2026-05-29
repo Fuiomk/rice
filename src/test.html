@@ -109,6 +109,13 @@
         .btn-submit:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(255,126,103,0.2); }
         .btn-submit:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
 
+        .btn-copy { 
+            background: #f1f5f9; color: var(--text-main); font-size: 0.8rem; 
+            padding: 6px 12px; border-radius: 20px; border: none; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-copy:hover { background: #e2e8f0; }
+
         /* 统计表 */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { text-align: left; padding: 12px 8px; border-bottom: 2px solid var(--border); color: var(--text-sub); font-size: 0.85rem; font-weight: 500; }
@@ -143,6 +150,7 @@
             border-radius: 30px; font-size: 0.9rem; z-index: 1000;
             opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px;
+            white-space: nowrap;
         }
         #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
     </style>
@@ -178,7 +186,11 @@
     </div>
 
     <div class="card">
-        <label>📊 实时汇总</label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="margin:0;">📊 实时汇总</label>
+            <!-- ✨ 新增的复制按钮 ✨ -->
+            <button class="btn-copy" onclick="copySummaryText()">📋 一键复制</button>
+        </div>
         <table>
             <thead>
                 <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
@@ -189,7 +201,7 @@
             <tfoot>
                 <tr>
                     <td colspan="2" style="text-align:right; padding-top:20px; font-weight:bold;">总金额：</td>
-                    <td class="total-amount" id="totalPrice" style="padding-top:20px;">0元</td>
+                    <td class="total-amount" id="totalPrice" style="padding-top:20px;">¥0</td>
                 </tr>
             </tfoot>
         </table>
@@ -215,7 +227,6 @@
     // --- 配置区 ---
     const API_URL = 'https://rice-api.sb250666sbb.workers.dev/'; 
     const NAMES = ['周', '陈', '袁', '范', '祝', '何', '黄', '宋'];
-    // 增加 icon 字段，提升视觉效果
     const MENU = [
         { name: '炒饭', price: 6, icon: '🍚' },
         { name: '炒粉', price: 7, icon: '🍜' },
@@ -227,7 +238,6 @@
     let selectedFoodIdx = null;
 
     // --- 工具类 ---
-    // 自定义 Toast 提示，替代难看的 alert()
     function showToast(msg, isError = false) {
         const toast = document.getElementById('toast');
         toast.innerHTML = `${isError ? '❌' : '✅'} ${msg}`;
@@ -236,9 +246,8 @@
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    // 格式化时间戳
     function formatTime(timestamp) {
-        if (!timestamp) return '未知时间';
+        if (!timestamp) return '未知';
         const date = new Date(timestamp);
         return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     }
@@ -248,14 +257,12 @@
     async function init() {
         renderFoodGrid();
         await fetchData();
-        // 每 15 秒自动静默拉取一次数据
         setInterval(fetchData, 15000);
     }
 
     async function fetchData() {
         const dot = document.getElementById('syncDot');
         const txt = document.getElementById('syncText');
-        
         try {
             const res = await fetch(API_URL);
             if (!res.ok) throw new Error();
@@ -276,7 +283,6 @@
     function renderNameSelect() {
         const select = document.getElementById('studentSelect');
         const currentSelected = select.value;
-        
         select.innerHTML = '<option value="">请选择你的名字...</option>';
         NAMES.forEach(name => {
             const hasOrdered = orders.some(o => o.name === name);
@@ -286,10 +292,7 @@
             opt.disabled = hasOrdered;
             select.appendChild(opt);
         });
-        
-        if (currentSelected && NAMES.includes(currentSelected)) {
-            select.value = currentSelected;
-        }
+        if (currentSelected && NAMES.includes(currentSelected)) select.value = currentSelected;
     }
 
     function renderFoodGrid() {
@@ -327,17 +330,12 @@
             const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: name,
-                    food: food.name,
-                    price: food.price,
-                    time: Date.now()
-                })
+                body: JSON.stringify({ name: name, food: food.name, price: food.price, time: Date.now() })
             });
 
             if (res.ok) {
                 showToast(`点餐成功！${food.name} 马上安排`);
-                selectedFoodIdx = null; // 清空选择
+                selectedFoodIdx = null;
                 renderFoodGrid();
                 await fetchData();
             } else {
@@ -352,32 +350,87 @@
         }
     }
 
-    // 撤销个人订单 (假设你的后端支持按姓名 DELETE 请求)
-    // 如果你的后端不支持，保留该按钮也能提升UI感观，点击时提示联系管理员
     async function cancelPersonalOrder(name) {
         if (!confirm(`确定要撤销【${name}】的订单吗？`)) return;
-        
         try {
-            // 这里根据你 worker 的实际 API 调整。这里示范传入 body
             const res = await fetch(API_URL, { 
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name }) 
             });
-            
             if (res.ok) {
-                showToast("已成功撤销订单");
+                showToast(`已撤销 ${name} 的订单`);
                 await fetchData();
             } else {
-                showToast("撤销失败，此功能可能需要升级后端", true);
+                showToast("撤销失败，请重试", true);
             }
         } catch (e) {
             showToast("网络请求失败", true);
         }
     }
 
+    // ✨ 新增的复制功能 ✨
+    function copySummaryText() {
+        if (!orders || orders.length === 0) {
+            return showToast("目前没有数据可以复制", true);
+        }
+
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        let text = `📋 今日点饭汇总 (${timeStr})\n`;
+        text += `===================\n`;
+        
+        let totalAll = 0;
+        let totalCount = 0;
+
+        MENU.forEach(m => {
+            const count = orders.filter(o => o.food === m.name).length;
+            if (count > 0) {
+                const sub = count * m.price;
+                totalAll += sub;
+                totalCount += count;
+                text += `${m.icon} ${m.name} x ${count}份 = ¥${sub}\n`;
+            }
+        });
+
+        text += `-------------------\n`;
+        text += `💰 总金额: ¥${totalAll} (共${totalCount}份)\n\n`;
+
+        text += `👤 详细点单记录:\n`;
+        const sortedOrders = [...orders].sort((a,b) => b.time - a.time);
+        sortedOrders.forEach(o => {
+            text += `- ${o.name}: ${o.food}\n`;
+        });
+
+        // 调用系统剪贴板
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("复制成功！快去微信群粘贴吧");
+            }).catch(() => {
+                showToast("复制失败，请手动复制", true);
+            });
+        } else {
+            // 兼容部分不支持直接调用剪贴板的老旧手机浏览器
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("复制成功！快去微信群粘贴吧");
+            } catch (err) {
+                showToast("复制失败，请手动截图", true);
+            }
+            textArea.remove();
+        }
+    }
+
     function refreshUI() {
-        // 1. 渲染汇总表
         const summaryBody = document.getElementById('summaryBody');
         let totalAll = 0;
         summaryBody.innerHTML = '';
@@ -399,7 +452,6 @@
 
         document.getElementById('totalPrice').innerText = `¥${totalAll}`;
 
-        // 2. 渲染明细列表
         const detailList = document.getElementById('orderDetailList');
         if (!orders || orders.length === 0) {
             detailList.innerHTML = `
@@ -429,13 +481,11 @@
     }
 
     async function resetAll() {
-        // 增加安全验证防止误触
         const code = prompt("请输入超级管理员密码清空所有数据（提示：123）");
         if (code !== '123') {
             if (code !== null) showToast("密码错误，取消操作", true);
             return;
         }
-        
         try {
             const res = await fetch(API_URL, { method: 'DELETE' });
             if (res.ok) {
@@ -447,7 +497,6 @@
         }
     }
 
-    // 启动应用
     init();
 </script>
 
