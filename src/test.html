@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>同学拼单统计</title>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --primary-hover: #cf711f;
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-sub: #7f8c8d;
+            --border: #e0e6ed;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); padding: 20px 15px; color: var(--text-main); line-height: 1.6; }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 8px; text-align: center; color: var(--primary); }
+        .sub-header { text-align: center; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 24px; }
+
+        /* 进度条 */
+        .progress-container { margin-bottom: 20px; background: #eee; border-radius: 10px; height: 10px; overflow: hidden; position: relative; }
+        #progressBar { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s ease; }
+        .progress-text { font-size: 0.75rem; text-align: right; margin-top: 5px; color: var(--text-sub); }
+
+        /* 表单区域 */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        select {
+            width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border);
+            font-size: 1rem; outline: none; transition: border-color 0.2s;
+        }
+        select:focus { border-color: var(--primary); }
+
+        /* 餐品单选框优化 */
+        .food-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .food-item {
+            border: 1.5px solid var(--border); border-radius: 12px; padding: 12px;
+            text-align: center; cursor: pointer; transition: all 0.2s; position: relative;
+        }
+        .food-item input { position: absolute; opacity: 0; }
+        .food-item.active { border-color: var(--primary); background: #fffaf5; color: var(--primary); font-weight: bold; }
+        .food-price { font-size: 0.8rem; color: var(--text-sub); display: block; }
+
+        /* 按钮 */
+        .btn-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+        .btn {
+            border: none; padding: 14px; border-radius: 12px; font-weight: bold;
+            cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
+        }
+        .btn-submit { background: var(--primary); color: white; }
+        .btn-submit:hover { background: var(--primary-hover); }
+        .btn-copy { background: #34495e; color: white; }
+
+        /* 统计表格 */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th { text-align: left; padding: 12px 8px; border-bottom: 2px solid var(--border); color: var(--text-sub); }
+        td { padding: 12px 8px; border-bottom: 1px solid var(--border); }
+        .total-row { font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+
+        /* 订单明细列表 */
+        .order-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .order-info { flex: 1; }
+        .order-name { font-weight: bold; }
+        .order-tag { font-size: 0.75rem; background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+        .btn-del { color: #e74c3c; font-size: 0.8rem; cursor: pointer; padding: 5px; }
+
+        footer { text-align: center; margin-top: 30px; font-size: 0.75rem; color: var(--text-sub); padding-bottom: 20px; }
+        .admin-area { margin-top: 20px; text-align: center; border-top: 1px dashed var(--border); padding-top: 15px; }
+        .btn-reset { background: none; border: none; color: #bdc3c7; cursor: pointer; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>🍚 同学拼单统计</h1>
+        <p class="sub-header">选好姓名和餐品，提交后自动汇总</p>
+
+        <div class="progress-container">
+            <div id="progressBar"></div>
+        </div>
+        <p class="progress-text" id="progressText">已点: 0/0</p>
+
+        <div class="form-group">
+            <label>👤 你的姓名</label>
+            <select id="studentSelect">
+                <option value="">— 请选择姓名 —</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>🍽️ 选择餐品</label>
+            <div class="food-grid" id="foodGrid">
+                <!-- 动态渲染 -->
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-submit" onclick="submitOrder()">✨ 提交订单</button>
+            <button class="btn btn-copy" onclick="copySummary()">📋 复制统计</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <label>📊 餐品汇总</label>
+        <table>
+            <thead>
+                <tr><th>餐品</th><th>单价</th><th>数量</th><th>小计</th></tr>
+            </thead>
+            <tbody id="summaryBody"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align:right; padding-top:15px;">总计应付：</td>
+                    <td class="total-row" id="totalPrice" style="padding-top:15px;">0元</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="card">
+        <label>📋 点单记录</label>
+        <div id="orderDetailList">
+            <!-- 动态渲染 -->
+        </div>
+    </div>
+
+    <div class="admin-area">
+        <button class="btn-reset" onclick="resetAll()">🔐 重置所有数据</button>
+    </div>
+
+    <footer>
+        数据仅保存在当前浏览器 · 源码防重复逻辑已开启<br>
+        v2.0 Optimized by AI
+    </footer>
+</div>
+
+<script>
+    // 配置信息
+    const NAMES = ['周', '陈', '袁', '范', '祝', '何', '黄', '宋'];
+    const MENU = [
+        { name: '炒饭', price: 6 },
+        { name: '炒粉', price: 7 },
+        { name: '汤粉', price: 5 },
+        { name: '炒河粉', price: 6 }
+    ];
+    // 密码障眼法：admin8888 的 Base64
+    const _AUTH = "YWRtaW44ODg4"; 
+
+    let orders = JSON.parse(localStorage.getItem('lunch_orders') || '[]');
+
+    // 初始化界面
+    function init() {
+        renderForm();
+        refreshUI();
+    }
+
+    // 渲染表单元素
+    function renderForm() {
+        // 姓名下拉框
+        const select = document.getElementById('studentSelect');
+        select.innerHTML = '<option value="">— 请选择姓名 —</option>';
+        NAMES.forEach(name => {
+            const hasOrdered = orders.some(o => o.name === name);
+            const option = document.createElement('option');
+            option.value = name;
+            option.text = name + (hasOrdered ? ' (已点)' : '');
+            option.disabled = hasOrdered; // 关键：已点过的禁止选择
+            select.appendChild(option);
+        });
+
+        // 餐品格子
+        const grid = document.getElementById('foodGrid');
+        grid.innerHTML = '';
+        MENU.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'food-item';
+            div.innerHTML = `
+                ${item.name}
+                <span class="food-price">${item.price}元</span>
+                <input type="radio" name="food" value="${index}">
+            `;
+            div.onclick = () => {
+                document.querySelectorAll('.food-item').forEach(el => el.classList.remove('active'));
+                div.classList.add('active');
+                div.querySelector('input').checked = true;
+            };
+            grid.appendChild(div);
+        });
+    }
+
+    // 提交订单
+    function submitOrder() {
+        const name = document.getElementById('studentSelect').value;
+        const foodIdx = document.querySelector('input[name="food"]:checked')?.value;
+
+        if (!name) return alert("请先选择你的名字！");
+        if (foodIdx === undefined) return alert("请选择你想吃的餐品！");
+
+        const food = MENU[foodIdx];
+        
+        if (confirm(`确认提交：\n姓名：${name}\n餐品：${food.name}\n金额：${food.price}元`)) {
+            orders.push({ name, food: food.name, price: food.price, time: new Date().getTime() });
+            save();
+            renderForm(); // 重新渲染以禁用已点姓名
+            refreshUI();
+            alert("点餐成功！");
+        }
+    }
+
+    // 刷新统计和列表
+    function refreshUI() {
+        // 进度条
+        const progress = (orders.length / NAMES.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('progressText').innerText = `点餐进度: ${orders.length}/${NAMES.length}`;
+
+        // 汇总表
+        const summaryBody = document.getElementById('summaryBody');
+        let total = 0;
+        summaryBody.innerHTML = '';
+        
+        MENU.forEach(m => {
+            const count = orders.filter(o => o.food === m.name).length;
+            if (count > 0) {
+                const subtotal = count * m.price;
+                total += subtotal;
+                summaryBody.innerHTML += `<tr><td>${m.name}</td><td>${m.price}元</td><td>${count}份</td><td>${subtotal}元</td></tr>`;
+            }
+        });
+        document.getElementById('totalPrice').innerText = total + '元';
+
+        // 记录明细
+        const detailList = document.getElementById('orderDetailList');
+        detailList.innerHTML = orders.length ? '' : '<p style="text-align:center; color:#ccc; padding:20px;">暂无订单</p>';
+        orders.sort((a,b) => b.time - a.time).forEach(o => {
+            detailList.innerHTML += `
+                <div class="order-row">
+                    <div class="order-info">
+                        <span class="order-name">${o.name}</span>
+                        <span class="order-tag">${o.food}</span>
+                    </div>
+                    <div style="font-size:0.9rem; margin-right:15px;">${o.price}元</div>
+                    <div class="btn-del" onclick="deleteOrder('${o.name}')">删除</div>
+                </div>
+            `;
+        });
+    }
+
+    // 复制汇总文字
+    function copySummary() {
+        if (orders.length === 0) return alert("目前还没有订单数据。");
+        
+        let text = `【拼单统计 - 共${orders.length}份】\n`;
+        MENU.forEach(m => {
+            const count = orders.filter(o => o.food === m.name).length;
+            if (count > 0) text += `· ${m.name} x${count}份\n`;
+        });
+        const total = orders.reduce((sum, o) => sum + o.price, 0);
+        text += `----------------\n总计金额：${total}元`;
+
+        navigator.clipboard.writeText(text).then(() => {
+            alert("汇总文本已复制到剪贴板！");
+        });
+    }
+
+    // 删除单条订单
+    function deleteOrder(name) {
+        if (prompt("请输入管理员密码以删除订单：") !== atob(_AUTH)) return alert("密码错误");
+        orders = orders.filter(o => o.name !== name);
+        save();
+        renderForm();
+        refreshUI();
+    }
+
+    // 重置所有
+    function resetAll() {
+        if (prompt("⚠️ 确定清空所有数据吗？请输入管理员密码：") !== atob(_AUTH)) return alert("密码错误");
+        orders = [];
+        save();
+        renderForm();
+        refreshUI();
+    }
+
+    function save() {
+        localStorage.setItem('lunch_orders', JSON.stringify(orders));
+    }
+
+    init();
+</script>
+
+</body>
+</html>
