@@ -15,7 +15,6 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            /* 可爱的动态渐变背景 */
             background: linear-gradient(-45deg, #ffe6fa, #fff0f5, #ffe4e1, #ffd1dc);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -24,7 +23,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            user-select: none; /* 防止双击选中文字影响体验 */
+            user-select: none;
         }
 
         @keyframes gradientBG {
@@ -33,7 +32,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 软萌的白色半透明卡片 */
         .container {
             position: relative;
             z-index: 10;
@@ -57,7 +55,6 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* 可爱的阴阳玉/蝴蝶结装饰 */
         .icon {
             font-size: 4.5rem;
             margin-bottom: 0px;
@@ -89,7 +86,6 @@
             letter-spacing: 3px;
         }
 
-        /* 唯一的进入按钮 */
         .links {
             margin-top: 35px;
         }
@@ -121,12 +117,11 @@
             box-shadow: 0 4px 10px rgba(255, 111, 145, 0.4);
         }
 
-        /* ==== 贴图的 CSS ==== */
         .touhou-sticker {
             position: absolute;
-            width: 80px; /* 贴图大小 */
+            width: 80px; 
             height: 80px;
-            pointer-events: none; /* 贴图不能被点击，以免挡住网页 */
+            pointer-events: none; 
             z-index: 999;
             opacity: 0;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
@@ -138,65 +133,53 @@
 <body>
 
     <div class="container">
-        <!-- 你也可以把这里的 ☯ 换成 🎀 或者 🌸 -->
         <div class="icon">☯</div>
         <h1>rice</h1>
         <div class="subtitle">✨ 少女祈祷中 ✨</div>
         
         <div class="links">
-            <a href="#">进 入</a>
+            <!-- 🌟 这里修改了跳转链接 🌟 -->
+            <a href="https://yukiom.us.ci/Web/intro.html">Enter</a>
         </div>
     </div>
 
     <script>
-        // ==== 贴图生成逻辑 ====
-        
-      
+        // 🌟 换回了稳定可用的直链图，如果想换自己的，一定要确保是纯粹的图片直链 🌟
         const stickers = [
             'https://media1.tenor.com/m/ipusVxTlMCkAAAAC/yeah.gif', // 灵梦
             'https://media.tenor.com/45RM0-hEnm0AAAAi/marisa.gif'  // 魔理沙
         ];
 
-        // 监听整个网页的点击事件
         document.addEventListener('click', function(e) {
-            // 如果点击的是按钮，就不生成贴图，以免干扰跳转
             if(e.target.tagName.toLowerCase() === 'a') return;
 
-            // 创建一个 img 标签
             const img = document.createElement('img');
             
-            // 随机抽取一张贴图
             const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
             img.src = randomSticker;
             img.className = 'touhou-sticker';
 
-            // 设置贴图的初始位置在鼠标点击的地方 (减去 40 是为了让鼠标在图片中心)
             img.style.left = (e.pageX - 40) + 'px';
             img.style.top = (e.pageY - 40) + 'px';
 
-            // 给贴图一个随机的轻微旋转角度
             const rot = (Math.random() - 0.5) * 40; 
             img.style.transform = `rotate(${rot}deg) scale(0)`;
 
-            // 把贴图加到网页里
             document.body.appendChild(img);
 
-            // 动画第一阶段：弹出显示
             requestAnimationFrame(() => {
                 img.style.transform = `rotate(${rot}deg) scale(1)`;
                 img.style.opacity = '1';
             });
 
-            // 动画第二阶段：向上飘走并消失，最后把元素删掉
             setTimeout(() => {
                 img.style.transform = `translateY(-80px) rotate(${rot}deg) scale(0.8)`;
                 img.style.opacity = '0';
                 
-                // 等待淡出动画结束后，从页面中移除这个 img 元素
                 setTimeout(() => {
                     img.remove();
                 }, 400); 
-            }, 800); // 贴图停留 0.8 秒后开始消失
+            }, 800); 
         });
     </script>
 </body>
