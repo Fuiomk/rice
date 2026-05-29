@@ -216,7 +216,7 @@
 </div>
 
 <script>
-    const API_URL = 'https://rice-api.sb250666sbb.workers.dev/'; 
+    const API_URL = 'https://api.yukiom.us.ci/'; 
     const NAMES = ['周', '陈', '袁', '范', '祝', '何', '黄', '宋'];
     const MENU = [
         { name: '炒饭', price: 6, icon: '🍚' },
@@ -479,7 +479,7 @@
     }
 
     async function resetAll() {
-        const code = prompt("请输入超级管理员密码清空所有数据（提示：123）");
+        const code = prompt("请输入超级管理员密码清空所有数据");
         if (code !== '123') return (code !== null) && showToast("密码错误，取消操作", true);
         
         try {
