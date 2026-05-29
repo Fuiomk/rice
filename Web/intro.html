@@ -1,472 +1,873 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fuiomk @ BNE</title>
-    <!-- 引入 JetBrains Mono 字体与中文衬线/无衬线 fallback -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-dark: #0f1015;
-            --window-bg: #161720;
-            --window-border: #282a36;
-            --text-main: #f8f8f2;
-            --text-muted: #6272a4;
-            --kotlin-purple: #7F52FF;
-            --kotlin-orange: #E24422;
-            --cyan: #8be9fd;
-            --green: #50fa7b;
-            --yellow: #f1fa8c;
-            --red: #ff5555;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<title>fuiomk @ BNE</title>
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: var(--font-mono), "Noto Sans SC", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-        /* 终端仿真窗口外观 */
-        .terminal-window {
-            width: 1000px;
-            max-width: 100%;
-            background-color: var(--window-bg);
-            border: 1px solid var(--window-border);
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+<style>
+:root{
+    --bg:#0b0c10;
+    --panel:#12131a;
+    --panel2:#181a22;
+    --border:rgba(255,255,255,.06);
 
-        /* 窗口头部状态栏 */
-        .window-header {
-            background-color: #1e1f29;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--window-border);
-        }
+    --text:#f5f7ff;
+    --muted:#7f849c;
 
-        .window-controls {
-            display: flex;
-            gap: 8px;
-        }
+    --purple:#7F52FF;
+    --green:#50fa7b;
+    --cyan:#8be9fd;
+    --yellow:#f1fa8c;
+    --red:#ff5555;
 
-        .control-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
+    --shadow:
+        0 0 0 1px rgba(255,255,255,.03),
+        0 25px 80px rgba(0,0,0,.7);
 
-        .dot-red { background-color: var(--red); }
-        .dot-yellow { background-color: var(--yellow); }
-        .dot-green { background-color: var(--green); }
+    --font:'JetBrains Mono', monospace;
+}
 
-        .window-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        .window-actions {
-            width: 52px;
-        }
+html{
+    scroll-behavior:smooth;
+}
 
-        /* 终端主体双栏布局 */
-        .window-body {
-            display: flex;
-            flex-direction: row;
-            min-height: 500px;
-        }
+body{
+    min-height:100vh;
 
-        @media (max-width: 768px) {
-            .window-body {
-                flex-direction: column;
-            }
-        }
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
-        /* 左侧栏: Fastfetch 信息栏 */
-        .left-pane {
-            flex: 4;
-            padding: 30px;
-            border-right: 1px solid var(--window-border);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    padding:40px;
 
-        @media (max-width: 768px) {
-            .left-pane {
-                border-right: none;
-                border-bottom: 1px solid var(--window-border);
-                align-items: center;
-            }
-        }
+    font-family:var(--font);
+    color:var(--text);
 
-        /* 开发者头像卡片贴纸 */
-        .avatar-sticker {
-            width: 150px;
-            height: 150px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--kotlin-purple);
-            box-shadow: 0 4px 15px rgba(127, 82, 255, 0.2);
-            margin-bottom: 25px;
-            background-color: #21222c;
-        }
+    background:
+        radial-gradient(circle at top left, rgba(127,82,255,.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(80,250,123,.08), transparent 25%),
+        radial-gradient(circle at center, rgba(139,233,253,.05), transparent 40%),
+        var(--bg);
 
-        .avatar-sticker img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    overflow-x:hidden;
+}
 
-        /* Fastfetch 条目列表 */
-        .fetch-list {
-            width: 100%;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+/* ambient */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
 
-        .fetch-header {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--kotlin-purple);
-            margin-bottom: 15px;
-        }
+    background-image:
+        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
 
-        .fetch-line {
-            margin-bottom: 8px;
-            word-break: break-all;
-        }
+    background-size:40px 40px;
 
-        .fetch-label {
-            color: var(--cyan);
-            font-weight: bold;
-        }
+    pointer-events:none;
+}
 
-        .color-palette {
-            display: flex;
-            gap: 6px;
-            margin-top: 20px;
-        }
+/* ========================= */
 
-        .color-block {
-            width: 25px;
-            height: 10px;
-            border-radius: 2px;
-        }
+.terminal-window{
+    width:1180px;
+    max-width:100%;
 
-        /* 右侧栏: 代码与统计看板 */
-        .right-pane {
-            flex: 6;
-            padding: 20px 30px;
-            display: flex;
-            flex-direction: column;
-        }
+    border-radius:22px;
 
-        /* 类似 IDE 的 Tab 页签导航 */
-        .tabs-header {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--window-border);
-            padding-bottom: 10px;
-        }
+    overflow:hidden;
 
-        .tab-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-            font-size: 13px;
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
+    backdrop-filter:blur(18px);
 
-        .tab-btn:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
-        }
+    background:rgba(18,19,26,.82);
 
-        .tab-btn.active {
-            background-color: var(--window-border);
-            color: var(--green);
-            font-weight: 500;
-        }
+    border:1px solid var(--border);
 
-        /* 终端输出与代码显示区 */
-        .terminal-console {
-            flex-grow: 1;
-            font-size: 14px;
-            line-height: 1.6;
-            overflow-y: auto;
-        }
+    box-shadow:var(--shadow);
 
-        .console-line {
-            margin-bottom: 10px;
-        }
+    animation:float 7s ease-in-out infinite;
+}
 
-        .prompt-symbol {
-            color: var(--green);
-            font-weight: bold;
-        }
+@keyframes float{
+    0%,100%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-6px);
+    }
+}
 
-        .prompt-path {
-            color: var(--kotlin-purple);
-        }
+/* ========================= */
 
-        /* 代码高亮样式 */
-        .code-block {
-            color: var(--text-main);
-            background-color: #1e1f29;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--window-border);
-            overflow-x: auto;
-            white-space: pre;
-        }
+.window-header{
+    height:58px;
 
-        .kw { color: #ff79c6; font-weight: bold; } /* keyword */
-        .fn { color: #50fa7b; } /* function */
-        .str { color: #f1fa8c; } /* string */
-        .cm { color: var(--text-muted); font-style: italic; } /* comment */
-        .typ { color: #8be9fd; } /* type */
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-        /* 交互提示符光标 */
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background-color: var(--text-main);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 4px;
-        }
+    padding:0 20px;
 
-        @keyframes blink {
-            from, to { background-color: transparent }
-            50% { background-color: var(--green) }
-        }
+    background:rgba(255,255,255,.02);
 
-        /* 隐藏未选中 Tab */
-        .tab-content {
-            display: none;
-        }
+    border-bottom:1px solid var(--border);
+}
 
-        .tab-content.active {
-            display: block;
-        }
-    </style>
+.window-controls{
+    display:flex;
+    gap:10px;
+}
+
+.control-dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+}
+
+.red{background:var(--red);}
+.yellow{background:var(--yellow);}
+.green{background:var(--green);}
+
+.window-title{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.header-right{
+    color:var(--purple);
+    font-size:12px;
+}
+
+/* ========================= */
+
+.window-body{
+    display:flex;
+    min-height:720px;
+}
+
+/* ========================= */
+/* LEFT */
+/* ========================= */
+
+.left{
+    width:360px;
+
+    border-right:1px solid var(--border);
+
+    padding:38px 32px;
+
+    background:linear-gradient(
+        to bottom,
+        rgba(255,255,255,.01),
+        transparent
+    );
+}
+
+.avatar{
+    width:170px;
+    height:170px;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    margin-bottom:30px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    background:#1d1f29;
+}
+
+.avatar::before{
+    content:"";
+
+    position:absolute;
+    inset:-2px;
+
+    background:linear-gradient(
+        45deg,
+        var(--purple),
+        var(--green),
+        var(--cyan)
+    );
+
+    z-index:-1;
+
+    filter:blur(25px);
+
+    opacity:.45;
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.identity{
+    margin-bottom:28px;
+}
+
+.name{
+    font-size:28px;
+    font-weight:700;
+
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:var(--muted);
+    line-height:1.7;
+    font-size:14px;
+}
+
+.fetch{
+    margin-top:24px;
+}
+
+.fetch-line{
+    margin-bottom:16px;
+
+    font-size:14px;
+
+    display:flex;
+    gap:10px;
+}
+
+.fetch-label{
+    color:var(--cyan);
+    min-width:95px;
+}
+
+.palette{
+    display:flex;
+    gap:8px;
+
+    margin-top:35px;
+}
+
+.palette div{
+    width:28px;
+    height:12px;
+
+    border-radius:999px;
+}
+
+.quote{
+    margin-top:38px;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.03);
+
+    border:1px solid var(--border);
+
+    line-height:1.8;
+
+    font-size:13px;
+
+    color:var(--muted);
+}
+
+/* ========================= */
+/* RIGHT */
+/* ========================= */
+
+.right{
+    flex:1;
+
+    padding:30px;
+}
+
+/* top status */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:26px;
+}
+
+.fake-cli{
+    font-size:14px;
+}
+
+.prompt{
+    color:var(--green);
+}
+
+.path{
+    color:var(--purple);
+}
+
+.typing{
+    color:white;
+}
+
+.cursor{
+    display:inline-block;
+
+    width:8px;
+    height:16px;
+
+    background:var(--green);
+
+    margin-left:4px;
+
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    0%,50%{
+        opacity:1;
+    }
+    51%,100%{
+        opacity:0;
+    }
+}
+
+.status-pill{
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:rgba(80,250,123,.08);
+
+    border:1px solid rgba(80,250,123,.2);
+
+    color:var(--green);
+
+    font-size:12px;
+}
+
+/* tabs */
+
+.tabs{
+    display:flex;
+    gap:12px;
+
+    margin-bottom:24px;
+}
+
+.tab{
+    border:none;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.03);
+
+    color:var(--muted);
+
+    font-family:var(--font);
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.tab:hover{
+    transform:translateY(-2px);
+
+    color:white;
+}
+
+.tab.active{
+    color:white;
+
+    background:rgba(127,82,255,.14);
+
+    border:1px solid rgba(127,82,255,.35);
+
+    box-shadow:
+        inset 0 0 18px rgba(127,82,255,.12),
+        0 0 25px rgba(127,82,255,.1);
+}
+
+/* console */
+
+.console{
+    position:relative;
+}
+
+.tab-content{
+    display:none;
+}
+
+.tab-content.active{
+    display:block;
+
+    animation:fade .25s ease;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.code{
+    background:rgba(255,255,255,.025);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:28px;
+
+    overflow:auto;
+
+    line-height:2;
+
+    font-size:14px;
+}
+
+/* syntax */
+
+.kw{color:#ff79c6;}
+.fn{color:#50fa7b;}
+.str{color:#f1fa8c;}
+.typ{color:#8be9fd;}
+.cm{color:#6d7390;font-style:italic;}
+
+/* terminal block */
+
+.terminal-box{
+    background:#101117;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    border:1px solid var(--border);
+
+    line-height:2;
+}
+
+/* ascii */
+
+.ascii{
+    color:var(--yellow);
+
+    line-height:1.5;
+
+    font-size:14px;
+}
+
+/* stats */
+
+.stats{
+    margin-top:24px;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+}
+
+.stat{
+    background:rgba(255,255,255,.03);
+
+    border:1px solid var(--border);
+
+    padding:20px;
+
+    border-radius:18px;
+}
+
+.stat-title{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+.stat-value{
+    font-size:22px;
+    font-weight:700;
+}
+
+/* mobile */
+
+@media(max-width:980px){
+
+    .window-body{
+        flex-direction:column;
+    }
+
+    .left{
+        width:100%;
+
+        border-right:none;
+        border-bottom:1px solid var(--border);
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
 </head>
+
 <body>
 
-    <div class="terminal-window">
-        <!-- 窗口标题栏 -->
-        <div class="window-header">
-            <div class="window-controls">
-                <span class="control-dot dot-red"></span>
-                <span class="control-dot dot-yellow"></span>
-                <span class="control-dot dot-green"></span>
-            </div>
-            <div class="window-title">fuiomk@BNE: ~/rice</div>
-            <div class="window-actions"></div>
+<div class="terminal-window">
+
+    <!-- HEADER -->
+    <div class="window-header">
+
+        <div class="window-controls">
+            <div class="control-dot red"></div>
+            <div class="control-dot yellow"></div>
+            <div class="control-dot green"></div>
         </div>
 
-        <!-- 终端主体 -->
-        <div class="window-body">
-            
-            <!-- 左侧 Fastfetch 硬件/软件系统信息 -->
-            <div class="left-pane">
-                <!-- 头像区域 (已修正路径为 ../img/intro.png) -->
-                <div class="avatar-sticker">
-                    <img src="../img/intro.png" alt="intro.png">
-                </div>
-                
-                <div class="fetch-list">
-                    <div class="fetch-header">fuiomk@BNE</div>
-                    <div class="fetch-line"><span class="fetch-label">OS: </span>Windows 11</div>
-                    <div class="fetch-line"><span class="fetch-label">Host: </span>High School Student</div>
-                    <div class="fetch-line"><span class="fetch-label">IDE: </span>IntelliJ IDEA</div>
-                    <div class="fetch-line"><span class="fetch-label">Target: </span>College Entrance & Kotlin</div>
-                    <div class="fetch-line"><span class="fetch-label">Stack: </span>KMP, CMP, Spring Boot</div>
-                    <div class="fetch-line"><span class="fetch-label">Motto: </span>Done is better than perfect.</div>
-                    <div class="fetch-line"><span class="fetch-label">Location: </span>BNE (Brisbane)</div>
-                    <div class="fetch-line"><span class="fetch-label">Status: </span>Active Learning</div>
-                </div>
+        <div class="window-title">
+            fuiomk@BNE: ~/workspace
+        </div>
 
-                <!-- ANSI 终端调色盘 -->
-                <div class="color-palette">
-                    <div class="color-block" style="background-color: var(--red);"></div>
-                    <div class="color-block" style="background-color: var(--yellow);"></div>
-                    <div class="color-block" style="background-color: var(--green);"></div>
-                    <div class="color-block" style="background-color: var(--cyan);"></div>
-                    <div class="color-block" style="background-color: var(--kotlin-purple);"></div>
-                    <div class="color-block" style="background-color: var(--text-muted);"></div>
+        <div class="header-right">
+            Kotlin • JetBrains • Backend
+        </div>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="window-body">
+
+        <!-- LEFT -->
+        <div class="left">
+
+            <div class="avatar">
+                <img src="../img/intro.png">
+            </div>
+
+            <div class="identity">
+                <div class="name">fuiomk</div>
+
+                <div class="subtitle">
+                    High school student.<br>
+                    Building things with Kotlin, Spring Boot and terminal aesthetics.
                 </div>
             </div>
 
-            <!-- 右侧 Tab 页面展示区 -->
-            <div class="right-pane">
-                <div class="tabs-header">
-                    <button class="tab-btn active" onclick="switchTab('about')">about_me.kt</button>
-                    <button class="tab-btn" onclick="switchTab('stack')">build.gradle.kts</button>
-                    <button class="tab-btn" onclick="switchTab('motto')">motto.txt</button>
+            <div class="fetch">
+
+                <div class="fetch-line">
+                    <span class="fetch-label">OS</span>
+                    <span>Windows 11</span>
                 </div>
 
-                <div class="terminal-console">
-                    <!-- 动态变化执行的 shell 命令区 -->
-                    <div class="console-line">
-                        <span class="prompt-symbol">❯</span> <span class="prompt-path">~/rice</span> <span id="cli-typed">cat about_me.kt</span><span class="cursor"></span>
-                    </div>
+                <div class="fetch-line">
+                    <span class="fetch-label">IDE</span>
+                    <span>IntelliJ IDEA</span>
+                </div>
 
-                    <!-- TAB 1: Kotlin 代码风格 -->
-                    <div id="tab-about" class="tab-content active">
-<div class="code-block"><span class="kw">import</span> kotlin.learning.continuous
+                <div class="fetch-line">
+                    <span class="fetch-label">Stack</span>
+                    <span>KMP / Spring Boot</span>
+                </div>
+
+                <div class="fetch-line">
+                    <span class="fetch-label">Focus</span>
+                    <span>Backend & Systems</span>
+                </div>
+
+                <div class="fetch-line">
+                    <span class="fetch-label">Currently</span>
+                    <span>Grinding Kotlin</span>
+                </div>
+
+                <div class="fetch-line">
+                    <span class="fetch-label">Location</span>
+                    <span>BNE</span>
+                </div>
+
+                <div class="fetch-line">
+                    <span class="fetch-label">Status</span>
+                    <span style="color: var(--green)">
+                        ● Online
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="palette">
+                <div style="background:var(--red)"></div>
+                <div style="background:var(--yellow)"></div>
+                <div style="background:var(--green)"></div>
+                <div style="background:var(--cyan)"></div>
+                <div style="background:var(--purple)"></div>
+                <div style="background:#6272a4"></div>
+            </div>
+
+            <div class="quote">
+                ❯ “Done is better than perfect.”<br><br>
+
+                I enjoy terminal ricing, clean UI,
+                backend development and turning weird ideas into actual projects.
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+
+            <!-- top -->
+            <div class="topbar">
+
+                <div class="fake-cli">
+                    <span class="prompt">❯</span>
+                    <span class="path">~/workspace</span>
+                    <span class="typing" id="command-text">
+                        cat about.kt
+                    </span>
+                    <span class="cursor"></span>
+                </div>
+
+                <div class="status-pill">
+                    ACTIVE LEARNING
+                </div>
+
+            </div>
+
+            <!-- tabs -->
+            <div class="tabs">
+
+                <button class="tab active" onclick="switchTab(event,'about')">
+                    about.kt
+                </button>
+
+                <button class="tab" onclick="switchTab(event,'stack')">
+                    build.gradle.kts
+                </button>
+
+                <button class="tab" onclick="switchTab(event,'motto')">
+                    motto.txt
+                </button>
+
+            </div>
+
+            <!-- content -->
+            <div class="console">
+
+                <!-- about -->
+                <div class="tab-content active" id="about">
+
+<pre class="code"><span class="kw">data class</span> <span class="typ">Developer</span>(
+    <span class="kw">val</span> name: String,
+    <span class="kw">val</span> age: Int,
+    <span class="kw">val</span> mainStack: List&lt;String&gt;,
+    <span class="kw">val</span> philosophy: String
+)
 
 <span class="kw">fun</span> <span class="fn">main</span>() {
-    <span class="kw">val</span> player = KotlinPlayer(
-        status = <span class="str">"High School Student"</span>,
-        mainLang = <span class="str">"Kotlin"</span>,
-        exploring = <span class="str">"Java Backend"</span>
+
+    <span class="kw">val</span> me = Developer(
+        name = <span class="str">"fuiomk"</span>,
+        age = 17,
+
+        mainStack = listOf(
+            <span class="str">"Kotlin"</span>,
+            <span class="str">"Spring Boot"</span>,
+            <span class="str">"Compose Multiplatform"</span>
+        ),
+
+        philosophy = <span class="str">"Done is better than perfect."</span>
     )
-    
-    player.apply {
-        motto = <span class="str">"能通就行 (Done is better than perfect)"</span>
-        location = <span class="str">"BNE"</span>
+
+    <span class="kw">while</span>(alive) {
+
+        grind(<span class="str">"Kotlin"</span>)
+        build(<span class="str">"Projects"</span>)
+        chase(<span class="str">"Target University"</span>)
+
+        <span class="cm">// keep moving forward</span>
     }
-    
-    <span class="kw">while</span> (player.isCoding) {
-        player.drillDeepInto(<span class="str">"Kotlin"</span>)
-        player.striveFor(<span class="str">"Target University"</span>)
-        player.compileAndRun() <span class="cm">// Status: Done!</span>
-    }
-}</div>
+}</pre>
+
+                    <div class="stats">
+
+                        <div class="stat">
+                            <div class="stat-title">
+                                MAIN LANGUAGE
+                            </div>
+
+                            <div class="stat-value">
+                                Kotlin
+                            </div>
+                        </div>
+
+                        <div class="stat">
+                            <div class="stat-title">
+                                CURRENT TARGET
+                            </div>
+
+                            <div class="stat-value">
+                                University
+                            </div>
+                        </div>
+
+                        <div class="stat">
+                            <div class="stat-title">
+                                FAVORITE TOOL
+                            </div>
+
+                            <div class="stat-value">
+                                IntelliJ
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- TAB 2: build.gradle.kts (展示个人技术栈与工具) -->
-                    <div id="tab-stack" class="tab-content">
-<div class="code-block">plugins {
+                </div>
+
+                <!-- stack -->
+                <div class="tab-content" id="stack">
+
+<pre class="code">plugins {
     kotlin(<span class="str">"multiplatform"</span>) version <span class="str">"2.0.0"</span>
-    id(<span class="str">"org.springframework.boot"</span>) version <span class="str">"3.2.5"</span>
-    id(<span class="str">"org.jetbrains.compose"</span>) version <span class="str">"1.6.10"</span>
+
+    id(<span class="str">"org.springframework.boot"</span>)
+    id(<span class="str">"org.jetbrains.compose"</span>)
 }
 
 kotlin {
-    <span class="cm">// 1. Kotlin 跨平台多端开发支持</span>
+
     androidTarget()
-    jvm(<span class="str">"desktop"</span>) <span class="cm">// JVM桌面端运行环境</span>
-    iosConnector()  <span class="cm">// 保持iOS编译链兼容</span>
+
+    jvm(<span class="str">"desktop"</span>)
 
     sourceSets {
+
         <span class="kw">val</span> commonMain <span class="kw">by</span> getting {
             dependencies {
-                <span class="cm">// Compose Multiplatform (CMP) 用于共享UI</span>
+
                 implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
 
-                <span class="cm">// 异步计算与协程支持</span>
-                implementation(<span class="str">"org.jetbrains.kotlinx:kotlinx-coroutines-core"</span>)
-            }
-        }
-
-        <span class="kw">val</span> androidMain <span class="kw">by</span> getting {
-            dependencies {
-                <span class="cm">// Android 原生 Jetpack Compose 依赖</span>
-                implementation(<span class="str">"androidx.compose.ui:ui"</span>)
-                implementation(<span class="str">"androidx.compose.material:material"</span>)
+                implementation(
+                    <span class="str">"org.jetbrains.kotlinx:kotlinx-coroutines-core"</span>
+                )
             }
         }
 
         <span class="kw">val</span> jvmMain <span class="kw">by</span> getting {
+
             dependencies {
-                <span class="cm">// JVM/Java 后端探索：Spring Boot 核心框架</span>
-                implementation(<span class="str">"org.springframework.boot:spring-boot-starter-web"</span>)
-                implementation(<span class="str">"org.springframework.boot:spring-boot-starter-data-jpa"</span>)
+
+                implementation(
+                    <span class="str">"org.springframework.boot:spring-boot-starter-web"</span>
+                )
+
+                implementation(
+                    <span class="str">"org.springframework.boot:spring-boot-starter-data-jpa"</span>
+                )
             }
         }
     }
-}</div>
-                    </div>
-
-                    <!-- TAB 3: 座右铭 -->
-                    <div id="tab-motto" class="tab-content">
-<div class="code-block" style="color: var(--yellow); font-weight: bold; text-align: center;">
- ____                   _ 
-|  _ \  ___  _ __   ___| |
-| | | |/ _ \| '_ \ / _ \ |
-| |_| | (_) | | | |  __/_|
-|____/ \___/|_| |_|\___(_)
-
-<span style="color: #fff;">>> Done is better than perfect. (能通就行)</span>
-</div>
-                    </div>
+}</pre>
 
                 </div>
+
+                <!-- motto -->
+                <div class="tab-content" id="motto">
+
+<div class="terminal-box">
+
+<pre class="ascii">
+ ____                        _ 
+|  _ \  ___  _ __   ___     | |
+| | | |/ _ \| '_ \ / _ \    | |
+| |_| | (_) | | | |  __/    |_|
+|____/ \___/|_| |_|\___|    (_)
+
+</pre>
+
+<div style="margin-top:20px;line-height:2;color:#fff">
+❯ Done is better than perfect.<br>
+❯ 能通就行。<br>
+❯ Keep building.
+</div>
+
+</div>
+
+                </div>
+
             </div>
 
         </div>
+
     </div>
 
-    <script>
-        // Tab 点击指令映射表
-        const tabCommands = {
-            'about': 'cat about_me.kt',
-            'stack': 'cat build.gradle.kts',
-            'motto': 'cat motto.txt'
-        };
+</div>
 
-        function switchTab(tabKey) {
-            // 切换 Tab 页签高亮
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+<script>
 
-            // 执行 shell 打字动画
-            const cliElement = document.getElementById('cli-typed');
-            const targetCmd = tabCommands[tabKey];
-            cliElement.textContent = '';
-            
-            // 关闭所有显示区域
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
+const commandMap = {
+    about: "cat about.kt",
+    stack: "cat build.gradle.kts",
+    motto: "cat motto.txt"
+};
 
-            // 打字模拟实现
-            let i = 0;
-            function typeWriter() {
-                if (i < targetCmd.length) {
-                    cliElement.textContent += targetCmd.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, 30); // 字符敲击间隔
-                } else {
-                    // 打字结束后显示对应内容
-                    document.getElementById(`tab-${tabKey}`).classList.add('active');
-                }
-            }
-            typeWriter();
+function switchTab(event, tab){
+
+    document.querySelectorAll(".tab")
+        .forEach(btn => btn.classList.remove("active"));
+
+    event.target.classList.add("active");
+
+    document.querySelectorAll(".tab-content")
+        .forEach(content => content.classList.remove("active"));
+
+    const command = commandMap[tab];
+    const commandText = document.getElementById("command-text");
+
+    commandText.textContent = "";
+
+    let i = 0;
+
+    function type(){
+
+        if(i < command.length){
+
+            commandText.textContent += command.charAt(i);
+
+            i++;
+
+            setTimeout(type, 25);
+
+        }else{
+
+            document.getElementById(tab)
+                .classList.add("active");
         }
-    </script>
+    }
+
+    type();
+}
+
+</script>
+
 </body>
 </html>
