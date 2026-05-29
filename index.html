@@ -146,11 +146,105 @@ body::before{
     }
 }
 
+/* ================== 两侧漂浮装饰样式 ================== */
+.side-decor {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.22;
+    transition: opacity 0.3s;
+}
+
+.left-decor {
+    left: 4%;
+}
+
+.right-decor {
+    right: 4%;
+}
+
+/* 纯 CSS 绘制阴阳玉 */
+.yin-yang-css {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(to right, #fff 50%, #12051f 50%);
+    border: 2px solid rgba(255,255,255,0.2);
+    position: relative;
+    box-shadow: 0 0 30px rgba(184,140,255,0.3);
+    animation: rotateClockwise 25s linear infinite;
+}
+.yin-yang-css::before, .yin-yang-css::after {
+    content: '';
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.yin-yang-css::before {
+    top: 0;
+    background: #fff;
+    box-shadow: inset 0 0 0 14px #12051f;
+}
+.yin-yang-css::after {
+    bottom: 0;
+    background: #12051f;
+    box-shadow: inset 0 0 0 14px #fff;
+}
+
+/* 纯 CSS 绘制八卦魔法阵 */
+.magic-circle-css {
+    width: 130px;
+    height: 130px;
+    border: 2px dashed rgba(255, 111, 169, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: rotateCounterClockwise 30s linear infinite;
+    box-shadow: 0 0 30px rgba(255, 111, 169, 0.25);
+}
+.magic-circle-css::before {
+    content: '☯';
+    font-size: 2.5rem;
+    color: rgba(255, 111, 169, 0.6);
+    text-shadow: 0 0 10px rgba(255, 111, 169, 0.4);
+}
+.magic-circle-css::after {
+    content: '';
+    position: absolute;
+    inset: 15px;
+    border: 1px solid rgba(255, 111, 169, 0.3);
+    border-radius: 50%;
+}
+
+@keyframes rotateClockwise {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes rotateCounterClockwise {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+@media(max-width: 1350px) {
+    .side-decor {
+        display: none;
+    }
+}
+/* =================================================== */
+
 .wrap{
     position:relative;
     z-index:2;
-    width:min(1000px,92%);
+    width:min(1080px,92%); /* 适度拓宽大屏布局 */
     margin:50px auto;
+    transition: width 0.3s ease;
 }
 
 .hero{
@@ -411,17 +505,33 @@ body::before{
     font-weight:700;
     color:#ffe4f4;
     animation:floatUI 5s ease-in-out infinite;
+    z-index: 10;
 }
 
-.float1{
-    top:35px;
-    right:35px;
+/* 响应式排布悬浮标签 */
+@media(min-width: 1350px) {
+    .float1 {
+        top: 60px;
+        left: -160px;
+        right: auto;
+    }
+    .float2 {
+        bottom: 120px;
+        right: -160px;
+        left: auto;
+        animation-delay: 2s;
+    }
 }
-
-.float2{
-    bottom:40px;
-    right:80px;
-    animation-delay:2s;
+@media(max-width: 1349px) {
+    .float1 {
+        top: 35px;
+        right: 35px;
+    }
+    .float2 {
+        bottom: 40px;
+        right: 80px;
+        animation-delay: 2s;
+    }
 }
 
 @keyframes floatUI{
@@ -481,10 +591,17 @@ footer{
 
 <div class="sparkles" id="sparkles"></div>
 
+<!-- 宽屏下的两侧漂浮装饰 -->
+<div class="side-decor left-decor">
+    <div class="magic-circle-css"></div>
+</div>
+<div class="side-decor right-decor">
+    <div class="yin-yang-css"></div>
+</div>
+
 <div class="wrap">
 
-<section class="hero">
-
+<!-- 悬浮标签移至容器子级，以便在宽屏下实现向外侧位移的排布 -->
 <div class="floating-ui float1">
 ✨ 幻想粒子同步中
 </div>
@@ -492,6 +609,8 @@ footer{
 <div class="floating-ui float2">
 ☯ 梦境结界稳定
 </div>
+
+<section class="hero">
 
 <h1 class="main-title">
 幻想乡
