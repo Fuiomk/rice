@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>创意个人展示卡片</title>
+    <title>幻想乡个人展示</title>
     <style>
-        /* 基础重置 */
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Noto+Serif+SC:wght@700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -13,17 +14,18 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #050510;
+            font-family: 'Nunito', 'Noto Serif SC', serif;
+            /* 柔和的樱花粉渐变背景 */
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            color: #fff;
+            color: #d687a4;
         }
 
-        /* 动态背景画布 */
+        /* 樱花背景画布 */
         #canvas-bg {
             position: absolute;
             top: 0;
@@ -33,58 +35,78 @@
             z-index: 1;
         }
 
-        /* 环境光晕 */
+        /* 软萌氛围光 */
         .ambient-light {
             position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(112,0,255,0.4) 0%, rgba(0,0,0,0) 70%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
             border-radius: 50%;
             z-index: 2;
-            animation: pulseLight 8s infinite alternate;
+            animation: pulseLight 10s infinite alternate;
         }
         .ambient-light.right {
-            right: 10%;
-            bottom: 10%;
-            background: radial-gradient(circle, rgba(0,212,255,0.3) 0%, rgba(0,0,0,0) 70%);
+            right: 5%;
+            bottom: 5%;
+            background: radial-gradient(circle, rgba(255, 105, 180, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
         }
 
-        /* 玻璃拟态卡片主体 */
+        /* 软萌玻璃拟态卡片 */
         .glass-card {
             position: relative;
             z-index: 10;
-            width: 380px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            border-radius: 40px;
             padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 20px 40px rgba(255, 182, 193, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: float 5s ease-in-out infinite;
         }
 
-        /* 悬浮动画 */
+        /* 悬浮装饰：红白缎带 */
+        .glass-card::before {
+            content: '☯';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: #ff6f91;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 5px 15px rgba(255, 111, 145, 0.5);
+            border: 4px solid white;
+            z-index: 11;
+        }
+
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         @keyframes pulseLight {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.3); opacity: 0.4; }
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.4); opacity: 0.3; }
         }
 
-        /* 头像设计 */
+        /* 头像设计：带旋转边框 */
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            margin: 0 auto 20px;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
-            padding: 4px; /* 渐变边框效果 */
+            margin: 10px auto 25px;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            padding: 5px;
+            position: relative;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
         }
@@ -93,251 +115,222 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #111;
+            border: 5px solid #fff;
+            background: #fff;
         }
         .avatar:hover {
-            transform: scale(1.1) rotate(5deg);
+            transform: scale(1.15) rotate(10deg);
         }
 
         /* 文本排版 */
         .name {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #ff6f91;
+            text-shadow: 2px 2px 0px white;
         }
 
         .title {
             font-size: 14px;
-            color: #a0a0b0;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
+            color: #d687a4;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
         }
 
-        /* 技能标签 */
+        /* 技能标签：气泡感 */
         .skills {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 35px;
         }
         .skill-tag {
-            font-size: 12px;
-            padding: 6px 15px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #d1d1d1;
+            font-size: 13px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            background: #fff;
+            border: 2px solid #ffe1e9;
+            color: #ff8b94;
+            font-weight: 700;
             transition: all 0.3s ease;
             cursor: default;
         }
         .skill-tag:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #00d2ff;
+            background: #ff6f91;
             color: #fff;
-            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
-            transform: translateY(-2px);
+            transform: scale(1.1) rotate(-3deg);
+            box-shadow: 0 5px 15px rgba(255, 111, 145, 0.3);
         }
 
         /* 互动按钮 */
         .actions {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             justify-content: center;
         }
         .btn {
-            padding: 12px 24px;
-            border-radius: 30px;
+            padding: 14px 30px;
+            border-radius: 35px;
             border: none;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 900;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 1px;
         }
         .btn-primary {
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            background: #ff6f91;
             color: white;
-            box-shadow: 0 5px 15px rgba(255, 0, 204, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 111, 145, 0.4);
         }
         .btn-primary:hover {
-            box-shadow: 0 8px 25px rgba(255, 0, 204, 0.6);
-            transform: scale(1.05);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 111, 145, 0.6);
         }
         .btn-secondary {
-            background: transparent;
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: white;
+            color: #ff6f91;
+            border: 2px solid #ff6f91;
         }
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: #fff;
+            background: #fff0f5;
+            transform: translateY(-5px);
+        }
+
+        /* 点击贴图样式 */
+        .touhou-sticker {
+            position: absolute;
+            width: 80px; 
+            height: 80px;
+            pointer-events: none; 
+            z-index: 999;
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            filter: drop-shadow(0 5px 10px rgba(255, 182, 193, 0.5));
         }
 
     </style>
 </head>
 <body>
 
-    <!-- Canvas 星空背景 -->
     <canvas id="canvas-bg"></canvas>
 
-    <!-- 氛围光晕 -->
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
 
-    <!-- 前景展示卡片 -->
     <div class="glass-card">
         <div class="avatar">
-            <!-- 使用了Unsplash的免费高质量抽象图片作为演示头像 -->
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=256&auto=format&fit=crop" alt="Profile Avatar">
+            <!-- 默认一张可爱的博丽灵梦头像 -->
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Y64vG7F4B-37q_G_1W-7Xyv4M7rEaJ93Mw&s" alt="Reimu Avatar">
         </div>
-        <h1 class="name">Nebula Walker</h1>
-        <p class="title">CREATIVE DEVELOPER & DESIGNER</p>
+        <h1 class="name">Reimu Hakurei</h1>
+        <p class="title">博丽神社的乐园巫女 ✨</p>
         
         <div class="skills">
-            <span class="skill-tag">UI/UX</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">Three.js</span>
-            <span class="skill-tag">WebGL</span>
-            <span class="skill-tag">CSS3</span>
+            <span class="skill-tag">退治妖怪</span>
+            <span class="skill-tag">梦想天生</span>
+            <span class="skill-tag">收集香火</span>
+            <span class="skill-tag">空中飞行</span>
         </div>
 
         <div class="actions">
-            <button class="btn btn-primary">探索作品</button>
-            <button class="btn btn-secondary">联系我</button>
+            <button class="btn btn-primary">进入神社</button>
+            <button class="btn btn-secondary">供奉香火</button>
         </div>
     </div>
 
-    <!-- 粒子特效脚本 -->
     <script>
+        // ==== 背景：樱花飘落效果 ====
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let particles = [];
-        
-        // 鼠标位置
-        let mouse = { x: null, y: null };
+        let width, height, petals = [];
 
-        // 监听鼠标移动
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
-        
-        // 鼠标移出重置
-        window.addEventListener('mouseout', () => {
-            mouse.x = null;
-            mouse.y = null;
-        });
-
-        // 初始化Canvas大小
         function initCanvas() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
         }
 
-        // 粒子类
-        class Particle {
+        class Petal {
             constructor() {
                 this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.size = Math.random() * 2 + 0.5; // 粒子大小
-                this.speedX = Math.random() * 1 - 0.5; // 水平速度
-                this.speedY = Math.random() * 1 - 0.5; // 垂直速度
-                this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.1})`;
+                this.y = Math.random() * height - height;
+                this.size = Math.random() * 5 + 5;
+                this.speedX = Math.random() * 2 + 1;
+                this.speedY = Math.random() * 1.5 + 1;
+                this.angle = Math.random() * 360;
+                this.spin = Math.random() * 0.2 - 0.1;
+                this.opacity = Math.random() * 0.5 + 0.3;
             }
-
             update() {
-                this.x += this.speedX;
                 this.y += this.speedY;
-
-                // 边缘检测与反弹
-                if (this.x > width || this.x < 0) this.speedX *= -1;
-                if (this.y > height || this.y < 0) this.speedY *= -1;
+                this.x += Math.sin(this.y / 50) * this.speedX;
+                this.angle += this.spin;
+                if (this.y > height) {
+                    this.y = -20;
+                    this.x = Math.random() * width;
+                }
             }
-
             draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
+                // 绘制一个简单的花瓣形状
+                ctx.ellipse(0, 0, this.size, this.size/1.5, 0, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 192, 203, ${this.opacity})`;
                 ctx.fill();
+                ctx.restore();
             }
         }
 
-        // 创建粒子群
-        function initParticles() {
-            particles = [];
-            // 根据屏幕大小计算粒子数量
-            let particleCount = (width * height) / 9000;
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
+        function setupPetals() {
+            petals = [];
+            for (let i = 0; i < 60; i++) petals.push(new Petal());
         }
 
-        // 绘制粒子之间的连线（星座连线效果）
-        function connectParticles() {
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dx = particles[a].x - particles[b].x;
-                    let dy = particles[a].y - particles[b].y;
-                    let distance = dx * dx + dy * dy;
-
-                    // 粒子之间距离近时连线
-                    if (distance < 10000) {
-                        let opacity = 1 - (distance / 10000);
-                        ctx.strokeStyle = `rgba(0, 210, 255, ${opacity * 0.2})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
-                    }
-                }
-                
-                // 鼠标与粒子的交互连线
-                if (mouse.x && mouse.y) {
-                    let dxMouse = particles[a].x - mouse.x;
-                    let dyMouse = particles[a].y - mouse.y;
-                    let distanceMouse = dxMouse * dxMouse + dyMouse * dyMouse;
-                    
-                    if (distanceMouse < 20000) {
-                        let opacityMouse = 1 - (distanceMouse / 20000);
-                        ctx.strokeStyle = `rgba(255, 0, 204, ${opacityMouse * 0.5})`;
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(mouse.x, mouse.y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        // 动画主循环
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-            connectParticles();
+            petals.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
 
-        // 窗口尺寸改变时重新初始化
-        window.addEventListener('resize', () => {
-            initCanvas();
-            initParticles();
-        });
-
-        // 启动
+        window.addEventListener('resize', () => { initCanvas(); setupPetals(); });
         initCanvas();
-        initParticles();
+        setupPetals();
         animate();
+
+        // ==== 交互：点击生成东方贴图 ====
+        const stickers = [
+            'https://media.tenor.com/m50PZ55o1c8AAAAi/reimu-hakurei-touhou.gif', 
+            'https://media.tenor.com/N6uO8wEw2K0AAAAi/marisa-kirisame-touhou.gif'  
+        ];
+
+        document.addEventListener('click', function(e) {
+            if(e.target.tagName.toLowerCase() === 'button') return;
+
+            const img = document.createElement('img');
+            img.src = stickers[Math.floor(Math.random() * stickers.length)];
+            img.className = 'touhou-sticker';
+            img.style.left = (e.pageX - 40) + 'px';
+            img.style.top = (e.pageY - 40) + 'px';
+            const rot = (Math.random() - 0.5) * 40; 
+            img.style.transform = `rotate(${rot}deg) scale(0)`;
+            document.body.appendChild(img);
+
+            requestAnimationFrame(() => {
+                img.style.transform = `rotate(${rot}deg) scale(1)`;
+                img.style.opacity = '1';
+            });
+
+            setTimeout(() => {
+                img.style.transform = `translateY(-80px) rotate(${rot}deg) scale(0.8)`;
+                img.style.opacity = '0';
+                setTimeout(() => img.remove(), 400); 
+            }, 800); 
+        });
     </script>
 </body>
 </html>
