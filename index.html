@@ -3,196 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rice - 幻想乡入口</title>
+    <title>Rice - 幻想乡入口 (Cute Ver.)</title>
     <style>
-        /* 引入优雅的衬线字体 */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Noto+Serif+SC:wght@700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
 
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Noto Serif SC', serif; 
-            /* 深邃的紫红色背景，类似八云紫的间隙或红魔馆夜空 */
-            background-color: #1a0b16; 
-            color: #fce4ec;
-            overflow: hidden; /* 防止滚动条影响动画 */
+            /* 可爱的动态渐变背景 */
+            background: linear-gradient(-45deg, #ffe6fa, #fff0f5, #ffe4e1, #ffd1dc);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Nunito', 'Noto Serif SC', sans-serif;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            user-select: none; /* 防止双击选中文字影响体验 */
         }
 
-        /* 动态氛围背景光晕 */
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(200, 50, 80, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(100, 50, 150, 0.15) 0%, transparent 50%);
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* 飘落粒子的容器 */
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            animation: float linear infinite;
-        }
-
-        /* 粒子飘落动画（模拟樱花或微小弹幕） */
-        @keyframes float {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* 中心的玻璃拟态卡片 */
+        /* 软萌的白色半透明卡片 */
         .container {
             position: relative;
             z-index: 10;
             text-align: center;
-            background: rgba(40, 20, 35, 0.6);
-            padding: 4rem 6rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 150, 200, 0.2);
-            box-shadow: 0 0 30px rgba(200, 50, 100, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px); /* 毛玻璃效果 */
-            transition: all 0.5s ease;
+            background: rgba(255, 255, 255, 0.65);
+            padding: 3rem 5rem;
+            border-radius: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: floatCard 6s ease-in-out infinite;
         }
 
         .container:hover {
-            box-shadow: 0 0 50px rgba(255, 50, 120, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
-            transform: translateY(-5px);
+            transform: scale(1.05);
         }
 
-        /* 旋转的阴阳玉 */
-        .yinyang {
-            font-size: 4rem;
-            margin-bottom: 0.5rem;
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* 可爱的阴阳玉/蝴蝶结装饰 */
+        .icon {
+            font-size: 4.5rem;
+            margin-bottom: 0px;
             display: inline-block;
-            animation: spin 5s linear infinite;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            color: #ffb7c5; /* 樱花粉色 */
-            user-select: none;
+            color: #ff8b94;
+            text-shadow: 0 5px 15px rgba(255, 139, 148, 0.4);
+            animation: bounceIcon 2s infinite;
         }
 
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
+        @keyframes bounceIcon {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px) scale(1.1); }
+            60% { transform: translateY(-10px); }
         }
 
         h1 {
-            font-size: 4rem;
-            margin: 0;
-            letter-spacing: 8px;
-            /* 渐变文字 */
-            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(255,154,158,0.2);
+            font-size: 4.5rem;
+            margin: 10px 0 0 0;
+            color: #ff6f91;
+            letter-spacing: 5px;
+            text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(255, 111, 145, 0.3);
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            margin-top: 15px;
-            color: #d8b4e2; /* 淡紫色 */
-            letter-spacing: 4px;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            color: #d687a4;
+            font-weight: bold;
+            letter-spacing: 3px;
         }
 
-        /* 底部链接按钮 */
+        /* 唯一的进入按钮 */
         .links {
-            margin-top: 40px;
+            margin-top: 35px;
         }
 
         .links a {
             display: inline-block;
+            background: #ff6f91;
             color: #fff;
             text-decoration: none;
-            margin: 0 15px;
-            padding: 10px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            font-size: 1.1rem;
-            transition: all 0.3s;
+            padding: 12px 45px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 20px rgba(255, 111, 145, 0.4);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             overflow: hidden;
-            letter-spacing: 1px;
-        }
-
-        .links a::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.4s;
-        }
-
-        .links a:hover::before {
-            left: 100%;
         }
 
         .links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #ffb7c5;
-            color: #ffb7c5;
-            box-shadow: 0 0 15px rgba(255, 183, 197, 0.4);
+            background: #ff8b94;
+            box-shadow: 0 12px 25px rgba(255, 139, 148, 0.6);
+            transform: translateY(-3px);
         }
+
+        .links a:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 10px rgba(255, 111, 145, 0.4);
+        }
+
+        /* ==== 贴图的 CSS ==== */
+        .touhou-sticker {
+            position: absolute;
+            width: 80px; /* 贴图大小 */
+            height: 80px;
+            pointer-events: none; /* 贴图不能被点击，以免挡住网页 */
+            z-index: 999;
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15));
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="background"></div>
-    <div class="particles" id="particles"></div>
-
     <div class="container">
-        <div class="yinyang">☯</div>
+        <!-- 你也可以把这里的 ☯ 换成 🎀 或者 🌸 -->
+        <div class="icon">☯</div>
         <h1>rice</h1>
-        <div class="subtitle">—— 少女祈祷中 ——</div>
+        <div class="subtitle">✨ 少女祈祷中 ✨</div>
         
         <div class="links">
             <a href="#">进 入</a>
-            <a href="https://github.com/Fuiomk/rice">源 码</a>
         </div>
     </div>
 
     <script>
-        // 生成飘落的粒子（模拟樱花/弹幕）
-        const particleContainer = document.getElementById('particles');
-        const particleCount = 40; // 粒子数量
+        // ==== 贴图生成逻辑 ====
+        
+        // 准备好的灵梦和魔理沙的可爱 GIF 动图 (从 Tenor 借用的 Q版图)
+        const stickers = [
+            'https://media.tenor.com/m50PZ55o1c8AAAAi/reimu-hakurei-touhou.gif', // 灵梦
+            'https://media.tenor.com/N6uO8wEw2K0AAAAi/marisa-kirisame-touhou.gif'  // 魔理沙
+        ];
 
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // 随机大小、位置、动画时长、延迟
-            const size = Math.random() * 6 + 3 + 'px';
-            particle.style.width = size;
-            particle.style.height = size;
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.animationDuration = Math.random() * 12 + 6 + 's';
-            particle.style.animationDelay = Math.random() * 5 + 's';
-            
-            // 随机颜色 (偏粉/紫/白，充满幻想乡气息)
-            const colors = [
-                'rgba(255, 183, 197, 0.6)', // 樱花粉
-                'rgba(216, 180, 226, 0.6)', // 桔梗紫
-                'rgba(255, 255, 255, 0.4)'  // 星光白
-            ];
-            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        // 监听整个网页的点击事件
+        document.addEventListener('click', function(e) {
+            // 如果点击的是按钮，就不生成贴图，以免干扰跳转
+            if(e.target.tagName.toLowerCase() === 'a') return;
 
-            particleContainer.appendChild(particle);
-        }
+            // 创建一个 img 标签
+            const img = document.createElement('img');
+            
+            // 随机抽取一张贴图
+            const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
+            img.src = randomSticker;
+            img.className = 'touhou-sticker';
+
+            // 设置贴图的初始位置在鼠标点击的地方 (减去 40 是为了让鼠标在图片中心)
+            img.style.left = (e.pageX - 40) + 'px';
+            img.style.top = (e.pageY - 40) + 'px';
+
+            // 给贴图一个随机的轻微旋转角度
+            const rot = (Math.random() - 0.5) * 40; 
+            img.style.transform = `rotate(${rot}deg) scale(0)`;
+
+            // 把贴图加到网页里
+            document.body.appendChild(img);
+
+            // 动画第一阶段：弹出显示
+            requestAnimationFrame(() => {
+                img.style.transform = `rotate(${rot}deg) scale(1)`;
+                img.style.opacity = '1';
+            });
+
+            // 动画第二阶段：向上飘走并消失，最后把元素删掉
+            setTimeout(() => {
+                img.style.transform = `translateY(-80px) rotate(${rot}deg) scale(0.8)`;
+                img.style.opacity = '0';
+                
+                // 等待淡出动画结束后，从页面中移除这个 img 元素
+                setTimeout(() => {
+                    img.remove();
+                }, 400); 
+            }, 800); // 贴图停留 0.8 秒后开始消失
+        });
     </script>
 </body>
 </html>
