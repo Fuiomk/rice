@@ -1,533 +1,441 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<title>fuiomk @ BNE</title>
-
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-<style>
-:root{
-    --bg:#0b0c10;
-    --panel:#12131a;
-    --panel2:#181a22;
-    --border:rgba(255,255,255,.06);
-
-    --text:#f5f7ff;
-    --muted:#7f849c;
-
-    --purple:#7F52FF;
-    --green:#50fa7b;
-    --cyan:#8be9fd;
-    --yellow:#f1fa8c;
-    --red:#ff5555;
-
-    --shadow:
-        0 0 0 1px rgba(255,255,255,.03),
-        0 25px 80px rgba(0,0,0,.7);
-
-    --font:'JetBrains Mono', monospace;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    min-height:100vh;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    padding:40px;
-
-    font-family:var(--font);
-    color:var(--text);
-
-    background:
-        radial-gradient(circle at top left, rgba(127,82,255,.18), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(80,250,123,.08), transparent 25%),
-        radial-gradient(circle at center, rgba(139,233,253,.05), transparent 40%),
-        var(--bg);
-
-    overflow-x:hidden;
-}
-
-/* ambient */
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-
-    background-image:
-        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
-
-    background-size:40px 40px;
-
-    pointer-events:none;
-}
-
-/* ========================= */
-
-.terminal-window{
-    width:1180px;
-    max-width:100%;
-
-    border-radius:22px;
-
-    overflow:hidden;
-
-    backdrop-filter:blur(18px);
-
-    background:rgba(18,19,26,.82);
-
-    border:1px solid var(--border);
-
-    box-shadow:var(--shadow);
-
-    animation:float 7s ease-in-out infinite;
-}
-
-@keyframes float{
-    0%,100%{
-        transform:translateY(0px);
-    }
-    50%{
-        transform:translateY(-6px);
-    }
-}
-
-/* ========================= */
-
-.window-header{
-    height:58px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 20px;
-
-    background:rgba(255,255,255,.02);
-
-    border-bottom:1px solid var(--border);
-}
-
-.window-controls{
-    display:flex;
-    gap:10px;
-}
-
-.control-dot{
-    width:12px;
-    height:12px;
-    border-radius:50%;
-}
-
-.red{background:var(--red);}
-.yellow{background:var(--yellow);}
-.green{background:var(--green);}
-
-.window-title{
-    color:var(--muted);
-    font-size:13px;
-}
-
-.header-right{
-    color:var(--purple);
-    font-size:12px;
-}
-
-/* ========================= */
-
-.window-body{
-    display:flex;
-    min-height:720px;
-}
-
-/* ========================= */
-/* LEFT */
-/* ========================= */
-
-.left{
-    width:360px;
-
-    border-right:1px solid var(--border);
-
-    padding:38px 32px;
-
-    background:linear-gradient(
-        to bottom,
-        rgba(255,255,255,.01),
-        transparent
-    );
-}
-
-.avatar{
-    width:170px;
-    height:170px;
-
-    border-radius:24px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    margin-bottom:30px;
-
-    border:1px solid rgba(255,255,255,.08);
-
-    background:#1d1f29;
-}
-
-.avatar::before{
-    content:"";
-
-    position:absolute;
-    inset:-2px;
-
-    background:linear-gradient(
-        45deg,
-        var(--purple),
-        var(--green),
-        var(--cyan)
-    );
-
-    z-index:-1;
-
-    filter:blur(25px);
-
-    opacity:.45;
-}
-
-.avatar img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.identity{
-    margin-bottom:28px;
-}
-
-.name{
-    font-size:28px;
-    font-weight:700;
-
-    margin-bottom:10px;
-}
-
-.subtitle{
-    color:var(--muted);
-    line-height:1.7;
-    font-size:14px;
-}
-
-.fetch{
-    margin-top:24px;
-}
-
-.fetch-line{
-    margin-bottom:16px;
-
-    font-size:14px;
-
-    display:flex;
-    gap:10px;
-}
-
-.fetch-label{
-    color:var(--cyan);
-    min-width:95px;
-}
-
-.palette{
-    display:flex;
-    gap:8px;
-
-    margin-top:35px;
-}
-
-.palette div{
-    width:28px;
-    height:12px;
-
-    border-radius:999px;
-}
-
-.quote{
-    margin-top:38px;
-
-    padding:18px;
-
-    border-radius:14px;
-
-    background:rgba(255,255,255,.03);
-
-    border:1px solid var(--border);
-
-    line-height:1.8;
-
-    font-size:13px;
-
-    color:var(--muted);
-}
-
-/* ========================= */
-/* RIGHT */
-/* ========================= */
-
-.right{
-    flex:1;
-
-    padding:30px;
-}
-
-/* top status */
-
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    margin-bottom:26px;
-}
-
-.fake-cli{
-    font-size:14px;
-}
-
-.prompt{
-    color:var(--green);
-}
-
-.path{
-    color:var(--purple);
-}
-
-.typing{
-    color:white;
-}
-
-.cursor{
-    display:inline-block;
-
-    width:8px;
-    height:16px;
-
-    background:var(--green);
-
-    margin-left:4px;
-
-    animation:blink 1s infinite;
-}
-
-@keyframes blink{
-    0%,50%{
-        opacity:1;
-    }
-    51%,100%{
-        opacity:0;
-    }
-}
-
-.status-pill{
-    padding:8px 14px;
-
-    border-radius:999px;
-
-    background:rgba(80,250,123,.08);
-
-    border:1px solid rgba(80,250,123,.2);
-
-    color:var(--green);
-
-    font-size:12px;
-}
-
-/* tabs */
-
-.tabs{
-    display:flex;
-    gap:12px;
-
-    margin-bottom:24px;
-}
-
-.tab{
-    border:none;
-
-    padding:12px 18px;
-
-    border-radius:12px;
-
-    background:rgba(255,255,255,.03);
-
-    color:var(--muted);
-
-    font-family:var(--font);
-
-    cursor:pointer;
-
-    transition:.25s;
-}
-
-.tab:hover{
-    transform:translateY(-2px);
-
-    color:white;
-}
-
-.tab.active{
-    color:white;
-
-    background:rgba(127,82,255,.14);
-
-    border:1px solid rgba(127,82,255,.35);
-
-    box-shadow:
-        inset 0 0 18px rgba(127,82,255,.12),
-        0 0 25px rgba(127,82,255,.1);
-}
-
-/* console */
-
-.console{
-    position:relative;
-}
-
-.tab-content{
-    display:none;
-}
-
-.tab-content.active{
-    display:block;
-
-    animation:fade .25s ease;
-}
-
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.code{
-    background:rgba(255,255,255,.025);
-
-    border:1px solid var(--border);
-
-    border-radius:18px;
-
-    padding:28px;
-
-    overflow:auto;
-
-    line-height:2;
-
-    font-size:14px;
-}
-
-/* syntax */
-
-.kw{color:#ff79c6;}
-.fn{color:#50fa7b;}
-.str{color:#f1fa8c;}
-.typ{color:#8be9fd;}
-.cm{color:#6d7390;font-style:italic;}
-
-/* terminal block */
-
-.terminal-box{
-    background:#101117;
-
-    border-radius:18px;
-
-    padding:24px;
-
-    border:1px solid var(--border);
-
-    line-height:2;
-}
-
-/* ascii */
-
-.ascii{
-    color:var(--yellow);
-
-    line-height:1.5;
-
-    font-size:14px;
-}
-
-/* stats */
-
-.stats{
-    margin-top:24px;
-
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:16px;
-}
-
-.stat{
-    background:rgba(255,255,255,.03);
-
-    border:1px solid var(--border);
-
-    padding:20px;
-
-    border-radius:18px;
-}
-
-.stat-title{
-    color:var(--muted);
-    font-size:12px;
-    margin-bottom:10px;
-}
-
-.stat-value{
-    font-size:22px;
-    font-weight:700;
-}
-
-/* mobile */
-
-@media(max-width:980px){
-
-    .window-body{
-        flex-direction:column;
-    }
-
-    .left{
-        width:100%;
-
-        border-right:none;
-        border-bottom:1px solid var(--border);
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-}
-
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fuiomk @ BNE</title>
+    
+    <!-- 优化搜索引擎抓取与社交分享 -->
+    <meta name="description" content="fuiomk's personal workspace - High school student & Kotlin developer" />
+    <link rel="icon" href="../img/intro.png" type="image/png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --bg:#0b0c10;
+            --panel:#12131a;
+            --panel2:#181a22;
+            --border:rgba(255,255,255,.06);
+
+            --text:#f5f7ff;
+            --muted:#7f849c;
+
+            --purple:#7F52FF;
+            --green:#50fa7b;
+            --cyan:#8be9fd;
+            --yellow:#f1fa8c;
+            --red:#ff5555;
+
+            --shadow:
+                0 0 0 1px rgba(255,255,255,.03),
+                0 25px 80px rgba(0,0,0,.7);
+
+            --font:'JetBrains Mono', monospace;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        html{
+            scroll-behavior:smooth;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:40px;
+            font-family:var(--font);
+            color:var(--text);
+
+            background:
+                radial-gradient(circle at top left, rgba(127,82,255,.18), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(80,250,123,.08), transparent 25%),
+                radial-gradient(circle at center, rgba(139,233,253,.05), transparent 40%),
+                var(--bg);
+
+            overflow-x:hidden;
+        }
+
+        /* ambient grid background */
+        body::before{
+            content:"";
+            position:fixed;
+            inset:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+            background-size:40px 40px;
+            pointer-events:none;
+        }
+
+        .terminal-window{
+            width:1180px;
+            max-width:100%;
+            border-radius:22px;
+            overflow:hidden;
+            backdrop-filter:blur(18px);
+            background:rgba(18,19,26,.82);
+            border:1px solid var(--border);
+            box-shadow:var(--shadow);
+            animation:float 7s ease-in-out infinite;
+        }
+
+        @keyframes float{
+            0%,100%{ transform:translateY(0px); }
+            50%{ transform:translateY(-6px); }
+        }
+
+        .window-header{
+            height:58px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:0 20px;
+            background:rgba(255,255,255,.02);
+            border-bottom:1px solid var(--border);
+        }
+
+        .window-controls{
+            display:flex;
+            gap:10px;
+        }
+
+        .control-dot{
+            width:12px;
+            height:12px;
+            border-radius:50%;
+        }
+
+        .red{background:var(--red);}
+        .yellow{background:var(--yellow);}
+        .green{background:var(--green);}
+
+        .window-title{
+            color:var(--muted);
+            font-size:13px;
+        }
+
+        .header-right{
+            color:var(--purple);
+            font-size:12px;
+        }
+
+        .window-body{
+            display:flex;
+            min-height:720px;
+        }
+
+        /* LEFT SIDEBAR */
+        .left{
+            width:360px;
+            border-right:1px solid var(--border);
+            padding:38px 32px;
+            background:linear-gradient(to bottom, rgba(255,255,255,.01), transparent);
+        }
+
+        .avatar{
+            width:170px;
+            height:170px;
+            border-radius:24px;
+            overflow:hidden;
+            position:relative;
+            margin-bottom:30px;
+            border:1px solid rgba(255,255,255,.08);
+            background:#1d1f29;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover{
+            transform: scale(1.02);
+        }
+
+        .avatar::before{
+            content:"";
+            position:absolute;
+            inset:-2px;
+            background:linear-gradient(45deg, var(--purple), var(--green), var(--cyan));
+            z-index:-1;
+            filter:blur(25px);
+            opacity:.45;
+        }
+
+        .avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .identity{
+            margin-bottom:28px;
+        }
+
+        .name{
+            font-size:28px;
+            font-weight:700;
+            margin-bottom:10px;
+        }
+
+        .subtitle{
+            color:var(--muted);
+            line-height:1.7;
+            font-size:14px;
+            margin-bottom: 12px;
+        }
+
+        .bio-cn {
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .fetch{
+            margin-top:24px;
+        }
+
+        .fetch-line{
+            margin-bottom:16px;
+            font-size:14px;
+            display:flex;
+            gap:10px;
+        }
+
+        .fetch-label{
+            color:var(--cyan);
+            min-width:95px;
+        }
+
+        .palette{
+            display:flex;
+            gap:8px;
+            margin-top:35px;
+        }
+
+        .palette div{
+            width:28px;
+            height:12px;
+            border-radius:999px;
+        }
+
+        .quote{
+            margin-top:38px;
+            padding:18px;
+            border-radius:14px;
+            background:rgba(255,255,255,.03);
+            border:1px solid var(--border);
+            line-height:1.8;
+            font-size:13px;
+            color:var(--muted);
+        }
+
+        /* RIGHT MAIN PANEL */
+        .right{
+            flex:1;
+            padding:30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:26px;
+        }
+
+        .fake-cli{
+            font-size:14px;
+        }
+
+        .prompt{color:var(--green);}
+        .path{color:var(--purple);}
+        .typing{color:white;}
+
+        .cursor{
+            display:inline-block;
+            width:8px;
+            height:16px;
+            background:var(--green);
+            margin-left:4px;
+            animation:blink 1s infinite;
+        }
+
+        @keyframes blink{
+            0%,50%{ opacity:1; }
+            51%,100%{ opacity:0; }
+        }
+
+        .status-pill{
+            padding:8px 14px;
+            border-radius:999px;
+            background:rgba(80,250,123,.08);
+            border:1px solid rgba(80,250,123,.2);
+            color:var(--green);
+            font-size:12px;
+        }
+
+        /* Tabs */
+        .tabs{
+            display:flex;
+            gap:12px;
+            margin-bottom:24px;
+            flex-wrap: wrap;
+        }
+
+        .tab{
+            border:none;
+            padding:12px 18px;
+            border-radius:12px;
+            background:rgba(255,255,255,.03);
+            color:var(--muted);
+            font-family:var(--font);
+            cursor:pointer;
+            transition:.25s;
+        }
+
+        .tab:hover{
+            transform:translateY(-2px);
+            color:white;
+        }
+
+        .tab.active{
+            color:white;
+            background:rgba(127,82,255,.14);
+            border:1px solid rgba(127,82,255,.35);
+            box-shadow:
+                inset 0 0 18px rgba(127,82,255,.12),
+                0 0 25px rgba(127,82,255,.1);
+        }
+
+        /* Console Area */
+        .console{
+            position:relative;
+            flex: 1;
+        }
+
+        .tab-content{
+            display:none;
+        }
+
+        .tab-content.active{
+            display:block;
+            animation:fade .25s ease;
+        }
+
+        @keyframes fade{
+            from{ opacity:0; transform:translateY(8px); }
+            to{ opacity:1; transform:translateY(0); }
+        }
+
+        .code{
+            background:rgba(255,255,255,.025);
+            border:1px solid var(--border);
+            border-radius:18px;
+            padding:28px;
+            overflow:auto;
+            line-height:2;
+            font-size:14px;
+        }
+
+        /* Syntax Highlighting */
+        .kw{color:#ff79c6;}
+        .fn{color:#50fa7b;}
+        .str{color:#f1fa8c;}
+        .typ{color:#8be9fd;}
+        .cm{color:#6d7390;font-style:italic;}
+
+        .terminal-box{
+            background:#101117;
+            border-radius:18px;
+            padding:24px;
+            border:1px solid var(--border);
+            line-height:2;
+            overflow: auto;
+        }
+
+        .ascii{
+            color:var(--yellow);
+            line-height:1.5;
+            font-size:14px;
+            overflow-x: auto;
+        }
+
+        .stats{
+            margin-top:24px;
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:16px;
+        }
+
+        .stat{
+            background:rgba(255,255,255,.03);
+            border:1px solid var(--border);
+            padding:20px;
+            border-radius:18px;
+        }
+
+        .stat-title{
+            color:var(--muted);
+            font-size:12px;
+            margin-bottom:10px;
+        }
+
+        .stat-value{
+            font-size:22px;
+            font-weight:700;
+        }
+
+        /* Responsive design */
+        @media(max-width:980px){
+            body{
+                padding: 15px;
+            }
+
+            .window-body{
+                flex-direction:column;
+            }
+
+            .left{
+                width:100%;
+                border-right:none;
+                border-bottom:1px solid var(--border);
+                padding: 30px 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .avatar{
+                width: 130px;
+                height: 130px;
+                margin-bottom: 20px;
+            }
+
+            .fetch{
+                width: 100%;
+                max-width: 300px;
+                text-align: left;
+            }
+
+            .palette{
+                justify-content: center;
+            }
+
+            .right{
+                padding: 20px;
+            }
+
+            .stats{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -536,7 +444,6 @@ body::before{
 
     <!-- HEADER -->
     <div class="window-header">
-
         <div class="window-controls">
             <div class="control-dot red"></div>
             <div class="control-dot yellow"></div>
@@ -550,67 +457,58 @@ body::before{
         <div class="header-right">
             Kotlin • JetBrains • Backend
         </div>
-
     </div>
 
     <!-- BODY -->
     <div class="window-body">
 
-        <!-- LEFT -->
+        <!-- LEFT PANEL -->
         <div class="left">
-
             <div class="avatar">
-                <img src="../img/intro.png">
+                <img src="../img/intro.png" alt="Avatar">
             </div>
 
             <div class="identity">
                 <div class="name">fuiomk</div>
-
                 <div class="subtitle">
                     High school student.<br>
                     Building things with Kotlin, Spring Boot and terminal aesthetics.
                 </div>
+                <div class="bio-cn">
+                    一个来自中国的高中生，热爱编程，喜欢用Kotlin和SpringBoot构建项目。
+                    最近感觉vibe coding好爽
+                </div>       
             </div>
 
             <div class="fetch">
-
                 <div class="fetch-line">
                     <span class="fetch-label">OS</span>
                     <span>Windows && Linux</span>
                 </div>
-
                 <div class="fetch-line">
                     <span class="fetch-label">IDE</span>
                     <span>IntelliJ IDEA</span>
                 </div>
-
                 <div class="fetch-line">
                     <span class="fetch-label">Stack</span>
                     <span>KMP / Spring Boot</span>
                 </div>
-
                 <div class="fetch-line">
                     <span class="fetch-label">Focus</span>
                     <span>Backend & Systems</span>
                 </div>
-
                 <div class="fetch-line">
                     <span class="fetch-label">Currently</span>
                     <span>Grinding Kotlin</span>
                 </div>
-
                 <div class="fetch-line">
                     <span class="fetch-label">Location</span>
                     <span>BNE</span>
                 </div>
-
                 <div class="fetch-line">
                     <span class="fetch-label">Status</span>
-                    <span style="color: var(--green)">
-                        ● Online
-                    </span>
+                    <span style="color: var(--green)">● Online</span>
                 </div>
-
             </div>
 
             <div class="palette">
@@ -624,62 +522,38 @@ body::before{
 
             <div class="quote">
                 ❯ “Done is better than perfect.”<br><br>
-
-                I enjoy terminal ricing, clean UI,
-                backend development and turning weird ideas into actual projects.
+                I enjoy terminal ricing, clean UI, backend development and turning weird ideas into actual projects.
             </div>
-
         </div>
 
-        <!-- RIGHT -->
+        <!-- RIGHT PANEL -->
         <div class="right">
 
-            <!-- top -->
+            <!-- Top CLI Simulation -->
             <div class="topbar">
-
                 <div class="fake-cli">
                     <span class="prompt">❯</span>
                     <span class="path">~/workspace</span>
-                    <span class="typing" id="command-text">
-                        cat about.kt
-                    </span>
+                    <span class="typing" id="command-text">cat about.kt</span>
                     <span class="cursor"></span>
                 </div>
-
-                <div class="status-pill">
-                    ACTIVE LEARNING
-                </div>
-
+                <div class="status-pill">ACTIVE LEARNING</div>
             </div>
 
-            <!-- tabs -->
+            <!-- Tabs Navigation -->
             <div class="tabs">
-
-                <button class="tab active" onclick="switchTab(event,'about')">
-                    about.kt
-                </button>
-
-                <button class="tab" onclick="switchTab(event,'stack')">
-                    build.gradle.kts
-                </button>
-
-                <button class="tab" onclick="switchTab(event,'motto')">
-                    motto.txt
-                </button>
-
-                <button class="tab" onclick="switchTab(event,'think')">
-                    thoughts.txt
-                </button>
-
+                <button class="tab active" onclick="switchTab(event,'about')">about.kt</button>
+                <button class="tab" onclick="switchTab(event,'stack')">build.gradle.kts</button>
+                <button class="tab" onclick="switchTab(event,'motto')">motto.txt</button>
+                <button class="tab" onclick="switchTab(event,'think')">thoughts.txt</button>
             </div>
 
-            <!-- content -->
+            <!-- Console Content Container -->
             <div class="console">
 
-                <!-- about -->
+                <!-- 1. About Tab -->
                 <div class="tab-content active" id="about">
-
-<pre class="code"><span class="kw">data class</span> <span class="typ">Developer</span>(
+                    <pre class="code"><span class="kw">data class</span> <span class="typ">Developer</span>(
     <span class="kw">val</span> name: String,
     <span class="kw">val</span> age: Int,
     <span class="kw">val</span> mainStack: List&lt;String&gt;,
@@ -687,89 +561,57 @@ body::before{
 )
 
 <span class="kw">fun</span> <span class="fn">main</span>() {
-
     <span class="kw">val</span> me = Developer(
         name = <span class="str">"fuiomk"</span>,
         age = 17,
-
         mainStack = listOf(
             <span class="str">"Kotlin"</span>,
             <span class="str">"Spring Boot"</span>,
             <span class="str">"Compose Multiplatform"</span>
         ),
-
         philosophy = <span class="str">"Done is better than perfect."</span>
     )
 
     <span class="kw">while</span>(alive) {
-
         grind(<span class="str">"Kotlin"</span>)
         build(<span class="str">"Projects"</span>)
         chase(<span class="str">"Target University"</span>)
-
         <span class="cm">// keep moving forward</span>
     }
 }</pre>
 
                     <div class="stats">
-
                         <div class="stat">
-                            <div class="stat-title">
-                                MAIN LANGUAGE
-                            </div>
-
-                            <div class="stat-value">
-                                Kotlin
-                            </div>
+                            <div class="stat-title">MAIN LANGUAGE</div>
+                            <div class="stat-value">Kotlin</div>
                         </div>
-
                         <div class="stat">
-                            <div class="stat-title">
-                                CURRENT TARGET
-                            </div>
-
-                            <div class="stat-value">
-                                University
-                            </div>
+                            <div class="stat-title">CURRENT TARGET</div>
+                            <div class="stat-value">University</div>
                         </div>
-
                         <div class="stat">
-                            <div class="stat-title">
-                                FAVORITE TOOL
-                            </div>
-
-                            <div class="stat-value">
-                                IntelliJ
-                            </div>
+                            <div class="stat-title">FAVORITE TOOL</div>
+                            <div class="stat-value">IntelliJ</div>
                         </div>
-
                     </div>
-
                 </div>
 
-                <!-- stack -->
+                <!-- 2. Build Gradle Tab -->
                 <div class="tab-content" id="stack">
-
-<pre class="code">plugins {
+                    <pre class="code">plugins {
     kotlin(<span class="str">"multiplatform"</span>) version <span class="str">"2.0.0"</span>
-
     id(<span class="str">"org.springframework.boot"</span>)
-    id(<span class="str">"org.jetbrains.compose"</span>)
+    id("org.jetbrains.compose")
 }
 
 kotlin {
-
     androidTarget()
-
     jvm(<span class="str">"desktop"</span>)
 
     sourceSets {
-
         <span class="kw">val</span> commonMain <span class="kw">by</span> getting {
             dependencies {
-
                 implementation(compose.runtime)
-
                 implementation(
                     <span class="str">"org.jetbrains.kotlinx:kotlinx-coroutines-core"</span>
                 )
@@ -777,13 +619,10 @@ kotlin {
         }
 
         <span class="kw">val</span> jvmMain <span class="kw">by</span> getting {
-
             dependencies {
-
                 implementation(
                     <span class="str">"org.springframework.boot:spring-boot-starter-web"</span>
                 )
-
                 implementation(
                     <span class="str">"org.springframework.boot:spring-boot-starter-data-jpa"</span>
                 )
@@ -791,42 +630,27 @@ kotlin {
         }
     }
 }</pre>
-
                 </div>
 
-                <!-- motto -->
+                <!-- 3. Motto Tab -->
                 <div class="tab-content" id="motto">
-
-<div class="terminal-box">
-
-<pre class="ascii">
+                    <div class="terminal-box">
+                        <pre class="ascii">
  ____                        _ 
 |  _ \  ___  _ __   ___     | |
 | | | |/ _ \| '_ \ / _ \    | |
 | |_| | (_) | | | |  __/    |_|
 |____/ \___/|_| |_|\___|    (_)
-
-</pre>
-
-<div style="margin-top:20px;line-height:2;color:#fff">
-❯ Done is better than perfect.<br>
-❯ 能通就行。<br>
-❯ Keep building.
-</div>
-
-</div>
-
+                        </pre>
+                        <div style="margin-top:20px;line-height:2;color:#fff">
+                            ❯ Done is better than perfect.<br>
+                            ❯ 能通就行。<br>
+                            ❯ Keep building.
+                        </div>
+                    </div>
                 </div>
 
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!-- think -->
+                <!-- 4. Thoughts Tab (Bug Fixed: Moved inside .console) -->
                 <div class="tab-content" id="think">
                     <div class="terminal-box" style="border-left: 4px solid var(--purple);">
                         <div style="margin-bottom: 20px;">
@@ -835,44 +659,44 @@ kotlin {
 
                         <div style="margin-bottom: 25px;">
                             <div style="color: var(--muted); font-size: 12px;">[ 2024-05-20 23:15:04 ]</div>
-                            <div style="color: var(--cyan); margin-top: 5px;">❯ 关于学校</div>
+                            
+                            <div style="color: var(--cyan); margin-top: 15px;">❯ 关于学校</div>
                             <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
                                 在我看来，我们学校是全世界最垃圾的学校。<br>
                                 教学质量一般，无法填补城乡之间的差距。<br>
-                                学校的伙食也是一大问题，有人吃出虫子，存在很多问题<br>
+                                学校的伙食也是一大问题，有人吃出虫子，存在很多问题。<br>
                                 我想学校应该支持我们吃外送，😁😁<br>
-                                这样我们才能吃得好，吃得健康，吃得开心！<br>
+                                这样我们才能吃得好，吃得健康，吃得开心！
+                            </div>
 
-                            </div>
-                            <div style="color: var(--cyan); margin-top: 5px;">❯ 关于教师</div>
+                            <div style="color: var(--cyan); margin-top: 15px;">❯ 关于教师</div>
                             <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
-                                莫过于无语的就是信息老师，居然教人先开主机还是显示器，我只能说放在二十年前适用，ATX接口对比AT接口不知道迭代了多少次。
-                                特别喜欢刷自己的存在感，喜欢在课堂上说一些和课程无关的话题，喜欢在课堂上讲一些过时的技术，喜欢在课堂上讲一些不实用的技术，比如怎么ping,ifconfig之类的，喜欢在课堂上讲一些过于简单的技术。
-                                我承认当代人生活在了icon时代，不过也确实手机确实可以解决大部分问题，电脑于他们而言并不是必需品，甚至手机厂商都在不让用户接触文件系统,网络设置等，以至于他们根本无法理解这些东西。<br>
+                                莫过于无语的就是信息老师，居然教人先开主机还是显示器，我只能说放在二十年前适用，ATX接口对比AT接口不知道迭代了多少次。<br>
+                                特别喜欢刷自己的存在感，喜欢在课堂上说一些和课程无关的话题，喜欢在课堂上讲一些过时的技术，比如怎么ping, ifconfig之类的，或者是过于简单的技术。<br>
+                                我承认当代人生活在了 icon 时代，手机确实可以解决大部分问题，电脑于他们而言并不是必需品。甚至手机厂商都在阻止用户接触文件系统、网络设置等，以至于他们根本无法理解这些东西。<br>
                                 <br>
-                                最喜欢的莫过于语文老师亮哥了，每次都可以水课<br>
+                                最喜欢的莫过于语文老师亮哥了，每次都可以水课。
                             </div>
-                            <div style="color: var(--cyan); margin-top: 5px;">❯ 关于朋友</div>
+
+                            <div style="color: var(--cyan); margin-top: 15px;">❯ 关于朋友</div>
                             <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
-                                朋友这个东西，感觉很难说清楚，感觉也很难定义。<br>
+                                朋友这个东西，感觉很难说清楚，也很难定义。<br>
                                 可能是因为我比较内向的性格，我并不是很能开得起玩笑的人，有时候一句话会让我记很久的.....。<br>
                                 不过我觉得朋友这个东西，还是挺好的，有个朋友可以一起吃个饭，一起聊个天，一起玩个游戏什么的，感觉还是挺不错的。<br>
-                                当然了，朋友这个东西，也不是必须的，我觉得一个人过得好好的，也挺好的。<br>
-                        </div>
-                        <div style="color: var(--cyan); margin-top: 5px;">❯ 关于我自己</div>
-                        <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
-                            感觉自己十分容易陷入虚无主义的漩涡里，感觉自己做什么事情都没有意义，感觉自己好像也没有什么目标一样的。<br>
-                            我为什么要学习习编程呢？我为什么要学习这些技术呢？我为什么要追求这些目标呢？感觉自己好像也没有什么特别想要的东西了。
-                            为什么要考大学？考了个双非有什么用？出来了能找到什么工作？<br>
-                            有时候搞不清做这些的意义在哪里，像是生活在推着自己前进的机器里一样，感觉自己好像也没有什么选择了。<br>
+                                当然了，朋友这个东西，也不是必须的，我觉得一个人过得好好的，也挺好的。
+                            </div>
 
+                            <div style="color: var(--cyan); margin-top: 15px;">❯ 关于我自己</div>
+                            <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
+                                感觉自己十分容易陷入虚无主义的漩涡里，感觉自己做什么事情都没有意义，感觉自己好像也没有什么目标一样的。<br>
+                                我为什么要学习编程呢？我为什么要学习这些技术呢？我为什么要追求这些目标呢？感觉自己好像也没有什么特别想要的东西了。<br>
+                                为什么要考大学？考了个双非有什么用？出来了能找到什么工作？<br>
+                                有时候搞不清做这些的意义在哪里，像是生活在推着自己前进的机器里一样，感觉自己好像也没有什么选择了。
+                            </div>
+
+                            <div style="color: var(--cyan); margin-top: 15px;">❯ </div>
+                            <div style="margin-top: 8px; color: var(--muted);">未完待续。。。。</div>
                         </div>
-                            <div style="color: var(--cyan); margin-top: 5px;">❯  </div>
-                        未完待续。。。。
-                        </div>
-                    
-                           
-                
 
                         <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 15px;">
                             <span class="cursor"></span> <span style="color: var(--muted)">Waiting for new inspiration...</span>
@@ -880,8 +704,15 @@ kotlin {
                     </div>
                 </div>
 
-<script>
+            </div> <!-- /console -->
 
+        </div> <!-- /right -->
+
+    </div> <!-- /window-body -->
+
+</div> <!-- /terminal-window -->
+
+<script>
 const commandMap = {
     about: "cat about.kt",
     stack: "cat build.gradle.kts",
@@ -890,7 +721,6 @@ const commandMap = {
 };
 
 function switchTab(event, tab){
-
     document.querySelectorAll(".tab")
         .forEach(btn => btn.classList.remove("active"));
 
@@ -907,17 +737,11 @@ function switchTab(event, tab){
     let i = 0;
 
     function type(){
-
         if(i < command.length){
-
             commandText.textContent += command.charAt(i);
-
             i++;
-
             setTimeout(type, 25);
-
         }else{
-
             document.getElementById(tab)
                 .classList.add("active");
         }
@@ -925,7 +749,6 @@ function switchTab(event, tab){
 
     type();
 }
-
 </script>
 
 </body>
