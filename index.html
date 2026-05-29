@@ -1,187 +1,713 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ciallo - 幻想乡入口 </title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&family=Noto+Serif+SC:wght@700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幻想乡 · Dream Gate</title>
 
-        * {
-            box-sizing: border-box;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background: linear-gradient(-45deg, #ffe6fa, #fff0f5, #ffe4e1, #ffd1dc);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Nunito', 'Noto Serif SC', sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+:root{
+    --pink:#ff9ecb;
+    --pink2:#ff6fa9;
+    --purple:#b88cff;
+    --cyan:#89f7ff;
+    --glass:rgba(255,255,255,0.12);
+    --glass-border:rgba(255,255,255,0.24);
+}
 
-        .container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.65);
-            padding: 3rem 5rem;
-            border-radius: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: floatCard 6s ease-in-out infinite;
-        }
+html,body{
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+    font-family:'Nunito','Noto Sans SC',sans-serif;
+    background:#090311;
+    color:white;
+}
 
-        .container:hover {
-            transform: scale(1.05);
-        }
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at 20% 20%, rgba(255,120,180,.35), transparent 25%),
+    radial-gradient(circle at 80% 30%, rgba(137,247,255,.25), transparent 25%),
+    radial-gradient(circle at 50% 80%, rgba(184,140,255,.30), transparent 30%),
+    linear-gradient(135deg,#12051f,#1f0d30,#090311);
+    z-index:-5;
+    animation:bgMove 18s linear infinite alternate;
+}
 
-        @keyframes floatCard {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+@keyframes bgMove{
+    from{
+        filter:hue-rotate(0deg);
+        transform:scale(1);
+    }
+    to{
+        filter:hue-rotate(20deg);
+        transform:scale(1.08);
+    }
+}
 
-        .icon {
-            font-size: 4.5rem;
-            margin-bottom: 0px;
-            display: inline-block;
-            color: #ff8b94;
-            text-shadow: 0 5px 15px rgba(255, 139, 148, 0.4);
-            animation: bounceIcon 2s infinite;
-        }
+.mouse-light{
+    position:fixed;
+    width:400px;
+    height:400px;
+    border-radius:50%;
+    pointer-events:none;
+    background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);
+    transform:translate(-50%,-50%);
+    mix-blend-mode:screen;
+    z-index:1;
+}
 
-        @keyframes bounceIcon {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-20px) scale(1.1); }
-            60% { transform: translateY(-10px); }
-        }
+.blob{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:.5;
+    z-index:-1;
+    animation:blobFloat 12s ease-in-out infinite alternate;
+}
 
-        h1 {
-            font-size: 4.5rem;
-            margin: 10px 0 0 0;
-            color: #ff6f91;
-            letter-spacing: 5px;
-            text-shadow: 3px 3px 0px #fff, 5px 5px 15px rgba(255, 111, 145, 0.3);
-        }
+.blob1{
+    width:320px;
+    height:320px;
+    background:#ff69b4;
+    top:-100px;
+    left:-60px;
+}
 
-        .subtitle {
-            font-size: 1.1rem;
-            margin-top: 10px;
-            color: #d687a4;
-            font-weight: bold;
-            letter-spacing: 3px;
-        }
+.blob2{
+    width:300px;
+    height:300px;
+    background:#7a5cff;
+    bottom:-120px;
+    right:-50px;
+    animation-delay:2s;
+}
 
-        .links {
-            margin-top: 35px;
-        }
+.blob3{
+    width:250px;
+    height:250px;
+    background:#68eaff;
+    top:45%;
+    left:60%;
+    animation-delay:5s;
+}
 
-        .links a {
-            display: inline-block;
-            background: #ff6f91;
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 45px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            box-shadow: 0 8px 20px rgba(255, 111, 145, 0.4);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-        }
+@keyframes blobFloat{
+    0%{
+        transform:translateY(0) translateX(0) scale(1);
+    }
+    100%{
+        transform:translateY(-40px) translateX(30px) scale(1.2);
+    }
+}
 
-        .links a:hover {
-            background: #ff8b94;
-            box-shadow: 0 12px 25px rgba(255, 139, 148, 0.6);
-            transform: translateY(-3px);
-        }
+.sparkles{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+}
 
-        .links a:active {
-            transform: translateY(2px);
-            box-shadow: 0 4px 10px rgba(255, 111, 145, 0.4);
-        }
+.sparkle{
+    position:absolute;
+    width:4px;
+    height:4px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 0 12px white;
+    opacity:.7;
+    animation:twinkle linear infinite;
+}
 
-        .touhou-sticker {
-            position: absolute;
-            width: 80px; 
-            height: 80px;
-            pointer-events: none; 
-            z-index: 999;
-            opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15));
-        }
+@keyframes twinkle{
+    0%{
+        transform:translateY(0) scale(0);
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+        transform:scale(1);
+    }
+    100%{
+        transform:translateY(-120vh) scale(0);
+        opacity:0;
+    }
+}
 
-    </style>
+.wrap{
+    position:relative;
+    z-index:2;
+    width:min(1000px,92%);
+    margin:50px auto;
+}
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--glass-border);
+    background:var(--glass);
+    backdrop-filter:blur(30px) saturate(180%);
+    border-radius:42px;
+    padding:60px 40px;
+    box-shadow:
+    0 0 0 1px rgba(255,255,255,.08) inset,
+    0 20px 80px rgba(0,0,0,.45),
+    0 0 80px rgba(255,120,180,.15);
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(130deg,
+    rgba(255,255,255,.22),
+    transparent 40%,
+    transparent 60%,
+    rgba(255,255,255,.08));
+    pointer-events:none;
+}
+
+.top-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 18px;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(10px);
+    font-size:.85rem;
+    color:#ffd9ef;
+    margin-bottom:25px;
+}
+
+.main-title{
+    font-size:clamp(3rem,10vw,7rem);
+    font-weight:900;
+    line-height:1;
+    letter-spacing:-4px;
+    background:linear-gradient(135deg,#fff,#ffb6d9,#d3c0ff,#9cf7ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 30px rgba(255,255,255,.2));
+}
+
+.subtitle{
+    margin-top:18px;
+    font-size:1.1rem;
+    color:rgba(255,255,255,.75);
+    line-height:1.8;
+    max-width:700px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:18px;
+    margin-top:35px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    position:relative;
+    overflow:hidden;
+    text-decoration:none;
+    color:white;
+    padding:16px 28px;
+    border-radius:22px;
+    font-weight:800;
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(12px);
+    transition:.35s cubic-bezier(.2,.9,.2,1);
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#ff77b7,#ff5f8d);
+    box-shadow:0 15px 40px rgba(255,80,140,.4);
+}
+
+.btn-secondary{
+    background:rgba(255,255,255,.08);
+}
+
+.btn:hover{
+    transform:translateY(-6px) scale(1.03);
+}
+
+.grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:24px;
+    margin-top:35px;
+}
+
+.floating-anime{
+    position:absolute;
+    width:220px;
+    height:220px;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    pointer-events:none;
+    z-index:0;
+    opacity:.18;
+    filter:drop-shadow(0 0 25px rgba(255,255,255,.2));
+    animation:animeFloat 7s ease-in-out infinite;
+}
+
+.reimu{
+    background-image:url('https://static.wikia.nocookie.net/touhou/images/0/0e/Th135Reimu.png');
+    top:-80px;
+    right:-40px;
+}
+
+.marisa{
+    background-image:url('https://static.wikia.nocookie.net/touhou/images/8/87/Th135Marisa.png');
+    bottom:-60px;
+    left:-60px;
+    animation-delay:2s;
+}
+
+@keyframes animeFloat{
+    0%,100%{
+        transform:translateY(0px) rotate(0deg);
+    }
+    50%{
+        transform:translateY(-18px) rotate(2deg);
+    }
+}
+
+.card{
+    z-index:2;
+    position:relative;
+    overflow:hidden;
+    padding:26px;
+    border-radius:30px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(24px);
+    transition:.4s cubic-bezier(.2,.9,.2,1);
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    background:linear-gradient(135deg,
+    rgba(255,255,255,.22),
+    transparent,
+    rgba(255,255,255,.05));
+    opacity:0;
+    transition:.4s;
+}
+
+.card:hover::before{
+    opacity:1;
+}
+
+.card:hover{
+    transform:translateY(-10px) rotate(-1deg);
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+
+.card-icon{
+    font-size:3rem;
+    margin-bottom:15px;
+    filter:drop-shadow(0 0 15px rgba(255,255,255,.3));
+}
+
+.portrait{
+    position:absolute;
+    right:-10px;
+    bottom:0;
+    height:140px;
+    object-fit:contain;
+    opacity:.92;
+    filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));
+    transition:.4s;
+    pointer-events:none;
+}
+
+.card:hover .portrait{
+    transform:scale(1.08) translateY(-6px);
+}
+
+.card h3{
+    font-size:1.2rem;
+    margin-bottom:10px;
+}
+
+.card p{
+    color:rgba(255,255,255,.72);
+    line-height:1.7;
+    font-size:.95rem;
+}
+
+.live-panel{
+    margin-top:35px;
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:24px;
+}
+
+.message-box,
+.fortune-box{
+    position:relative;
+    overflow:hidden;
+    border-radius:30px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(22px);
+    padding:28px;
+}
+
+.message-title{
+    font-size:.9rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:#ffbada;
+    margin-bottom:15px;
+}
+
+.message-content{
+    font-size:1.2rem;
+    line-height:1.8;
+    color:white;
+}
+
+.fortune-box h2{
+    font-size:1.3rem;
+    margin-bottom:18px;
+}
+
+.fortune{
+    font-size:2rem;
+    font-weight:900;
+    background:linear-gradient(135deg,#fff,#ffd0f0);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:18px;
+}
+
+.draw{
+    width:100%;
+    border:none;
+    cursor:pointer;
+    padding:16px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#8a7dff,#ff73b3);
+    color:white;
+    font-weight:800;
+    font-size:1rem;
+    transition:.3s;
+}
+
+.draw:hover{
+    transform:scale(.98);
+}
+
+.floating-ui{
+    position:absolute;
+    border-radius:24px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(20px);
+    padding:14px 18px;
+    font-weight:700;
+    color:#ffe4f4;
+    animation:floatUI 5s ease-in-out infinite;
+}
+
+.float1{
+    top:35px;
+    right:35px;
+}
+
+.float2{
+    bottom:40px;
+    right:80px;
+    animation-delay:2s;
+}
+
+@keyframes floatUI{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+footer{
+    text-align:center;
+    margin:30px 0 10px;
+    color:rgba(255,255,255,.45);
+    font-size:.9rem;
+}
+
+@media(max-width:900px){
+    .live-panel{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:640px){
+    .hero{
+        padding:35px 24px;
+        border-radius:30px;
+    }
+
+    .main-title{
+        letter-spacing:-2px;
+    }
+
+    .hero-buttons{
+        flex-direction:column;
+    }
+
+    .btn{
+        width:100%;
+        text-align:center;
+    }
+
+    .floating-ui{
+        display:none;
+    }
+}
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="icon">☯</div>
-        <h1>rice</h1>
-        <div class="subtitle">✨ 少女祈祷中 ✨</div>
-        
-        <div class="links">
-            <!-- 🌟 这里修改了跳转链接 🌟 -->
-            <a href="https://yukiom.us.ci/Web/intro.html">Enter</a>
-        </div>
-    </div>
+<div class="mouse-light"></div>
 
-    <script>
-        // 🌟 换回了稳定可用的直链图，如果想换自己的，一定要确保是纯粹的图片直链 🌟
-        const stickers = [
-            'https://media1.tenor.com/m/ipusVxTlMCkAAAAC/yeah.gif', // 灵梦
-            'https://media.tenor.com/45RM0-hEnm0AAAAi/marisa.gif'  // 魔理沙
-        ];
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
 
-        document.addEventListener('click', function(e) {
-            if(e.target.tagName.toLowerCase() === 'a') return;
+<div class="sparkles" id="sparkles"></div>
 
-            const img = document.createElement('img');
-            img.referrerPolicy = 'no-referrer';   
-            
-            const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
-            img.src = randomSticker;
-            img.className = 'touhou-sticker';
+<div class="wrap">
 
-            img.style.left = (e.pageX - 40) + 'px';
-            img.style.top = (e.pageY - 40) + 'px';
+<section class="hero">
 
-            const rot = (Math.random() - 0.5) * 40; 
-            img.style.transform = `rotate(${rot}deg) scale(0)`;
+<div class="floating-ui float1">
+✨ 幻想粒子同步中
+</div>
 
-            document.body.appendChild(img);
+<div class="floating-ui float2">
+☯ 梦境结界稳定
+</div>
 
-            requestAnimationFrame(() => {
-                img.style.transform = `rotate(${rot}deg) scale(1)`;
-                img.style.opacity = '1';
-            });
+<div class="top-badge">
+🌸 Gensokyo Entrance System v2.6
+</div>
 
-            setTimeout(() => {
-                img.style.transform = `translateY(-80px) rotate(${rot}deg) scale(0.8)`;
-                img.style.opacity = '0';
-                
-                setTimeout(() => {
-                    img.remove();
-                }, 400); 
-            }, 800); 
-        });
-    </script>
+<h1 class="main-title">
+幻想乡
+</h1>
+
+<p class="subtitle">
+被遗忘之物、妖怪、梦与弹幕所构成的境界。
+这一次不再是普通萌系页面，而是像真正的「幻想入口」。
+液态玻璃、Aurora 光晕、赛博梦境、少女感与现代 UI 的混合体。
+</p>
+
+<div class="hero-buttons">
+<a class="btn btn-primary" href="#">
+✦ 进入幻想结界
+</a>
+
+<a class="btn btn-secondary" href="#cards">
+☯ 今日访客
+</a>
+</div>
+
+<div class="grid" id="cards">
+
+<div class="floating-anime reimu"></div>
+<div class="floating-anime marisa"></div>
+
+<div class="card">
+<img class="portrait" src="https://static.wikia.nocookie.net/touhou/images/0/0e/Th135Reimu.png">
+<div class="card-icon">⛩️</div>
+<h3>博丽灵梦</h3>
+<p>
+正在神社发呆中。
+如果你愿意塞钱的话，她也许会稍微认真一点。
+</p>
+</div>
+
+<div class="card">
+<img class="portrait" src="https://static.wikia.nocookie.net/touhou/images/8/87/Th135Marisa.png">
+<div class="card-icon">⭐</div>
+<h3>雾雨魔理沙</h3>
+<p>
+今天也在借书。
+至于有没有还……这个问题不重要 DA☆ZE。
+</p>
+</div>
+
+<div class="card">
+<img class="portrait" src="https://static.wikia.nocookie.net/touhou/images/e/e0/Th155Cirno.png">
+<div class="card-icon">❄️</div>
+<h3>琪露诺</h3>
+<p>
+自称最强中的最强。
+正在试图把你的可乐冻成冰棒。
+</p>
+</div>
+
+<div class="card">
+<img class="portrait" src="https://static.wikia.nocookie.net/touhou/images/3/32/Th135Yuyuko.png">
+<div class="card-icon">🌸</div>
+<h3>西行寺幽幽子</h3>
+<p>
+樱花仍在飘落。
+她已经吃掉第 47 份团子了。
+</p>
+</div>
+
+</div>
+
+<div class="live-panel">
+
+<div class="message-box">
+<div class="message-title">
+SYSTEM MESSAGE
+</div>
+
+<div class="message-content" id="message">
+✨ 境界裂缝稳定。
+检测到新的幻想访问者进入结界区域。
+</div>
+</div>
+
+<div class="fortune-box">
+<h2>🎴 今日灵签</h2>
+
+<div class="fortune" id="fortuneText">
+大吉
+</div>
+
+<button class="draw" id="drawBtn">
+重新抽取命运
+</button>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+幻想乡 Dream Portal · Liquid Glass Edition
+</footer>
+
+</div>
+
+<script>
+const light = document.querySelector('.mouse-light')
+
+window.addEventListener('mousemove',e=>{
+    light.style.left = e.clientX + 'px'
+    light.style.top = e.clientY + 'px'
+})
+
+const sparkles = document.getElementById('sparkles')
+
+for(let i=0;i<45;i++){
+    const s = document.createElement('div')
+    s.className='sparkle'
+
+    s.style.left=Math.random()*100+'%'
+    s.style.top=Math.random()*100+'%'
+
+    const size=Math.random()*4+2
+    s.style.width=size+'px'
+    s.style.height=size+'px'
+
+    s.style.animationDuration=(Math.random()*8+6)+'s'
+    s.style.animationDelay=Math.random()*6+'s'
+
+    sparkles.appendChild(s)
+}
+
+const fortunes=[
+'🌸 超大吉',
+'⭐ 吉',
+'☯ 幻想吉',
+'🍃 中吉',
+'✨ 梦境加护',
+'🌙 月之祝福',
+'❄️ 小凶但可爱'
+]
+
+const messages=[
+'🍡 灵梦正在偷懒，但结界依然稳定。',
+'⭐ 魔理沙似乎又顺走了一本魔导书。',
+'🌸 白玉楼今天的樱花异常漂亮。',
+'✨ 检测到高浓度幻想粒子。',
+'☯ 结界波动正常，可以安全进入。'
+]
+
+const btn=document.getElementById('drawBtn')
+const fortuneText=document.getElementById('fortuneText')
+const message=document.getElementById('message')
+
+btn.addEventListener('click',()=>{
+
+    fortuneText.style.transform='scale(.8)'
+    fortuneText.style.opacity='0'
+
+    setTimeout(()=>{
+
+        const f=fortunes[Math.floor(Math.random()*fortunes.length)]
+        const m=messages[Math.floor(Math.random()*messages.length)]
+
+        fortuneText.innerHTML=f
+        message.innerHTML=m
+
+        fortuneText.style.transform='scale(1)'
+        fortuneText.style.opacity='1'
+
+    },200)
+})
+
+const cards=document.querySelectorAll('.card')
+
+cards.forEach(card=>{
+
+    card.addEventListener('mousemove',e=>{
+
+        const rect=card.getBoundingClientRect()
+
+        const x=e.clientX-rect.left
+        const y=e.clientY-rect.top
+
+        const rotateY=((x/rect.width)-0.5)*12
+        const rotateX=((y/rect.height)-0.5)*-12
+
+        card.style.transform=`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`
+
+    })
+
+    card.addEventListener('mouseleave',()=>{
+        card.style.transform=''
+    })
+})
+</script>
+
 </body>
 </html>
