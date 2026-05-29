@@ -667,6 +667,10 @@ body::before{
                     motto.txt
                 </button>
 
+                <button class="tab" onclick="switchTab(event,'think')">
+                    thoughts.txt
+                </button>
+
             </div>
 
             <!-- content -->
@@ -822,12 +826,67 @@ kotlin {
 
 </div>
 
+<!-- think -->
+                <div class="tab-content" id="think">
+                    <div class="terminal-box" style="border-left: 4px solid var(--purple);">
+                        <div style="margin-bottom: 20px;">
+                            <span class="cm">// Loading thought_logs... Success.</span>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <div style="color: var(--muted); font-size: 12px;">[ 2024-05-20 23:15:04 ]</div>
+                            <div style="color: var(--cyan); margin-top: 5px;">❯ 关于学校</div>
+                            <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
+                                在我看来，我们学校是全世界最垃圾的学校。<br>
+                                教学质量一般，无法填补城乡之间的差距。<br>
+                                学校的伙食也是一大问题，有人吃出虫子，存在很多问题<br>
+                                我想学校应该支持我们吃外送，😁😁<br>
+                                这样我们才能吃得好，吃得健康，吃得开心！<br>
+
+                            </div>
+                            <div style="color: var(--cyan); margin-top: 5px;">❯ 关于教师</div>
+                            <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
+                                莫过于无语的就是信息老师，居然教人先开主机还是显示器，我只能说放在二十年前适用，ATX接口对比AT接口不知道迭代了多少次。
+                                特别喜欢刷自己的存在感，喜欢在课堂上说一些和课程无关的话题，喜欢在课堂上讲一些过时的技术，喜欢在课堂上讲一些不实用的技术，比如怎么ping,ifconfig之类的，喜欢在课堂上讲一些过于简单的技术。
+                                我承认当代人生活在了icon时代，不过也确实手机确实可以解决大部分问题，电脑于他们而言并不是必需品，甚至手机厂商都在不让用户接触文件系统,网络设置等，以至于他们根本无法理解这些东西。<br>
+                                <br>
+                                最喜欢的莫过于语文老师亮哥了，每次都可以水课<br>
+                            </div>
+                            <div style="color: var(--cyan); margin-top: 5px;">❯ 关于朋友</div>
+                            <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
+                                朋友这个东西，感觉很难说清楚，感觉也很难定义。<br>
+                                可能是因为我比较内向的性格，我并不是很能开得起玩笑的人，有时候一句话会让我记很久的.....。<br>
+                                不过我觉得朋友这个东西，还是挺好的，有个朋友可以一起吃个饭，一起聊个天，一起玩个游戏什么的，感觉还是挺不错的。<br>
+                                当然了，朋友这个东西，也不是必须的，我觉得一个人过得好好的，也挺好的。<br>
+                        </div>
+                        <div style="color: var(--cyan); margin-top: 5px;">❯ 关于我自己</div>
+                        <div style="margin-top: 8px; color: #ccc; line-height: 1.6;">
+                            感觉自己十分容易陷入虚无主义的漩涡里，感觉自己做什么事情都没有意义，感觉自己好像也没有什么目标一样的。<br>
+                            我为什么要学习习编程呢？我为什么要学习这些技术呢？我为什么要追求这些目标呢？感觉自己好像也没有什么特别想要的东西了。
+                            为什么要考大学？考了个双非有什么用？出来了能找到什么工作？<br>
+                            有时候搞不清做这些的意义在哪里，像是生活在推着自己前进的机器里一样，感觉自己好像也没有什么选择了。<br>
+
+                        </div>
+                            <div style="color: var(--cyan); margin-top: 5px;">❯  </div>
+                        未完待续。。。。
+                        </div>
+                    
+                           
+                
+
+                        <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 15px;">
+                            <span class="cursor"></span> <span style="color: var(--muted)">Waiting for new inspiration...</span>
+                        </div>
+                    </div>
+                </div>
+
 <script>
 
 const commandMap = {
     about: "cat about.kt",
     stack: "cat build.gradle.kts",
-    motto: "cat motto.txt"
+    motto: "cat motto.txt",
+    think: "cat thoughts.txt"
 };
 
 function switchTab(event, tab){
