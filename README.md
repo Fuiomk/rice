@@ -1,6 +1,4 @@
 # rice
 
 
-Update README
-
 
