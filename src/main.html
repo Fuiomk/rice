@@ -1240,14 +1240,26 @@
         }
     }
 
-    async function deleteOrderFromServer(name) {
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
-        });
-        if (!res.ok) throw new Error('删除失败');
+async function deleteOrderFromServer(name) {
+    const res = await fetch(CONFIG.API_URL, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name,
+            secret: getDeviceSecret()
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.error || '撤销失败');
     }
+
+    return data;
+}
 
     async function clearAllOrders() {
         const res = await fetch(CONFIG.API_URL, { method: 'DELETE' });
@@ -1362,6 +1374,7 @@
 
         list.innerHTML = '';
         const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
+        const myName = localStorage.getItem('myOrderName');
         sorted.forEach(o => {
             const row = document.createElement('div');
             row.className = 'order-row';
@@ -1378,7 +1391,30 @@
                 </div>
                 <div class="order-right">
                     <span class="order-price">¥${o.price || 0}</span>
-                    <button class="btn-delete" data-name="${escapeHtml(o.name)}" title="撤销">
+                    <div class="order-right">
+    <span class="order-price">¥${o.price || 0}</span>
+
+    ${
+        myName === o.name
+        ? `
+        <button class="btn-delete"
+                data-name="${escapeHtml(o.name)}"
+                title="撤销">
+            <svg width="13" height="13"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.5"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        `
+        : ''
+    }
+</div>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
@@ -1443,8 +1479,13 @@
 
         try {
             await submitOrderToServer({
-                name, food: food.name, price: food.price, time: Date.now()
-            });
+    name,
+    food: food.name,
+    price: food.price,
+    time: Date.now(),
+    secret: getDeviceSecret()
+});
+            
             showToast(`点餐成功！${food.icon} ${food.name}`);
             localStorage.setItem('myOrderName', name);
             await fetchData();
@@ -1478,7 +1519,10 @@
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
         let text = `📋 今日点饭汇总 (${timeStr})\n═══════════════════\n`;
-        let totalAll = 0, totalCount = 0;
+        l
+            
+        
+        et totalAll = 0, totalCount = 0;
 
         CONFIG.MENU.forEach(m => {
             const count = state.orders.filter(o => o.food === m.name).length;
@@ -1528,6 +1572,18 @@
             showToast('清空失败了～', true);
         }
     }
+
+    
+    function getDeviceSecret() {
+    let secret = localStorage.getItem('deviceSecret');
+
+    if (!secret) {
+        secret = crypto.randomUUID();
+        localStorage.setItem('deviceSecret', secret);
+    }
+
+    return secret;
+}
 
     // ============ 初始化 ============
     async function init() {
