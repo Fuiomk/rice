@@ -1139,7 +1139,7 @@
 </div>
 
 <script>
-// ============ 配置 ============
+    // ============ 配置 ============
     const CONFIG = {
         API_URL: 'https://api.yukiom.us.ci/',
         REFRESH_INTERVAL: 15000,
@@ -1156,13 +1156,6 @@
             { name: '汤粉+蛋', price: 6, icon: '🍲' }
         ]
     };
-
-    // ============ 安全防御：生成当前浏览器的唯一暗号 ============
-    let deviceSecret = localStorage.getItem('myDeviceSecret');
-    if (!deviceSecret) {
-        deviceSecret = Math.random().toString(36).substring(2, 15);
-        localStorage.setItem('myDeviceSecret', deviceSecret);
-    }
 
     // ============ 状态 ============
     const state = {
@@ -1191,15 +1184,20 @@
         applyTheme(current === 'dark' ? 'light' : 'dark');
     }
 
+    // 监听系统主题变化
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) applyTheme(e.matches ? 'dark' : 'light');
+        if (!localStorage.getItem('theme')) {
+            applyTheme(e.matches ? 'dark' : 'light');
+        }
     });
 
     // ============ 工具函数 ============
     function showToast(msg, isError = false) {
         const toast = document.getElementById('toast');
         toast.innerHTML = `${isError ? '⚠️' : '✅'} ${msg}`;
-        toast.style.background = isError ? 'rgba(255, 70, 100, 0.92)' : 'rgba(45, 35, 50, 0.92)';
+        toast.style.background = isError
+            ? 'rgba(255, 70, 100, 0.92)'
+            : 'rgba(45, 35, 50, 0.92)';
         toast.classList.add('show');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
@@ -1224,6 +1222,7 @@
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return await res.json();
         } catch (e) {
+            console.error('Fetch error:', e);
             return null;
         }
     }
@@ -1241,27 +1240,17 @@
         }
     }
 
-    // 注意这里：带上了暗号 secret 去请求删除
     async function deleteOrderFromServer(name) {
         const res = await fetch(CONFIG.API_URL, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, secret: deviceSecret }) 
+            body: JSON.stringify({ name })
         });
-        if (!res.ok) {
-            let errMsg = '删除失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
+        if (!res.ok) throw new Error('删除失败');
     }
 
-    // 注意这里：带上了管理员密码给后端
-    async function clearAllOrders(adminCode) {
-        const res = await fetch(CONFIG.API_URL, { 
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ adminCode: adminCode })
-        });
+    async function clearAllOrders() {
+        const res = await fetch(CONFIG.API_URL, { method: 'DELETE' });
         if (!res.ok) throw new Error('清空失败');
     }
 
@@ -1453,9 +1442,8 @@
         updateSubmitButton();
 
         try {
-            // 注意：加上 secret 一起传给后端
             await submitOrderToServer({
-                name, food: food.name, price: food.price, time: Date.now(), secret: deviceSecret
+                name, food: food.name, price: food.price, time: Date.now()
             });
             showToast(`点餐成功！${food.icon} ${food.name}`);
             localStorage.setItem('myOrderName', name);
@@ -1469,14 +1457,7 @@
     }
 
     async function cancelPersonalOrder(name) {
-        // 在发请求前，先做个前端拦截
-        const myName = localStorage.getItem('myOrderName');
-        if (myName && myName !== name) {
-            return showToast(`❌ 你不能撤销别人的订单哦！`, true);
-        }
-
-        if (!confirm(`确定撤销【${name}】的订单？`)) return;
-        
+        if (!confirm(`撤销【${name}】的订单？`)) return;
         try {
             await deleteOrderFromServer(name);
             showToast(`已撤销 ${name} 的订单 ♪`);
@@ -1486,8 +1467,7 @@
             }
             await fetchData();
         } catch (e) {
-            // 如果后端检测暗号对不上，会抛出这里的错误
-            showToast(e.message || '撤销失败了～', true);
+            showToast('撤销失败了～', true);
         }
     }
 
@@ -1539,7 +1519,7 @@
         if (code !== CONFIG.ADMIN_PASSWORD) return showToast('密码不对～', true);
 
         try {
-            await clearAllOrders(code); // 把密码传给后端
+            await clearAllOrders();
             showToast('已清空所有数据！');
             localStorage.removeItem('myOrderName');
             state.selectedFoodIdx = null;
