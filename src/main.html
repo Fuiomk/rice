@@ -1519,10 +1519,7 @@ async function deleteOrderFromServer(name) {
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
         let text = `📋 今日点饭汇总 (${timeStr})\n═══════════════════\n`;
-        l
-            
-        
-        et totalAll = 0, totalCount = 0;
+        let totalAll = 0, totalCount = 0;
 
         CONFIG.MENU.forEach(m => {
             const count = state.orders.filter(o => o.food === m.name).length;
