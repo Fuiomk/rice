@@ -1240,47 +1240,19 @@
         }
     }
 
-async function deleteOrderFromServer(name) {
-    const res = await fetch(CONFIG.API_URL, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name,
-            secret: getDeviceSecret()
-        })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-        throw new Error(data.error || '撤销失败');
+    async function deleteOrderFromServer(name) {
+        const res = await fetch(CONFIG.API_URL, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        if (!res.ok) throw new Error('删除失败');
     }
 
-    return data;
-}
-
-    async function clearAllOrders(password) {
-
-    const res = await fetch(CONFIG.API_URL, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            adminCode: password
-        })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-        throw new Error(data.error || '清空失败');
+    async function clearAllOrders() {
+        const res = await fetch(CONFIG.API_URL, { method: 'DELETE' });
+        if (!res.ok) throw new Error('清空失败');
     }
-
-    return data;
-}
 
     // ============ 渲染 ============
     function renderFoodGrid() {
@@ -1377,89 +1349,19 @@ async function deleteOrderFromServer(name) {
     }
 
     function renderOrderList() {
+        const list = document.getElementById('orderDetailList');
 
-    const list = document.getElementById('orderDetailList');
-
-    if (!state.orders.length) {
-
-        list.innerHTML = `
-            <div class="empty-state">
-                <span class="empty-icon">🍱</span>
-                <p>暂无订单，快来点餐吧～</p>
-            </div>
-        `;
-
-        return;
-    }
-
-    list.innerHTML = '';
-
-    const sorted = [...state.orders]
-        .sort((a, b) => (b.time || 0) - (a.time || 0));
-
-    const myName = localStorage.getItem('myOrderName');
-
-    sorted.forEach(o => {
-
-        const row = document.createElement('div');
-
-        row.className = 'order-row';
-
-        row.innerHTML = `
-            <div class="order-main">
-
-                <span class="order-name">
-                    ${escapeHtml(o.name)}
-                    <span class="tag">${escapeHtml(o.food)}</span>
-                </span>
-
-                <span class="order-time">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    ${formatTime(o.time)}
-                </span>
-
-            </div>
-
-            <div class="order-right">
-
-                <span class="order-price">
-                    ¥${o.price || 0}
-                </span>
-
-                ${
-                    myName === o.name
-                    ? `
-                    <button class="btn-delete"
-                            data-name="${escapeHtml(o.name)}"
-                            title="撤销">
-                        <svg width="13" height="13"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2.5"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                    `
-                    : ''
-                }
-
-            </div>
-        `;
-
-        list.appendChild(row);
-    });
-}
+        if (!state.orders.length) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">🍱</span>
+                    <p>暂无订单，快来点餐吧～</p>
+                </div>`;
+            return;
+        }
 
         list.innerHTML = '';
         const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
-        const myName = localStorage.getItem('myOrderName');
         sorted.forEach(o => {
             const row = document.createElement('div');
             row.className = 'order-row';
@@ -1476,30 +1378,7 @@ async function deleteOrderFromServer(name) {
                 </div>
                 <div class="order-right">
                     <span class="order-price">¥${o.price || 0}</span>
-                    <div class="order-right">
-    <span class="order-price">¥${o.price || 0}</span>
-
-    ${
-        myName === o.name
-        ? `
-        <button class="btn-delete"
-                data-name="${escapeHtml(o.name)}"
-                title="撤销">
-            <svg width="13" height="13"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2.5"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-        `
-        : ''
-    }
-</div>
+                    <button class="btn-delete" data-name="${escapeHtml(o.name)}" title="撤销">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
@@ -1564,13 +1443,8 @@ async function deleteOrderFromServer(name) {
 
         try {
             await submitOrderToServer({
-    name,
-    food: food.name,
-    price: food.price,
-    time: Date.now(),
-    secret: getDeviceSecret()
-});
-            
+                name, food: food.name, price: food.price, time: Date.now()
+            });
             showToast(`点餐成功！${food.icon} ${food.name}`);
             localStorage.setItem('myOrderName', name);
             await fetchData();
@@ -1640,41 +1514,20 @@ async function deleteOrderFromServer(name) {
     }
 
     async function resetAll() {
+        const code = prompt('输入管理员密码：');
+        if (code === null) return;
+        if (code !== CONFIG.ADMIN_PASSWORD) return showToast('密码不对～', true);
 
-    const code = prompt('输入管理员密码：');
-
-    if (!code) return;
-
-    try {
-
-        await clearAllOrders(code);
-
-        showToast('已清空所有订单！');
-
-        localStorage.removeItem('myOrderName');
-
-        state.selectedFoodIdx = null;
-
-        await fetchData();
-
-    } catch (e) {
-
-        showToast(e.message || '清空失败', true);
-
+        try {
+            await clearAllOrders();
+            showToast('已清空所有数据！');
+            localStorage.removeItem('myOrderName');
+            state.selectedFoodIdx = null;
+            await fetchData();
+        } catch (e) {
+            showToast('清空失败了～', true);
+        }
     }
-}
-
-    
-    function getDeviceSecret() {
-    let secret = localStorage.getItem('deviceSecret');
-
-    if (!secret) {
-        secret = crypto.randomUUID();
-        localStorage.setItem('deviceSecret', secret);
-    }
-
-    return secret;
-}
 
     // ============ 初始化 ============
     async function init() {
