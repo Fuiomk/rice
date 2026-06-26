@@ -3,316 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>209点饭系统 - 管理后台</title>
+    <title>209点饭系统 - 后台</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* 复用主站主题变量 */
+        /* ============ 完全复用主站主题与变量 ============ */
         :root, [data-theme="light"] {
             --bg-primary: #FFF5F8; --bg-secondary: #FFF0F5;
+            --bg-mesh-1: rgba(255, 182, 193, 0.25); --bg-mesh-2: rgba(200, 170, 255, 0.2);
+            --bg-mesh-3: rgba(150, 230, 210, 0.15); --bg-mesh-4: rgba(255, 210, 150, 0.12);
             --card-bg: rgba(255, 255, 255, 0.65); --card-border: rgba(255, 200, 220, 0.5);
             --card-shadow: 0 8px 40px rgba(255, 150, 180, 0.1), 0 2px 8px rgba(0,0,0,0.02);
+            --card-shadow-hover: 0 16px 56px rgba(255, 150, 180, 0.18), 0 4px 12px rgba(0,0,0,0.03);
+            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.8);
             --text-primary: #3D2C3E; --text-secondary: #8B7A8E; --text-tertiary: #B8A5BB;
-            --accent-pink: #FF7EB3; --accent-pink-deep: #FF5C8D;
-            --gradient-primary: linear-gradient(135deg, #FF5C8D 0%, #FF7EB3 40%, #B088F9 100%);
-            --order-row-bg: rgba(255, 255, 255, 0.5); --order-row-hover: rgba(255, 255, 255, 0.9);
+            --accent-pink: #FF7EB3; --accent-pink-deep: #FF5C8D; --accent-pink-glow: rgba(255, 126, 179, 0.25);
+            --accent-purple: #B088F9; --accent-purple-deep: #9B6BEE; --accent-purple-glow: rgba(176, 136, 249, 0.2);
+            --accent-mint: #6FD4B5;
+            --surface-light: rgba(255, 255, 255, 0.7); --surface-medium: rgba(255, 240, 245, 0.6);
+            --surface-tag: linear-gradient(135deg, rgba(255,126,179,0.1), rgba(176,136,249,0.1));
             --border-soft: rgba(255, 200, 220, 0.4);
-            --danger-bg: rgba(255, 92, 141, 0.1);
+            --gradient-primary: linear-gradient(135deg, #FF5C8D 0%, #FF7EB3 40%, #B088F9 100%);
+            --gradient-badge: linear-gradient(135deg, rgba(255,126,179,0.12), rgba(176,136,249,0.12));
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --table-row-bg: rgba(255, 245, 248, 0.5);
+            --order-row-bg: rgba(255, 255, 255, 0.5); --order-row-hover: rgba(255, 255, 255, 0.9);
+            --divider: rgba(255, 200, 220, 0.3);
+            --danger-bg: rgba(255, 92, 141, 0.08);
+            --deco-opacity: 0.5; --noise-opacity: 0.015;
         }
+
         [data-theme="dark"] {
             --bg-primary: #1A1118; --bg-secondary: #1E1420;
+            --bg-mesh-1: rgba(255, 92, 141, 0.08); --bg-mesh-2: rgba(155, 107, 238, 0.08);
+            --bg-mesh-3: rgba(77, 201, 164, 0.05); --bg-mesh-4: rgba(255, 176, 136, 0.05);
             --card-bg: rgba(35, 25, 38, 0.7); --card-border: rgba(255, 126, 179, 0.12);
             --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0,0,0,0.15);
+            --card-shadow-hover: 0 16px 56px rgba(255, 92, 141, 0.1), 0 4px 12px rgba(0,0,0,0.2);
+            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.05);
             --text-primary: #F0E4F2; --text-secondary: #A892AB; --text-tertiary: #6B5A6E;
-            --accent-pink: #FF8FBF; --accent-pink-deep: #FF5C8D;
-            --gradient-primary: linear-gradient(135deg, #FF3D7F 0%, #FF5C8D 40%, #A87CFF 100%);
-            --order-row-bg: rgba(40, 30, 45, 0.4); --order-row-hover: rgba(50, 38, 55, 0.8);
+            --accent-pink: #FF8FBF; --accent-pink-deep: #FF5C8D; --accent-pink-glow: rgba(255, 92, 141, 0.2);
+            --accent-purple: #C4A0FF; --accent-purple-deep: #A87CFF; --accent-purple-glow: rgba(168, 124, 255, 0.15);
+            --accent-mint: #7FE0C3;
+            --surface-light: rgba(40, 30, 45, 0.6); --surface-medium: rgba(50, 35, 55, 0.5);
+            --surface-tag: linear-gradient(135deg, rgba(255,92,141,0.12), rgba(168,124,255,0.12));
             --border-soft: rgba(255, 126, 179, 0.1);
+            --gradient-primary: linear-gradient(135deg, #FF3D7F 0%, #FF5C8D 40%, #A87CFF 100%);
+            --gradient-badge: linear-gradient(135deg, rgba(255,92,141,0.15), rgba(168,124,255,0.15));
+            --input-bg: rgba(40, 30, 45, 0.6);
+            --table-row-bg: rgba(40, 30, 45, 0.4);
+            --order-row-bg: rgba(40, 30, 45, 0.4); --order-row-hover: rgba(50, 38, 55, 0.8);
+            --divider: rgba(255, 126, 179, 0.08);
             --danger-bg: rgba(255, 92, 141, 0.15);
+            --deco-opacity: 0.25; --noise-opacity: 0.025;
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans SC', sans-serif; }
-        body { background-color: var(--bg-primary); color: var(--text-primary); min-height: 100vh; padding: 20px 16px; display: flex; flex-direction: column; align-items: center;}
-        
-        .container { max-width: 600px; width: 100%; position: relative; z-index: 1; }
-        
-        /* 登录遮罩 */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        * { font-family: 'Noto Sans SC', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: var(--bg-primary); color: var(--text-primary);
+            min-height: 100vh; overflow-x: hidden; padding: 20px 16px;
+            transition: background-color 0.5s ease, color 0.4s ease; position: relative;
+        }
+        body::before {
+            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background: radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
+            radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
+            radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
+            radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
+        }
+        body::after {
+            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; mix-blend-mode: overlay; opacity: var(--noise-opacity);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        .container { max-width: 480px; margin: 0 auto; position: relative; z-index: 1; display: none; }
+
+        /* 登录页 */
         #loginOverlay {
-            position: fixed; inset: 0; background: var(--bg-primary); z-index: 999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+            position: fixed; inset: 0; background: transparent; z-index: 999;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
         }
-        .login-box {
-            background: var(--card-bg); padding: 40px 30px; border-radius: 28px; width: 100%; max-width: 360px;
-            box-shadow: var(--card-shadow); border: 1px solid var(--card-border); text-align: center;
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-        }
-        .login-box h2 { margin-bottom: 20px; font-weight: 800; color: var(--text-primary); }
-        .login-box input {
-            width: 100%; padding: 14px; border-radius: 16px; border: 1.5px solid var(--border-soft);
-            background: transparent; color: var(--text-primary); font-size: 1rem; text-align: center; margin-bottom: 20px; outline: none;
-        }
-        .login-box input:focus { border-color: var(--accent-pink); }
-        .btn {
-            background: var(--gradient-primary); color: white; border: none; padding: 14px; border-radius: 16px;
-            width: 100%; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
-        }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,126,179,0.3); }
-        .btn-danger { background: #FF5C8D; margin-top: 15px;}
 
-        /* 面板卡片 */
+        /* 卡片 & 元素 */
         .card {
-            background: var(--card-bg); border-radius: 28px; padding: 28px 22px; margin-bottom: 20px;
-            box-shadow: var(--card-shadow); border: 1px solid var(--card-border);
+            background: var(--card-bg); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
+            border-radius: 28px; padding: 28px 22px; box-shadow: var(--card-inner-glow), var(--card-shadow);
+            margin-bottom: 20px; border: 1px solid var(--card-border); position: relative; overflow: hidden;
+            transition: all 0.4s;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--gradient-primary); opacity: 0.6; border-radius: 28px 28px 0 0;
+        }
+
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { font-size: 1.6rem; font-weight: 900; }
+        .header h1 .accent { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        input[type="password"], select {
+            width: 100%; padding: 14px 18px; border-radius: 18px; border: 1.5px solid var(--border-soft);
+            background: var(--input-bg); color: var(--text-primary); font-size: 0.95rem; outline: none; transition: 0.25s;
+        }
+        select {
+            appearance: none; cursor: pointer; padding-right: 44px; font-weight: 500;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF7EB3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
+        }
+        input[type="password"]:focus, select:focus { border-color: var(--accent-pink); box-shadow: 0 0 0 4px var(--accent-pink-glow); }
+        [data-theme="dark"] select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF8FBF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); }
+
+        .btn {
+            border: none; padding: 16px; border-radius: 20px; font-weight: 700; cursor: pointer;
+            font-size: 1rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
+            background: var(--gradient-primary); color: white; box-shadow: 0 8px 28px var(--accent-pink-glow);
+            transition: all 0.3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px var(--accent-pink-glow); }
+        .btn:active { transform: scale(0.98); }
+        .btn-danger { background: var(--accent-pink-deep); }
+
+        .btn-copy {
+            background: var(--gradient-badge); color: var(--text-primary); font-size: 0.78rem; padding: 8px 16px;
+            border-radius: 50px; border: 1px solid var(--border-soft); font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 5px; transition: 0.25s;
+        }
+        .btn-copy:hover { transform: translateY(-2px) scale(1.04); border-color: var(--accent-purple); }
+        .btn-copy svg { stroke: var(--accent-purple); }
+
+        /* Dashboard 数据网格 */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card {
+            background: var(--card-bg); border-radius: 20px; padding: 20px; text-align: center;
+            border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
             backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
         }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 1.8rem; font-weight: 900; }
-        
-        /* 统计数字 */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-box {
-            background: var(--order-row-bg); padding: 16px; border-radius: 20px;
-            text-align: center; border: 1px solid var(--border-soft);
-        }
-        .stat-value { font-size: 1.8rem; font-weight: 900; color: var(--accent-pink-deep); }
+        .stat-value { font-size: 1.8rem; font-weight: 900; color: var(--accent-pink-deep); line-height: 1.2; }
         .stat-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; }
 
-        /* 列表 */
+        /* 表格排版 */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+        .section-icon {
+            width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; border: 1px solid var(--border-soft);
+        }
+        .section-icon.purple { background: linear-gradient(135deg, rgba(176,136,249,0.12), rgba(176,136,249,0.05)); }
+        .section-icon.mint { background: linear-gradient(135deg, rgba(111,212,181,0.12), rgba(111,212,181,0.05)); }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
+        th { text-align: left; padding: 8px 12px; color: var(--text-tertiary); font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; }
+        td { padding: 12px; font-size: 0.88rem; font-weight: 600; background: var(--table-row-bg); }
+        tr td:first-child { border-radius: 14px 0 0 14px; }
+        tr td:last-child { border-radius: 0 14px 14px 0; }
+        .count-badge {
+            background: var(--gradient-badge); padding: 3px 12px; border-radius: 20px; font-size: 0.78rem;
+            font-weight: 700; color: var(--accent-pink-deep); display: inline-block; border: 1px solid var(--border-soft);
+        }
+
+        /* 订单行 */
         .order-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 16px; background: var(--order-row-bg); border-radius: 16px; margin-bottom: 8px; border: 1px solid var(--border-soft);
+            display: flex; justify-content: space-between; align-items: center; padding: 14px 16px;
+            background: var(--order-row-bg); border-radius: 18px; margin-bottom: 8px; border: 1px solid transparent;
         }
         .order-main { display: flex; flex-direction: column; gap: 4px; }
-        .order-name { font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .order-time { font-size: 0.75rem; color: var(--text-tertiary); }
-        .badge { background: var(--danger-bg); color: var(--accent-pink-deep); padding: 3px 10px; border-radius: 10px; font-size: 0.72rem; font-weight: 700;}
-        
-        .btn-delete {
-            background: var(--danger-bg); color: var(--accent-pink-deep); padding: 8px 14px;
-            border-radius: 12px; border: 1px solid var(--border-soft); cursor: pointer; font-weight: 600;
-            font-size: 0.8rem; transition: all 0.2s;
-        }
-        .btn-delete:hover { background: var(--accent-pink-deep); color: white; border-color: var(--accent-pink-deep); }
+        .order-name { font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 0.92rem; }
+        .tag { background: var(--surface-tag); color: var(--accent-pink-deep); padding: 3px 10px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; border: 1px solid var(--border-soft); }
+        .order-time { font-size: 0.75rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
+        .order-right { display: flex; align-items: center; gap: 12px; }
 
-        /* Toast */
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-30px);
-            color: white; padding: 12px 24px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
-            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;
+        .btn-delete {
+            background: var(--danger-bg); width: 32px; height: 32px; border-radius: 11px; border: 1px solid var(--border-soft);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;
         }
-        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .btn-delete svg { stroke: var(--accent-pink-deep); transition: stroke 0.3s; }
+        .btn-delete:hover { background: var(--accent-pink-deep); border-color: var(--accent-pink-deep); transform: rotate(90deg) scale(1.1); }
+        .btn-delete:hover svg { stroke: white; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 10px; }
+        .form-row .btn { padding: 0 20px; border-radius: 18px; }
+
+        /* Toast & 杂项 */
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-30px) scale(0.85);
+            color: white; padding: 12px 24px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s; backdrop-filter: blur(12px);
+        }
+        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(16px) scale(1); }
+
+        .theme-toggle {
+            position: fixed; top: max(16px, env(safe-area-inset-top)); right: 16px; z-index: 100;
+            width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border-soft);
+            background: var(--card-bg); backdrop-filter: blur(16px); cursor: pointer; display: flex;
+            align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; color: var(--text-primary);
+        }
     </style>
 </head>
 <body>
 
-<!-- 登录拦截 -->
+<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+
+<div id="toast"></div>
+
+<!-- 鉴权遮罩 -->
 <div id="loginOverlay">
-    <div class="login-box">
-        <h2>🛡️ 管理员鉴权</h2>
-        <input type="password" id="pwdInput" placeholder="请输入管理员密码" onkeydown="if(event.key==='Enter') doLogin()">
+    <div class="card" style="width: 100%; max-width: 340px; margin: 0;">
+        <div class="header" style="margin-bottom: 20px;">
+            <h1>后台<span class="accent">鉴权</span></h1>
+        </div>
+        <input type="password" id="pwdInput" placeholder="输入管理员密码..." style="margin-bottom: 16px;" onkeydown="if(event.key==='Enter') doLogin()">
         <button class="btn" onclick="doLogin()">进入控制台</button>
     </div>
 </div>
 
-<div id="toast"></div>
+<div class="container" id="adminDashboard">
 
-<div class="container" style="display: none;" id="adminDashboard">
+    <!-- 顶栏状态 -->
     <div class="header">
-        <h1>⚙️ 管理控制台</h1>
-        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 5px;">在这里可以强制管理所有订单</p>
+        <h1>后台<span class="accent">控制台</span></h1>
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 8px; cursor: pointer;" onclick="logout()">退出登录</div>
     </div>
 
-    <!-- 核心数据 -->
+    <!-- 数据看板 -->
     <div class="stats-grid">
-        <div class="stat-box">
+        <div class="stat-card">
             <div class="stat-value" id="statCount">0</div>
             <div class="stat-label">总份数</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-card">
             <div class="stat-value" id="statMoney">¥0</div>
-            <div class="stat-label">预计总金额</div>
+            <div class="stat-label">总金额</div>
         </div>
     </div>
 
-    <!-- 订单列表 -->
+    <!-- 商家报单 -->
     <div class="card">
-        <h3 style="margin-bottom: 15px; font-size: 1rem;">📋 实时订单明细</h3>
-        <div id="orderList">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon purple">👨‍🍳</span>
+                后厨报单
+            </div>
+            <button class="btn-copy" onclick="copyMerchantOrder()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                复制发给老板
+            </button>
+        </div>
+        <table>
+            <thead><tr><th>菜品</th><th>数量</th><th>小计</th></tr></thead>
+            <tbody id="merchantList">
+            <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary);">加载中...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 代客补单 -->
+    <div class="card">
+        <div class="section-header" style="margin-bottom: 5px;">
+            <div class="section-title">
+                <span class="section-icon mint">✍️</span>
+                帮点一下
+            </div>
+        </div>
+        <div class="form-row">
+            <select id="manualName"><option value="">名字...</option></select>
+            <select id="manualFood"><option value="">餐品...</option></select>
+            <button class="btn" style="box-shadow: none;" onclick="submitManualOrder()">添加</button>
+        </div>
+    </div>
+
+    <!-- 订单明细 -->
+    <div class="card">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon purple">📋</span>
+                订单明细
+            </div>
+            <button class="btn-copy" onclick="exportCSV()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                导出表格
+            </button>
+        </div>
+        <div id="detailedList">
             <div style="text-align: center; padding: 20px; color: var(--text-tertiary);">加载中...</div>
         </div>
     </div>
 
-    <!-- 危险操作区 -->
-    <div class="card" style="border-color: rgba(255, 92, 141, 0.4);">
-        <h3 style="margin-bottom: 15px; font-size: 1rem; color: var(--accent-pink-deep);">⚠️ 危险操作</h3>
-        <button class="btn btn-danger" onclick="forceClearAll()">🗑️ 清空所有数据 (一键重置)</button>
-        <button class="btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-soft); margin-top: 10px;" onclick="logout()">退出登录</button>
+    <!-- 危险操作 -->
+    <div class="card" style="border-color: var(--border-soft);">
+        <button class="btn btn-danger" onclick="forceClearAll()">⚠️ 清空所有数据</button>
     </div>
+
 </div>
 
 <script>
     const CONFIG = {
-        API_URL: 'https://api.yukiom.us.ci/' // 请确保与主页的 API_URL 一致
+        API_URL: 'https://api.yukiom.us.ci/',
+        NAMES: ['周', '陈', '袁', '范', '祝', '何', '黄', '宋', '朱'],
+        MENU: [
+            { name: '炒饭', price: 6 }, { name: '炒粉', price: 7 }, { name: '汤粉', price: 5 },
+            { name: '炒河粉', price: 6 }, { name: '饭', price: 6 }, { name: '面', price: 5 },
+            { name: '面+蛋', price: 6 }, { name: '汤粉+蛋', price: 6 }, { name: '白饭', price: 2 },
+            { name: '拌面', price: 6 }, { name: '拌粉', price: 6 }
+        ]
     };
 
     let adminPassword = sessionStorage.getItem('adminPassword') || '';
+    let globalOrders = [];
+    let adminDeviceToken = localStorage.getItem('deviceToken');
+    if (!adminDeviceToken) {
+        adminDeviceToken = Math.random().toString(36).substring(2) + Date.now();
+        localStorage.setItem('deviceToken', adminDeviceToken);
+    }
 
-    // ============ 初始化校验 ============
+    // 主题管理
+    function initTheme() {
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+    function toggleTheme() {
+        const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        localStorage.setItem('theme', t);
+        document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+    }
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.innerHTML = `${isError ? '⚠️' : '✅'} ${msg}`;
+        toast.style.background = isError ? 'rgba(255, 70, 100, 0.92)' : 'rgba(45, 35, 50, 0.92)';
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    function escapeHtml(text) { const d=document.createElement('div'); d.textContent=text; return d.innerHTML; }
+    function formatTime(ts) {
+        if(!ts) return '-';
+        const d = new Date(ts);
+        return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+    }
+
+    // 鉴权
     function checkAuth() {
         if (adminPassword) {
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            initTheme();
-            fetchData();
-            // 每 15 秒自动刷新
+            initManualForm(); fetchData();
             setInterval(fetchData, 15000);
         } else {
             document.getElementById('loginOverlay').style.display = 'flex';
             document.getElementById('adminDashboard').style.display = 'none';
         }
     }
-
     function doLogin() {
         const val = document.getElementById('pwdInput').value;
         if(!val) return showToast('请输入密码', true);
-        adminPassword = val;
-        sessionStorage.setItem('adminPassword', adminPassword);
-        checkAuth();
+        adminPassword = val; sessionStorage.setItem('adminPassword', val); checkAuth();
     }
+    function logout() { sessionStorage.removeItem('adminPassword'); adminPassword = ''; checkAuth(); }
 
-    function logout() {
-        sessionStorage.removeItem('adminPassword');
-        adminPassword = '';
-        checkAuth();
-    }
-
-    // ============ 主题 ============
-    function initTheme() {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-    }
-
-    // ============ UI 交互 ============
-    function showToast(msg, isError = false) {
-        const toast = document.getElementById('toast');
-        toast.innerHTML = `${isError ? '❌' : '✅'} ${msg}`;
-        toast.style.background = isError ? 'rgba(255, 70, 100, 0.95)' : 'rgba(45, 35, 50, 0.95)';
-        toast.classList.add('show');
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    function formatTime(timestamp) {
-        if (!timestamp) return '未知';
-        const d = new Date(timestamp);
-        return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
-    }
-
-    function escapeHtml(text) {
-        const d = document.createElement('div');
-        d.textContent = text;
-        return d.innerHTML;
-    }
-
-    // ============ 核心 API 逻辑 ============
     async function fetchData() {
         try {
             const res = await fetch(CONFIG.API_URL);
-            if (!res.ok) throw new Error('网络请求失败');
-            const data = await res.json();
-            renderDashboard(data);
-        } catch (e) {
-            showToast('获取数据失败', true);
-        }
+            if (!res.ok) throw new Error();
+            globalOrders = await res.json();
+            renderDashboard();
+        } catch(e) {}
     }
 
-    function renderDashboard(orders) {
-        let totalMoney = 0;
-        
-        const listEl = document.getElementById('orderList');
-        listEl.innerHTML = '';
+    function renderDashboard() {
+        document.getElementById('statCount').innerText = globalOrders.length;
+        document.getElementById('statMoney').innerText = '¥' + globalOrders.reduce((s, o) => s + (o.price || 0), 0);
 
-        if(orders.length === 0) {
-            listEl.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary);">当前没有任何订单</div>';
-        } else {
-            // 按时间倒序
-            orders.sort((a, b) => (b.time || 0) - (a.time || 0)).forEach(o => {
-                totalMoney += (o.price || 0);
-                
-                const row = document.createElement('div');
-                row.className = 'order-row';
-                row.innerHTML = `
+        renderMerchantSummary();
+        renderDetailedList();
+        updateManualFormStatus();
+    }
+
+    function renderMerchantSummary() {
+        const tbody = document.getElementById('merchantList');
+        if(!globalOrders.length) return tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-tertiary);">暂无数据</td></tr>`;
+
+        const summary = {};
+        globalOrders.forEach(o => {
+            if(!summary[o.food]) summary[o.food] = { count: 0, price: o.price };
+            summary[o.food].count++;
+        });
+
+        tbody.innerHTML = '';
+        Object.keys(summary).forEach(food => {
+            tbody.innerHTML += `<tr>
+                <td>${escapeHtml(food)}</td>
+                <td><span class="count-badge">${summary[food].count}</span></td>
+                <td style="font-weight:800; color:var(--accent-pink-deep);">¥${summary[food].count * summary[food].price}</td>
+            </tr>`;
+        });
+    }
+
+    function renderDetailedList() {
+        const list = document.getElementById('detailedList');
+        if(!globalOrders.length) return list.innerHTML = `<div style="text-align:center; color:var(--text-tertiary);">暂无数据</div>`;
+
+        list.innerHTML = '';
+        const sorted = [...globalOrders].sort((a,b) => (b.time||0) - (a.time||0));
+        sorted.forEach(o => {
+            list.innerHTML += `
+                <div class="order-row">
                     <div class="order-main">
-                        <span class="order-name">
-                            ${escapeHtml(o.name)}
-                            <span class="badge">${escapeHtml(o.food)} (¥${o.price})</span>
-                        </span>
-                        <span class="order-time">⏰ ${formatTime(o.time)}</span>
+                        <span class="order-name">${escapeHtml(o.name)} <span class="tag">${escapeHtml(o.food)} (¥${o.price})</span></span>
+                        <span class="order-time"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${formatTime(o.time)}</span>
                     </div>
-                    <button class="btn-delete" onclick="forceDeleteOrder('${escapeHtml(o.name)}')">强制撤销</button>
-                `;
-                listEl.appendChild(row);
-            });
-        }
-
-        document.getElementById('statCount').innerText = orders.length;
-        document.getElementById('statMoney').innerText = '¥' + totalMoney;
+                    <div class="order-right">
+                        <button class="btn-delete" onclick="forceDeleteOrder('${escapeHtml(o.name)}')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                </div>`;
+        });
     }
 
-    // 管理员：强制撤销某人订单（通过 adminPassword 绕过 Token 校验）
-    async function forceDeleteOrder(name) {
-        if(!confirm(`⚠️ 确定要强制删除【${name}】的订单吗？`)) return;
-        
+    function initManualForm() {
+        const sFood = document.getElementById('manualFood');
+        sFood.innerHTML = '<option value="">餐品...</option>';
+        CONFIG.MENU.forEach(m => sFood.innerHTML += `<option value="${m.name}">${m.name} (¥${m.price})</option>`);
+    }
+
+    function updateManualFormStatus() {
+        const sName = document.getElementById('manualName');
+        const current = sName.value;
+        sName.innerHTML = '<option value="">名字...</option>';
+        CONFIG.NAMES.forEach(n => {
+            const ordered = globalOrders.some(o => o.name === n);
+            sName.innerHTML += `<option value="${n}" ${ordered ? 'disabled' : ''}>${n}${ordered ? ' (已点)' : ''}</option>`;
+        });
+        if(current) sName.value = current;
+    }
+
+    async function submitManualOrder() {
+        const name = document.getElementById('manualName').value;
+        const foodName = document.getElementById('manualFood').value;
+        if(!name || !foodName) return showToast('请选好名字和餐品', true);
+
+        const food = CONFIG.MENU.find(m => m.name === foodName);
         try {
             const res = await fetch(CONFIG.API_URL, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, food: food.name, price: food.price, time: Date.now(), token: adminDeviceToken })
+            });
+            if(!res.ok) throw new Error();
+            showToast(`已添加 ${name} 的订单`);
+            document.getElementById('manualName').value = ''; document.getElementById('manualFood').value = '';
+            fetchData();
+        } catch(e) { showToast('添加失败', true); }
+    }
+
+    function copyMerchantOrder() {
+        if(!globalOrders.length) return showToast('暂无数据', true);
+        let text = `老板，今日单：\n\n`;
+        let total = 0, count = 0;
+        const summary = {};
+        globalOrders.forEach(o => {
+            if(!summary[o.food]) summary[o.food] = { count: 0, price: o.price };
+            summary[o.food].count++;
+        });
+        Object.keys(summary).forEach(food => {
+            text += `${food} × ${summary[food].count}份\n`;
+            total += (summary[food].count * summary[food].price);
+            count += summary[food].count;
+        });
+        text += `\n共计: ${count}份，总价: ¥${total}`;
+
+        const doFallback = () => {
+            const ta = document.createElement('textarea'); ta.value = text;
+            ta.style.cssText = 'position:fixed;left:-9999px;'; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); showToast('复制成功'); } catch(_) { showToast('复制失败', true); }
+            ta.remove();
+        };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(()=>showToast('复制成功')).catch(doFallback);
+        else doFallback();
+    }
+
+    function exportCSV() {
+        if(!globalOrders.length) return showToast('暂无数据', true);
+        let csv = '\uFEFF姓名,餐品,价格,下单时间\n';
+        const sorted = [...globalOrders].sort((a,b)=>(b.time||0)-(a.time||0));
+        sorted.forEach(o => {
+            const t = new Date(o.time).toLocaleString('zh-CN');
+            csv += `${o.name},${o.food},¥${o.price},${t}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `点餐明细_${new Date().getMonth()+1}月${new Date().getDate()}日.csv`;
+        link.click();
+    }
+
+    async function forceDeleteOrder(name) {
+        if(!confirm(`撤销 ${name} 的订单？`)) return;
+        try {
+            const res = await fetch(CONFIG.API_URL, {
+                method: 'DELETE', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ name: name, adminPassword: adminPassword })
             });
-            
-            const result = await res.json();
-            if (!res.ok) {
-                if(res.status === 403) {
-                    logout(); // 密码错误自动登出
-                    throw new Error('鉴权失败：密码错误');
-                }
-                throw new Error(result.error || '删除失败');
-            }
-            
-            showToast(`已强制撤销 ${name} 的订单`);
-            fetchData();
-        } catch (e) {
-            showToast(e.message, true);
-        }
+            if(res.status === 403) { logout(); return showToast('密码错误', true); }
+            showToast(`已撤销 ${name}`); fetchData();
+        } catch(e) { showToast('撤销失败', true); }
     }
 
-    // 管理员：清空全部
     async function forceClearAll() {
-        if(!confirm(`🚨 危险操作！\n确定要【清空所有人的订单】吗？`)) return;
-        
+        if(!confirm(`确认清空所有数据？`)) return;
         try {
             const res = await fetch(CONFIG.API_URL, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'DELETE', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ adminPassword: adminPassword })
             });
-            
-            const result = await res.json();
-            if (!res.ok) {
-                if(res.status === 403) {
-                    logout();
-                    throw new Error('鉴权失败：密码错误');
-                }
-                throw new Error(result.error || '清空失败');
-            }
-            
-            showToast('已清空全部数据！');
-            fetchData();
-        } catch (e) {
-            showToast(e.message, true);
-        }
+            if(res.status === 403) { logout(); return showToast('密码错误', true); }
+            showToast('已清空'); fetchData();
+        } catch(e) { showToast('清空失败', true); }
     }
 
-    // 启动
+    initTheme();
     checkAuth();
 </script>
 </body>
