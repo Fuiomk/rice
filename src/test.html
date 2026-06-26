@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>209点饭系统 ♡</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- 引入高级无衬线字体组合 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ============ 主题变量 ============ */
+        /* ============ 原汁原味的主题变量 (完全继承并优化) ============ */
         :root, [data-theme="light"] {
             --bg-primary: #FFF5F8;
             --bg-secondary: #FFF0F5;
@@ -68,6 +69,11 @@
 
             --deco-opacity: 0.5;
             --noise-opacity: 0.015;
+            --glass-blur: blur(24px);
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
         }
 
         [data-theme="dark"] {
@@ -133,110 +139,43 @@
             --noise-opacity: 0.025;
         }
 
-        /* ============ 基础重置 ============ */
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-        }
-
-        * {
-            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* ============ 基础重置与网格排版 ============ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        * { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.7;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
-            padding: max(20px, env(safe-area-inset-top)) 16px env(safe-area-inset-bottom);
-            transition: background-color 0.5s ease, color 0.4s ease;
-            position: relative;
+            background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.7;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh; overflow-x: hidden;
+            padding: max(40px, env(safe-area-inset-top)) 16px env(safe-area-inset-bottom);
+            transition: background-color 0.5s ease, color 0.4s ease; position: relative;
         }
 
-        /* ============ 背景层 ============ */
+        /* 呼吸渐变背景与噪点 */
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
+            content: ''; position: fixed; inset: 0; z-index: -2; pointer-events: none;
             background:
                     radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
                     radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
                     radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
                     radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
-            pointer-events: none;
-            z-index: 0;
             transition: background 0.5s ease;
         }
-
-        /* 噪点纹理 */
         body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
+            content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; mix-blend-mode: overlay; opacity: var(--noise-opacity);
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: var(--noise-opacity);
-            pointer-events: none;
-            z-index: 0;
-            mix-blend-mode: overlay;
         }
 
-        /* ============ 浮动装饰 ============ */
-        .floating-deco {
-            position: fixed;
-            pointer-events: none;
-            z-index: 0;
-            opacity: var(--deco-opacity);
-            font-size: 1.4rem;
-            transition: opacity 0.5s ease;
-        }
-
-        .floating-deco:nth-child(1) {
-            top: 6%; left: 4%;
-            animation: floatA 8s ease-in-out infinite;
-            font-size: 1.6rem;
-        }
-        .floating-deco:nth-child(2) {
-            top: 14%; right: 6%;
-            animation: floatB 10s ease-in-out infinite 1s;
-            font-size: 1.2rem;
-        }
-        .floating-deco:nth-child(3) {
-            top: 40%; left: 2%;
-            animation: floatA 12s ease-in-out infinite 2s;
-            font-size: 1.5rem;
-        }
-        .floating-deco:nth-child(4) {
-            top: 65%; right: 4%;
-            animation: floatB 9s ease-in-out infinite 0.5s;
-        }
-        .floating-deco:nth-child(5) {
-            top: 82%; left: 8%;
-            animation: floatA 11s ease-in-out infinite 3s;
-            font-size: 1.1rem;
-        }
-        .floating-deco:nth-child(6) {
-            top: 30%; right: 2%;
-            animation: floatB 7s ease-in-out infinite 1.5s;
-            font-size: 1rem;
-        }
-        .floating-deco:nth-child(7) {
-            top: 55%; left: 6%;
-            animation: floatA 9s ease-in-out infinite 2.5s;
-            font-size: 0.9rem;
-        }
-        .floating-deco:nth-child(8) {
-            top: 90%; right: 10%;
-            animation: floatB 13s ease-in-out infinite 0.8s;
-            font-size: 1.3rem;
-        }
+        /* ============ 优雅浮动装饰 ============ */
+        .floating-deco { position: fixed; pointer-events: none; z-index: -1; opacity: var(--deco-opacity); font-size: 1.4rem; transition: opacity 0.5s ease; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08)); }
+        .floating-deco:nth-child(1) { top: 6%; left: 4%; animation: floatA 8s ease-in-out infinite; font-size: 1.6rem; }
+        .floating-deco:nth-child(2) { top: 14%; right: 6%; animation: floatB 10s ease-in-out infinite 1s; font-size: 1.2rem; }
+        .floating-deco:nth-child(3) { top: 40%; left: 2%; animation: floatA 12s ease-in-out infinite 2s; font-size: 1.5rem; }
+        .floating-deco:nth-child(4) { top: 65%; right: 4%; animation: floatB 9s ease-in-out infinite 0.5s; font-size: 1.4rem;}
+        .floating-deco:nth-child(5) { top: 82%; left: 8%; animation: floatA 11s ease-in-out infinite 3s; font-size: 1.1rem; }
+        .floating-deco:nth-child(6) { top: 30%; right: 2%; animation: floatB 7s ease-in-out infinite 1.5s; font-size: 1rem; }
+        .floating-deco:nth-child(7) { top: 55%; left: 6%; animation: floatA 9s ease-in-out infinite 2.5s; font-size: 0.9rem; }
+        .floating-deco:nth-child(8) { top: 90%; right: 10%; animation: floatB 13s ease-in-out infinite 0.8s; font-size: 1.3rem; }
 
         @keyframes floatA {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -244,791 +183,267 @@
             50% { transform: translate(-4px, -6px) rotate(-2deg); }
             75% { transform: translate(8px, 8px) rotate(3deg); }
         }
-
         @keyframes floatB {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
             33% { transform: translate(-8px, -10px) rotate(-5deg); }
             66% { transform: translate(5px, 12px) rotate(3deg); }
         }
-
-        /* ============ 动画 ============ */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-16px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-            60% { transform: scale(1.15) rotate(10deg); opacity: 1; }
-            80% { transform: scale(0.95) rotate(-5deg); }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg) scale(1.2); }
-            20% { transform: rotate(-8deg) scale(1.2); }
-            40% { transform: rotate(6deg) scale(1.2); }
-            60% { transform: rotate(-4deg) scale(1.2); }
-            80% { transform: rotate(2deg) scale(1.2); }
+            0%, 100% { transform: rotate(0deg) scale(1.15); }
+            25% { transform: rotate(-6deg) scale(1.15); }
+            75% { transform: rotate(6deg) scale(1.15); }
         }
-
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 0 0 var(--glow-color, rgba(127, 219, 202, 0.4)); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(111, 212, 181, 0.4); }
             50% { box-shadow: 0 0 0 8px transparent; }
         }
-
-        @keyframes bounce-soft {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
         @keyframes sparkle {
             0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
             50% { opacity: 1; transform: scale(1.3) rotate(15deg); }
         }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        /* ============ 布局 ============ */
+        /* ============ 左右留白 超级卡片 ============ */
         .container {
-            max-width: 480px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-            animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+            max-width: 640px; margin: 0 auto; position: relative; z-index: 1;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* ============ 主题切换按钮 ============ */
+        /* 主题切换与导航标签页 */
         .theme-toggle {
-            position: fixed;
-            top: max(16px, env(safe-area-inset-top));
-            right: 16px;
-            z-index: 100;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            border: 1.5px solid var(--border-soft);
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: var(--card-shadow);
-            color: var(--text-primary);
+            position: fixed; top: 24px; right: 24px; z-index: 100;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-soft); color: var(--text-primary);
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+            cursor: pointer; box-shadow: var(--card-shadow), var(--card-inner-glow); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: var(--card-shadow-hover);
+        .theme-toggle:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--card-shadow-hover); border-color: var(--border-medium); }
+
+        .book-tabs {
+            display: flex; gap: 4px; padding: 6px; margin: 0 auto 32px auto; max-width: 380px;
+            background: var(--status-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--status-border); border-radius: 100px;
+            box-shadow: var(--card-shadow), var(--card-inner-glow);
+            position: relative; z-index: 10;
         }
-        .theme-toggle:active {
-            transform: scale(0.9);
+        .book-tab {
+            flex: 1; padding: 11px 0; border: none; background: transparent;
+            color: var(--text-secondary); font-weight: 600; font-size: 0.88rem;
+            border-radius: 100px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .book-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .book-tab.active {
+            background: var(--gradient-primary); color: white;
+            box-shadow: 0 4px 14px var(--accent-pink-glow), var(--card-inner-glow);
         }
 
-        /* ============ 状态栏 ============ */
-        .status-bar {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            margin-bottom: 22px;
-            padding: 8px 20px;
-            border-radius: 50px;
-            background: var(--status-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--status-border);
-            box-shadow: var(--card-shadow);
-            color: var(--text-secondary);
-            position: relative;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: all 0.4s ease;
-            box-shadow: var(--card-inner-glow), var(--card-shadow);
-        }
-
-        .sync-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--text-tertiary);
-            transition: all 0.4s;
-            flex-shrink: 0;
-        }
-        .sync-dot.active {
-            background: var(--accent-mint);
-            --glow-color: var(--accent-pink-glow);
-            animation: pulse-glow 2.5s infinite;
-            box-shadow: 0 0 10px rgba(111, 212, 181, 0.4);
-        }
-        .sync-dot.error {
-            background: var(--accent-pink-deep);
-            box-shadow: 0 0 10px var(--accent-pink-glow);
-        }
-
-        /* ============ 卡片 ============ */
+        /* 磨砂玻璃超大卡片 */
         .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(24px) saturate(1.2);
-            -webkit-backdrop-filter: blur(24px) saturate(1.2);
-            border-radius: 28px;
-            padding: 28px 22px;
-            box-shadow: var(--card-inner-glow), var(--card-shadow);
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            background: var(--card-bg); backdrop-filter: var(--glass-blur) saturate(1.2); -webkit-backdrop-filter: var(--glass-blur) saturate(1.2);
+            border-radius: var(--radius-xl); padding: 40px 36px;
+            box-shadow: var(--card-shadow), var(--card-inner-glow);
+            border: 1px solid var(--card-border); position: relative; z-index: 5;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden;
         }
-        .card:hover {
-            box-shadow: var(--card-inner-glow), var(--card-shadow-hover);
-            transform: translateY(-2px);
-        }
-
-        /* 卡片顶部渐变条 */
         .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-            opacity: 0.6;
-            border-radius: 28px 28px 0 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--gradient-primary); opacity: 0.8; z-index: 10;
         }
 
-        /* ============ 头部 ============ */
-        .header {
-            text-align: center;
-            margin-bottom: 28px;
-            position: relative;
+        .book-page { display: none; animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .book-page.active { display: block; }
+
+        /* ============ 🍎 高级 Typography + 闪烁星星 ============ */
+        .header { text-align: center; margin-bottom: 36px; position: relative; }
+        .header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.1)); }
+        .header h1 { font-size: 2.1rem; font-weight: 900; letter-spacing: -0.8px; color: var(--text-primary); }
+        .header h1 .accent { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .header .subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
+
+        /* 闪烁的小星星 */
+        .header .deco-sparkle { position: absolute; animation: sparkle 2.5s ease-in-out infinite; font-size: 1.1rem; opacity: 0.6; color: var(--accent-pink-deep); }
+        .header .deco-sparkle:nth-child(1) { top: -10px; right: 20%; animation-delay: 0s; }
+        .header .deco-sparkle:nth-child(2) { top: 15px; left: 16%; animation-delay: 0.8s; font-size: 0.8rem; }
+        .header .deco-sparkle:nth-child(3) { bottom: -10px; right: 30%; animation-delay: 1.5s; font-size: 0.95rem; }
+
+        /* ============ 网格项设计 (完美融合) ============ */
+        .name-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .food-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .food-grid.locked { opacity: 0.5; pointer-events: none; filter: grayscale(30%) blur(0.3px); }
+
+        .grid-item {
+            background: var(--food-bg); border: 1.5px solid var(--food-border);
+            border-radius: var(--radius-md); text-align: center; cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative;
+            box-shadow: var(--card-inner-glow);
         }
-        .header-emoji {
-            font-size: 2.8rem;
-            display: block;
-            margin-bottom: 6px;
-            animation: bounce-soft 3s ease-in-out infinite;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+        .name-item { padding: 18px 8px; font-weight: 700; font-size: 1.05rem; }
+        .food-item { padding: 24px 10px 18px; border-radius: var(--radius-lg); }
+
+        .grid-item:hover:not(.locked) {
+            background: var(--order-row-hover); border-color: var(--accent-pink);
+            transform: translateY(-4px); box-shadow: 0 10px 24px var(--accent-pink-glow), var(--card-inner-glow);
         }
-        .header h1 {
-            font-size: 1.85rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-            color: var(--text-primary);
+        .grid-item:active:not(.locked) { transform: scale(0.95); }
+
+        /* 选中状态 */
+        .grid-item.active {
+            background: var(--food-bg-active); border-color: var(--accent-pink-deep);
+            box-shadow: var(--food-shadow-active), var(--card-inner-glow); transform: translateY(-4px);
         }
-        .header h1 .accent {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .name-item.active { color: var(--accent-pink-deep); font-weight: 800; }
+
+        /* 锁定状态 */
+        .name-item.locked {
+            background: rgba(0,0,0,0.06); color: var(--text-tertiary);
+            border-color: transparent; cursor: not-allowed; box-shadow: none;
         }
-        .header .subtitle {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-        .header .deco-sparkle {
-            position: absolute;
-            animation: sparkle 2.5s ease-in-out infinite;
-            font-size: 1rem;
-            opacity: 0.6;
-        }
-        .header .deco-sparkle:nth-child(1) {
-            top: -2px; right: 18%;
-            animation-delay: 0s;
-        }
-        .header .deco-sparkle:nth-child(2) {
-            top: 10px; left: 15%;
-            animation-delay: 0.8s;
-            font-size: 0.75rem;
-        }
-        .header .deco-sparkle:nth-child(3) {
-            bottom: 0; right: 28%;
-            animation-delay: 1.5s;
-            font-size: 0.85rem;
+        [data-theme="dark"] .name-item.locked { background: rgba(0,0,0,0.25); }
+
+        .name-status {
+            position: absolute; top: -1px; right: -1px; background: var(--border-soft); color: var(--text-secondary);
+            font-size: 0.68rem; padding: 3px 8px; border-radius: 0 var(--radius-md) 0 12px; font-weight: 700;
+            border-left: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
         }
 
-        /* ============ 表单 ============ */
-        .form-group {
-            margin-bottom: 24px;
-            position: relative;
-            z-index: 1;
-        }
-        .form-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 0.88rem;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-        }
-        .label-icon {
-            width: 26px; height: 26px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-        .label-icon.pink { background: linear-gradient(135deg, rgba(255,126,179,0.15), rgba(255,126,179,0.08)); }
-        .label-icon.purple { background: linear-gradient(135deg, rgba(176,136,249,0.15), rgba(176,136,249,0.08)); }
-        [data-theme="dark"] .label-icon.pink { background: linear-gradient(135deg, rgba(255,92,141,0.2), rgba(255,92,141,0.08)); }
-        [data-theme="dark"] .label-icon.purple { background: linear-gradient(135deg, rgba(168,124,255,0.2), rgba(168,124,255,0.08)); }
+        .food-icon { font-size: 2.6rem; display: block; margin-bottom: 10px; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)); }
+        .grid-item:hover .food-icon { transform: scale(1.12) rotate(-5deg); }
+        .grid-item.active .food-icon { animation: wiggle 0.6s ease forwards; }
 
-        select {
-            width: 100%;
-            padding: 14px 44px 14px 18px;
-            border-radius: 18px;
-            border: 1.5px solid var(--border-soft);
-            font-size: 0.95rem;
-            outline: none;
-            background-color: var(--input-bg);
-            appearance: none;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-weight: 500;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF7EB3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            background-size: 16px;
-        }
-        select:focus {
-            border-color: var(--accent-pink);
-            box-shadow: 0 0 0 4px var(--accent-pink-glow);
-        }
-        select:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-            background-color: var(--surface-medium);
-        }
-        [data-theme="dark"] select {
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF8FBF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-        }
-
-        /* ============ 餐品网格 ============ */
-        .food-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-        .food-grid.locked {
-            opacity: 0.4;
-            pointer-events: none;
-            filter: grayscale(40%) blur(0.5px);
-        }
-
-        .food-item {
-            border: 1.5px solid var(--food-border);
-            border-radius: 20px;
-            padding: 18px 10px 14px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: var(--food-bg);
-            position: relative;
-            overflow: hidden;
-        }
-        .food-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.15), transparent 60%);
-            pointer-events: none;
-        }
-        .food-item:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-pink);
-            box-shadow: 0 8px 24px var(--accent-pink-glow);
-        }
-        .food-item:active {
-            transform: scale(0.94);
-        }
-        .food-item.active {
-            border-color: var(--accent-pink-deep);
-            background: var(--food-bg-active);
-            box-shadow: var(--food-shadow-active);
-            transform: translateY(-4px);
-        }
-
-        .food-icon {
-            font-size: 2.2rem;
-            display: block;
-            margin-bottom: 6px;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            z-index: 1;
-            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.06));
-        }
-        .food-item:hover .food-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-        .food-item.active .food-icon {
-            animation: wiggle 0.6s ease forwards;
-        }
-
-        .food-name {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            display: block;
-            position: relative;
-            z-index: 1;
-        }
+        .food-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); display: block; }
         .food-price {
-            font-size: 0.78rem;
-            color: var(--accent-pink-deep);
-            display: inline-block;
-            margin-top: 5px;
-            font-weight: 800;
-            background: var(--surface-light);
-            padding: 2px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border-soft);
-            position: relative;
-            z-index: 1;
-            transition: all 0.3s;
+            font-size: 0.8rem; color: var(--accent-pink-deep); display: inline-block; margin-top: 8px; font-weight: 800;
+            background: var(--surface-light); padding: 3px 14px; border-radius: 100px; border: 1px solid var(--border-soft);
+            transition: all 0.3s; box-shadow: var(--card-inner-glow);
         }
-        .food-item.active .food-price {
-            background: var(--gradient-primary);
-            color: white;
-            border-color: transparent;
-        }
+        .grid-item.active .food-price { background: var(--gradient-primary); color: white; border-color: transparent; }
 
         .checkmark {
-            position: absolute;
-            top: 8px; right: 8px;
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            color: white;
-            font-size: 11px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: scale(0) rotate(-180deg);
-            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 2px 10px var(--accent-pink-glow);
+            position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%;
+            background: var(--gradient-primary); color: white; font-size: 11px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0) rotate(-180deg);
+            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 4px 12px var(--accent-pink-glow);
             z-index: 2;
         }
-        .food-item.active .checkmark {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
+        .grid-item.active .checkmark { opacity: 1; transform: scale(1) rotate(0deg); }
 
-        /* ============ 按钮 ============ */
+        /* ============ Shimmer 发光提交按钮 ============ */
         .btn {
-            border: none;
-            padding: 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            outline: none;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 0.3px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
+            border: none; padding: 18px; border-radius: var(--radius-lg); font-weight: 800; cursor: pointer; font-size: 1.05rem; width: 100%;
+            display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 36px; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--gradient-primary); color: white; box-shadow: 0 8px 28px var(--accent-pink-glow), var(--card-inner-glow);
+            position: relative; overflow: hidden;
         }
-
-        .btn-submit {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 8px 28px var(--accent-pink-glow);
-        }
-        .btn-submit::before {
-            content: '';
-            position: absolute;
-            inset: 0;
+        .btn::before {
+            content: ''; position: absolute; inset: 0;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
+            background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite;
         }
-        .btn-submit:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 40px var(--accent-pink-glow);
+        .btn:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 14px 40px var(--accent-pink-glow), var(--card-inner-glow); }
+        .btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
+        .btn:disabled { background: var(--surface-medium); box-shadow: none; color: var(--text-tertiary); border-color: var(--border-soft); cursor: not-allowed; }
+        .btn:disabled::before { display: none; }
+        .btn.locked-btn { background: var(--gradient-success); box-shadow: 0 8px 24px rgba(77, 201, 164, 0.25); color: white; }
+
+        /* ============ 实时汇总 Dashboard 数据卡 ============ */
+        .status-bar {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 600;
+            padding: 8px 22px; border-radius: 100px; background: var(--status-bg); border: 1px solid var(--status-border);
+            color: var(--text-secondary); margin-bottom: 24px; box-shadow: var(--card-inner-glow), var(--card-shadow);
         }
-        .btn-submit:active:not(:disabled) {
-            transform: translateY(1px) scale(0.98);
+        .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); transition: 0.4s; }
+        .sync-dot.active { background: var(--accent-mint); animation: pulse-glow 2.5s infinite; box-shadow: 0 0 8px rgba(111, 212, 181, 0.5); }
+        .sync-dot.error { background: var(--accent-pink-deep); box-shadow: 0 0 8px var(--accent-pink-glow); }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+        .dash-card {
+            background: var(--table-row-bg); border-radius: var(--radius-md); padding: 24px;
+            border: 1px solid var(--border-soft); display: flex; flex-direction: column; justify-content: center;
+            box-shadow: var(--card-inner-glow); transition: 0.3s;
         }
-        .btn-submit:disabled {
-            background: var(--surface-medium);
-            box-shadow: none;
-            cursor: not-allowed;
-            color: var(--text-tertiary);
-        }
-        .btn-submit:disabled::before {
-            display: none;
-        }
-        .btn-submit.locked {
-            background: var(--gradient-success);
-            box-shadow: 0 8px 24px rgba(77, 201, 164, 0.25);
-        }
+        .dash-card:hover { transform: translateY(-2px); background: var(--order-row-hover); }
+        .dash-val { font-size: 2.2rem; font-weight: 900; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.5px; }
+        .dash-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 600; margin-top: 8px; }
+
+        /* 表格与一键复制 */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 32px 0 16px 0; }
+        .section-title { font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+        .section-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 1px solid var(--border-soft); }
+        .section-icon.purple { background: var(--surface-tag); }
+        .section-icon.mint { background: linear-gradient(135deg, rgba(111,212,181,0.12), rgba(111,212,181,0.05)); }
 
         .btn-copy {
-            background: var(--gradient-badge);
-            color: var(--text-primary);
-            font-size: 0.78rem;
-            padding: 8px 16px;
-            border-radius: 50px;
-            border: 1px solid var(--border-soft);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
+            background: var(--gradient-badge); color: var(--text-primary); font-size: 0.78rem; padding: 8px 16px;
+            border-radius: 100px; border: 1px solid var(--border-soft); font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 6px; transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .btn-copy:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 6px 18px var(--accent-purple-glow);
-            border-color: var(--accent-purple);
-        }
-        .btn-copy:active { transform: scale(0.94); }
+        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--accent-purple-glow); border-color: var(--accent-purple); }
         .btn-copy svg { stroke: var(--accent-purple); }
 
-        /* ============ 表格 ============ */
-        .table-wrapper {
-            overflow-x: auto;
-            margin: 0 -4px;
-            padding: 0 4px;
-        }
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 6px;
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        th {
-            text-align: left;
-            padding: 8px 12px;
-            color: var(--text-tertiary);
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        td {
-            padding: 12px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            background: var(--table-row-bg);
-            transition: background 0.3s;
-        }
-        tr td:first-child { border-radius: 14px 0 0 14px; }
-        tr td:last-child { border-radius: 0 14px 14px 0; }
-        tr:hover td {
-            background: var(--order-row-hover);
-        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
+        th { text-align: left; padding: 4px 16px; color: var(--text-tertiary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 14px 16px; font-size: 0.92rem; font-weight: 600; background: var(--table-row-bg); border-top: 1px solid transparent; border-bottom: 1px solid transparent; transition: 0.3s; }
+        tr td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+        tr td:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        tr:hover td { background: var(--order-row-hover); }
+        .count-badge { background: var(--gradient-badge); padding: 3px 12px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; color: var(--accent-pink-deep); border: 1px solid var(--border-soft); }
 
-        .total-amount {
-            color: var(--accent-pink-deep);
-            font-weight: 900;
-            font-size: 1.5rem;
-        }
-
-        .count-badge {
-            background: var(--gradient-badge);
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--accent-pink-deep);
-            display: inline-block;
-            border: 1px solid var(--border-soft);
-        }
-
-        /* ============ 订单行 ============ */
+        /* ============ 优雅订单列表行 ============ */
         .order-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            background: var(--order-row-bg);
-            border-radius: 18px;
-            margin-bottom: 8px;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            border: 1px solid transparent;
+            display: flex; justify-content: space-between; align-items: center; padding: 14px 18px;
+            background: var(--order-row-bg); border-radius: var(--radius-md); margin-bottom: 10px;
+            border: 1px solid transparent; transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             animation: slideInLeft 0.4s ease backwards;
         }
-        .order-row:nth-child(1) { animation-delay: 0s; }
-        .order-row:nth-child(2) { animation-delay: 0.04s; }
-        .order-row:nth-child(3) { animation-delay: 0.08s; }
-        .order-row:nth-child(4) { animation-delay: 0.12s; }
-        .order-row:nth-child(5) { animation-delay: 0.16s; }
-        .order-row:nth-child(6) { animation-delay: 0.2s; }
-        .order-row:nth-child(7) { animation-delay: 0.24s; }
-        .order-row:nth-child(8) { animation-delay: 0.28s; }
-        .order-row:nth-child(9) { animation-delay: 0.32s; }
+        .order-row:hover { background: var(--order-row-hover); border-color: var(--border-soft); box-shadow: 0 6px 20px rgba(0,0,0,0.03); transform: translateX(4px); }
+        .order-main { display: flex; flex-direction: column; gap: 4px; }
+        .order-name { font-weight: 700; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+        .tag { background: var(--surface-tag); color: var(--accent-pink-deep); padding: 2px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border-soft); }
+        .order-time { font-size: 0.75rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
 
-        .order-row:hover {
-            background: var(--order-row-hover);
-            border-color: var(--border-soft);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-            transform: translateX(3px);
-        }
-
-        .order-main {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 0;
-            flex: 1;
-        }
-        .order-name {
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.92rem;
-        }
-        .order-time {
-            font-size: 0.75rem;
-            color: var(--text-tertiary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .order-time svg {
-            stroke: var(--text-tertiary);
-            flex-shrink: 0;
-        }
-
-        .tag {
-            background: var(--surface-tag);
-            color: var(--accent-pink-deep);
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            white-space: nowrap;
-            border: 1px solid var(--border-soft);
-        }
-
-        .order-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-        .order-price {
-            font-weight: 800;
-            color: var(--accent-pink-deep);
-            font-size: 0.95rem;
-        }
+        .order-right { display: flex; align-items: center; gap: 14px; }
+        .order-price { font-weight: 800; color: var(--accent-pink-deep); font-size: 1rem; }
         .btn-delete {
-            background: rgba(255, 92, 141, 0.08);
-            color: var(--accent-pink-deep);
-            width: 32px; height: 32px;
-            border-radius: 11px;
-            border: 1px solid rgba(255, 92, 141, 0.15);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(255, 92, 141, 0.08); width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255, 92, 141, 0.15);
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .btn-delete svg { stroke: var(--accent-pink-deep); transition: stroke 0.3s; }
-        .btn-delete:hover {
-            background: var(--accent-pink-deep);
-            border-color: var(--accent-pink-deep);
-            transform: rotate(90deg) scale(1.1);
-            box-shadow: 0 4px 16px var(--accent-pink-glow);
-        }
+        .btn-delete:hover { background: var(--accent-pink-deep); border-color: var(--accent-pink-deep); transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 12px var(--accent-pink-glow); }
         .btn-delete:hover svg { stroke: white; }
+        .btn-delete svg { stroke: var(--accent-pink-deep); transition: stroke 0.3s; }
 
-        /* ============ Section Header ============ */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
-        }
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
-        .section-icon {
-            width: 30px; height: 30px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            border: 1px solid var(--border-soft);
-        }
-        .section-icon.purple {
-            background: linear-gradient(135deg, rgba(176,136,249,0.12), rgba(176,136,249,0.05));
-        }
-        .section-icon.mint {
-            background: linear-gradient(135deg, rgba(111,212,181,0.12), rgba(111,212,181,0.05));
-        }
-        [data-theme="dark"] .section-icon.purple {
-            background: linear-gradient(135deg, rgba(168,124,255,0.18), rgba(168,124,255,0.06));
-        }
-        [data-theme="dark"] .section-icon.mint {
-            background: linear-gradient(135deg, rgba(93,212,170,0.18), rgba(93,212,170,0.06));
-        }
+        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: var(--text-tertiary); font-weight: 500; }
+        footer .heart { color: var(--accent-pink-deep); display: inline-block; animation: bounce-soft 2s infinite; }
+        @keyframes bounce-soft { 0%, 100% { transform: scale(1) translateY(0); } 50% { transform: scale(1.15) translateY(-4px); } }
+        .empty-state { text-align: center; padding: 40px 16px; color: var(--text-tertiary); font-size: 0.9rem; font-weight: 500; }
+        .empty-state .empty-icon { font-size: 2.8rem; display: block; margin-bottom: 8px; opacity: 0.4; }
 
-        /* ============ 分割线 ============ */
-        .divider {
-            border: none;
-            height: 1px;
-            background: var(--divider);
-            margin: 18px 0;
-        }
-
-        /* ============ 底部 ============ */
-        footer {
-            text-align: center;
-            margin-top: 32px;
-            font-size: 0.78rem;
-            color: var(--text-tertiary);
-            padding-bottom: 24px;
-            font-weight: 400;
-            position: relative;
-            z-index: 1;
-            line-height: 1.8;
-        }
-        footer .heart {
-            color: var(--accent-pink-deep);
-            display: inline-block;
-            animation: bounce-soft 2s ease-in-out infinite;
-        }
-
-        .admin-reset {
-            background: none;
-            border: 1.5px dashed var(--border-soft);
-            color: var(--text-tertiary);
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.3s;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: 500;
-        }
-        .admin-reset:hover {
-            color: var(--accent-pink-deep);
-            border-color: var(--accent-pink);
-            background: rgba(255, 92, 141, 0.05);
-            transform: scale(1.03);
-        }
-
-        /* ============ 空状态 ============ */
-        .empty-state {
-            text-align: center;
-            padding: 36px 16px;
-        }
-        .empty-state .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            display: block;
-            animation: bounce-soft 4s ease-in-out infinite;
-            opacity: 0.35;
-            filter: grayscale(0.3);
-        }
-        .empty-state p {
-            color: var(--text-tertiary);
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* ============ Toast ============ */
         #toast {
-            position: fixed;
-            top: max(env(safe-area-inset-top, 20px), 20px);
-            left: 50%;
-            transform: translateX(-50%) translateY(-30px) scale(0.85);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1);
+            position: fixed; top: max(env(safe-area-inset-top, 24px), 24px); left: 50%; transform: translateX(-50%) translateY(-30px) scale(0.85);
+            color: #fff; padding: 12px 28px; border-radius: 100px; font-size: 0.88rem; font-weight: 600;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(45, 35, 50, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; gap: 8px; box-shadow: 0 12px 32px rgba(0,0,0,0.15);
         }
-        #toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(16px) scale(1);
-        }
+        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(16px) scale(1); }
 
-        /* ============ 滚动条 ============ */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
-
-        /* ============ 响应式 ============ */
-        @media (max-width: 380px) {
+        /* ============ 自适应调整 ============ */
+        @media (max-width: 480px) {
+            .card { padding: 32px 20px; border-radius: var(--radius-lg); }
+            .header-emoji { font-size: 2.5rem; }
+            .header h1 { font-size: 1.7rem; }
+            .name-grid { gap: 8px; }
             .food-grid { gap: 10px; }
-            .card { padding: 22px 16px; border-radius: 24px; }
-            .header h1 { font-size: 1.6rem; }
-            .food-icon { font-size: 2rem; }
-        }
-
-        /* 减少动画偏好 */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
+            .food-item { padding: 18px 8px 14px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<!-- 浮动装饰 -->
+<!-- 浮动装饰 (原装 8 浮子) -->
 <div class="floating-deco">🌸</div>
 <div class="floating-deco">✨</div>
 <div class="floating-deco">🍰</div>
@@ -1040,96 +455,111 @@
 
 <!-- 主题切换 -->
 <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
-
 <div id="toast"></div>
 
 <div class="container">
-    <!-- 状态栏 -->
-    <div class="status-bar">
-        <span id="syncDot" class="sync-dot"></span>
-        <span id="syncText">正在连接...</span>
+
+    <div class="book-tabs">
+        <button class="book-tab active" onclick="switchPage(1)">1. 选人</button>
+        <button class="book-tab" onclick="switchPage(2)">2. 选餐</button>
+        <button class="book-tab" onclick="switchPage(3)">3. 总览</button>
     </div>
 
-    <!-- 点餐卡片 -->
     <div class="card">
-        <div class="header">
-            <span class="deco-sparkle">✦</span>
-            <span class="deco-sparkle">⟡</span>
-            <span class="deco-sparkle">✧</span>
-            <span class="header-emoji">🍱</span>
-            <h1>点饭<span class="accent">系统</span></h1>
-            <div class="subtitle">今天想吃什么呀 ～ ♪(´▽｀)</div>
-        </div>
 
-        <div class="form-group">
-            <div class="form-label">
-                <span class="label-icon pink">👤</span>
-                你的名字
+        <!-- PAGE 1: 选人 -->
+        <div id="page-1" class="book-page active">
+            <div class="header">
+                <span class="deco-sparkle">✦</span>
+                <span class="deco-sparkle">⟡</span>
+                <span class="deco-sparkle">✧</span>
+                <span class="header-emoji">👤</span>
+                <h1>你是<span class="accent">哪位呀</span></h1>
+                <div class="subtitle">第一步：请先找到自己的名字</div>
             </div>
-            <select id="studentSelect">
-                <option value="">加载中...</option>
-            </select>
-        </div>
 
-        <div class="form-group">
-            <div class="form-label">
-                <span class="label-icon purple">🍽️</span>
-                想吃什么呢
+            <div class="name-grid" id="nameGrid">
+                <!-- JS Render -->
             </div>
-            <div class="food-grid" id="foodGrid"></div>
-        </div>
 
-        <button class="btn btn-submit" id="submitBtn">✨ 提交订单</button>
-    </div>
-
-    <!-- 汇总卡片 -->
-    <div class="card">
-        <div class="section-header">
-            <div class="section-title">
-                <span class="section-icon purple">📊</span>
-                实时汇总
+            <div style="text-align: center; margin-top: 36px;">
+                <button class="btn-copy" style="display: inline-flex; padding: 12px 24px; font-size:0.9rem;" onclick="switchPage(2)">继续下一步 ➜</button>
             </div>
-            <button class="btn-copy" id="copyBtn">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                复制
-            </button>
         </div>
-        <div class="table-wrapper">
+
+        <!-- PAGE 2: 选餐品 -->
+        <div id="page-2" class="book-page">
+            <div class="header">
+                <span class="deco-sparkle">✦</span>
+                <span class="deco-sparkle">⟡</span>
+                <span class="deco-sparkle">✧</span>
+                <span class="header-emoji">🍱</span>
+                <h1>想吃<span class="accent">什么呢</span></h1>
+                <div class="subtitle">第二步：今天想点些什么好吃的</div>
+            </div>
+
+            <div class="food-grid" id="foodGrid">
+                <!-- JS Render -->
+            </div>
+
+            <button class="btn" id="submitBtn">✨ 确认点单</button>
+        </div>
+
+        <!-- PAGE 3: 聚合总览 -->
+        <div id="page-3" class="book-page">
+            <div class="header" style="margin-bottom: 24px;">
+                <span class="deco-sparkle">✦</span>
+                <span class="deco-sparkle">⟡</span>
+                <span class="deco-sparkle">✧</span>
+                <span class="header-emoji">📊</span>
+                <h1>数据<span class="accent">大揭秘</span></h1>
+            </div>
+
+            <div style="text-align: center;">
+                <div class="status-bar">
+                    <span id="syncDot" class="sync-dot"></span>
+                    <span id="syncText">正在连接...</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="dash-val" id="topStatCount">0</div>
+                    <div class="dash-label">今日点餐人数</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-val" id="topStatMoney" style="color: var(--accent-pink-deep);">¥0</div>
+                    <div class="dash-label">预计总金额</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="section-icon purple">👨‍🍳</span>
+                    商家报单
+                </div>
+                <button class="btn-copy" id="copyBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    一键复制
+                </button>
+            </div>
             <table>
-                <thead>
-                <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
-                </thead>
                 <tbody id="summaryBody">
-                <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary); padding: 24px;">加载中...</td></tr>
+                <tr><td colspan="3" class="empty-state">加载中...</td></tr>
                 </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="2" style="text-align:right; padding-top:18px; font-weight:600; color:var(--text-secondary); background:transparent;">合计</td>
-                    <td class="total-amount" id="totalPrice" style="padding-top:18px; background:transparent;">¥0</td>
-                </tr>
-                </tfoot>
             </table>
-        </div>
-    </div>
 
-    <!-- 订单记录 -->
-    <div class="card">
-        <div class="section-header">
-            <div class="section-title">
-                <span class="section-icon mint">📋</span>
-                点单记录
+            <div class="section-header">
+                <div class="section-title">
+                    <span class="section-icon mint">📋</span>
+                    大家点了啥
+                </div>
+            </div>
+            <div id="orderDetailList">
+                <div class="empty-state">加载中...</div>
             </div>
         </div>
-        <div id="orderDetailList">
-            <div class="empty-state">
-                <span class="empty-icon">🍱</span>
-                <p>加载中...</p>
-            </div>
-        </div>
-        <hr class="divider">
-        <div style="text-align: center;">
-            <button class="admin-reset" id="resetBtn">⚠️ 管理员清空数据</button>
-        </div>
+
     </div>
 
     <footer>
@@ -1138,446 +568,313 @@
     </footer>
 </div>
 
+<!-- ============ JS 部分：保证 100% 精准绑定并逻辑一致 ============ -->
 <script>
-    // ============ 配置 ============
     const CONFIG = {
         API_URL: 'https://api.yukiom.us.ci/',
         REFRESH_INTERVAL: 15000,
-        ADMIN_PASSWORD: '123',
         NAMES: ['周', '陈', '袁', '范', '祝', '何', '黄', '宋', '朱'],
         MENU: [
-            { name: '炒饭', price: 6, icon: '🍚' },
-            { name: '炒粉', price: 7, icon: '🍜' },
-            { name: '汤粉', price: 5, icon: '🍲' },
-            { name: '炒河粉', price: 6, icon: '🍝' },
-            { name: '饭', price: 6, icon: '🍛' },
-            { name: '面', price: 5, icon: '🍜' },
-            { name: '面+蛋', price: 6, icon: '🍜' },
-            { name: '汤粉+蛋', price: 6, icon: '🍲' } ,
-            { name: '白饭', price: 2, icon: '🍚' },
-            { name: '拌面', price: 6, icon: '🍜' },
-            { name: '拌粉', price: 6, icon: '🍜' },
+            { name: '炒饭', price: 6, icon: '🍚' }, { name: '炒粉', price: 7, icon: '🍜' },
+            { name: '汤粉', price: 5, icon: '🍲' }, { name: '炒河粉', price: 6, icon: '🍝' },
+            { name: '饭', price: 6, icon: '🍛' }, { name: '面', price: 5, icon: '🍜' },
+            { name: '面+蛋', price: 6, icon: '🍜' }, { name: '汤粉+蛋', price: 6, icon: '🍲' } ,
+            { name: '白饭', price: 2, icon: '🍚' }, { name: '拌面', price: 6, icon: '🍜' },
+            { name: '拌粉', price: 6, icon: '🍜' }
         ]
     };
 
-    // ============ 设备标识 (防篡改) ============
+    const state = { orders: [], selectedName: null, selectedFoodIdx: null, isSubmitting: false };
+
     let deviceToken = localStorage.getItem('deviceToken');
     if (!deviceToken) {
         deviceToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
         localStorage.setItem('deviceToken', deviceToken);
     }
 
-    // ============ 状态 ============
-    const state = {
-        orders: [],
-        selectedFoodIdx: null,
-        isSubmitting: false
-    };
+    function switchPage(pageIndex) {
+        const tabs = document.querySelectorAll('.book-tab');
+        tabs.forEach((tab, index) => {
+            if (index + 1 === pageIndex) tab.classList.add('active');
+            else tab.classList.remove('active');
+        });
+        const pages = document.querySelectorAll('.book-page');
+        pages.forEach((page, index) => {
+            if (index + 1 === pageIndex) page.classList.add('active');
+            else page.classList.remove('active');
+        });
+    }
 
-    // ============ 主题管理 ============
     function initTheme() {
         const saved = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = saved || (prefersDark ? 'dark' : 'light');
-        applyTheme(theme);
-    }
-
-    function applyTheme(theme) {
+        const theme = saved || 'dark';
         document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        const btn = document.getElementById('themeToggle');
-        if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
     }
-
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+    document.getElementById('themeToggle').onclick = () => {
+        const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        localStorage.setItem('theme', t);
+        document.getElementById('themeToggle').textContent = t === 'dark' ? '☀️' : '🌙';
     }
-
-    // 监听系统主题变化
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            applyTheme(e.matches ? 'dark' : 'light');
-        }
-    });
-
-    // ============ 工具函数 ============
     function showToast(msg, isError = false) {
-        const toast = document.getElementById('toast');
-        toast.innerHTML = `${isError ? '⚠️' : '✅'} ${msg}`;
-        toast.style.background = isError
-            ? 'rgba(255, 70, 100, 0.92)'
-            : 'rgba(45, 35, 50, 0.92)';
-        toast.classList.add('show');
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+        const t = document.getElementById('toast');
+        t.innerHTML = `${isError ? '⚠️' : '✅'} ${msg}`;
+        t.style.background = isError ? 'rgba(255, 70, 100, 0.92)' : 'rgba(45, 35, 50, 0.92)';
+        t.classList.add('show');
+        clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 3000);
     }
-
-    function formatTime(timestamp) {
-        if (!timestamp) return '未知';
-        const d = new Date(timestamp);
-        return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+    function formatTime(ts) {
+        if(!ts) return '-'; const d = new Date(ts);
+        return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
     }
+    function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-    // 辅助防注入
-    function escapeHtml(text) {
-        const d = document.createElement('div');
-        d.textContent = text;
-        return d.innerHTML;
-    }
-
-    // ============ API ============
-    async function fetchOrders() {
-        try {
-            const res = await fetch(CONFIG.API_URL);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            return await res.json();
-        } catch (e) {
-            console.error('Fetch error:', e);
-            return null;
-        }
-    }
-
-    async function submitOrderToServer(data) {
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        if (!res.ok) {
-            let errMsg = '提交失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
-    }
-
-    async function deleteOrderFromServer(name) {
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, token: deviceToken }) // 发送 token 给后端进行安全校验
-        });
-        if (!res.ok) {
-            let errMsg = '删除失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
-    }
-
-    async function clearAllOrders(adminPassword) {
-        const res = await fetch(CONFIG.API_URL, { 
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ adminPassword }) // 发送管理员密码给后端校验
-        });
-        if (!res.ok) {
-            let errMsg = '清空失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
-    }
-
-    // ============ 渲染 ============
-    function renderFoodGrid() {
-        const grid = document.getElementById('foodGrid');
-        const myName = localStorage.getItem('myOrderName');
-
+    function renderNameGrid() {
+        const grid = document.getElementById('nameGrid');
+        const myLockedName = localStorage.getItem('myOrderName');
         grid.innerHTML = '';
-        CONFIG.MENU.forEach((item, i) => {
+
+        if(myLockedName && !state.selectedName) state.selectedName = myLockedName;
+
+        CONFIG.NAMES.forEach(name => {
+            const hasOrdered = state.orders.some(o => o.name === name);
+            const isMe = (name === myLockedName);
+            const isLocked = hasOrdered && !isMe;
+            const isActive = (state.selectedName === name);
+
             const div = document.createElement('div');
-            div.className = `food-item ${state.selectedFoodIdx === i ? 'active' : ''}`;
+            div.className = `grid-item name-item ${isLocked ? 'locked' : ''} ${isActive ? 'active' : ''}`;
+
+            let statusBadge = '';
+            if (isLocked) statusBadge = `<div class="name-status">已点</div>`;
+            else if (isMe) statusBadge = `<div class="name-status" style="background:var(--accent-pink-deep); color:white;">我</div>`;
+
             div.innerHTML = `
-                <div class="checkmark">✓</div>
-                <span class="food-icon">${item.icon}</span>
-                <span class="food-name">${escapeHtml(item.name)}</span>
-                <span class="food-price">¥${item.price}</span>
+                ${isActive ? '<div class="checkmark">✓</div>' : ''}
+                ${statusBadge}
+                ${escapeHtml(name)}
             `;
+
             div.onclick = () => {
-                if (myName) return;
-                state.selectedFoodIdx = i;
-                renderFoodGrid();
+                if (isLocked || myLockedName) return;
+                state.selectedName = name;
+                renderNameGrid();
+                updateSubmitBtn();
+                setTimeout(() => switchPage(2), 350);
             };
             grid.appendChild(div);
         });
     }
 
-    function renderNameSelect() {
-        const select = document.getElementById('studentSelect');
-        const myName = localStorage.getItem('myOrderName');
-        const currentVal = select.value;
+    function renderFoodGrid() {
+        const grid = document.getElementById('foodGrid');
+        const myLockedName = localStorage.getItem('myOrderName');
+        grid.innerHTML = '';
 
-        select.innerHTML = '<option value="">请选择名字...</option>';
-        CONFIG.NAMES.forEach(name => {
-            const ordered = state.orders.some(o => o.name === name);
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.text = name + (ordered ? ' (已点 ✓)' : '');
-            opt.disabled = ordered;
-            select.appendChild(opt);
+        CONFIG.MENU.forEach((item, i) => {
+            const isActive = (state.selectedFoodIdx === i);
+            const div = document.createElement('div');
+            div.className = `grid-item food-item ${isActive ? 'active' : ''} ${myLockedName ? 'locked' : ''}`;
+            div.innerHTML = `
+                ${isActive ? '<div class="checkmark">✓</div>' : ''}
+                <span class="food-icon">${item.icon}</span>
+                <span class="food-name">${escapeHtml(item.name)}</span>
+                <span class="food-price">¥${item.price}</span>
+            `;
+            div.onclick = () => {
+                if (myLockedName) return;
+                state.selectedFoodIdx = i;
+                renderFoodGrid();
+                updateSubmitBtn();
+            };
+            grid.appendChild(div);
         });
-
-        if (currentVal && !myName) select.value = currentVal;
-        updateSubmitButton();
     }
 
-    function updateSubmitButton() {
+    function updateDashboard() {
+        let total = 0; state.orders.forEach(o => total += (o.price || 0));
+        document.getElementById('topStatCount').innerText = `${state.orders.length} / ${CONFIG.NAMES.length}`;
+        document.getElementById('topStatMoney').innerText = `¥${total}`;
+
+        const sBody = document.getElementById('summaryBody');
+        const summary = {};
+        state.orders.forEach(o => {
+            if(!summary[o.food]) summary[o.food] = { count:0, price:o.price, icon: CONFIG.MENU.find(m=>m.name===o.food)?.icon || '🍱' };
+            summary[o.food].count++;
+        });
+
+        if(Object.keys(summary).length === 0) {
+            sBody.innerHTML = `<tr><td colspan="3" class="empty-state"><span class="empty-icon">🛋️</span><p>还没人点餐哦~ 快来抢沙发！</p></td></tr>`;
+        } else {
+            sBody.innerHTML = '';
+            Object.keys(summary).forEach(food => {
+                const r = summary[food];
+                sBody.innerHTML += `
+                    <tr>
+                        <td style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.15rem;">${r.icon}</span> ${escapeHtml(food)}</td>
+                        <td><span class="count-badge">${r.count}</span></td>
+                        <td style="text-align:right; font-weight:800; color:var(--accent-pink-deep);">¥${r.count * r.price}</td>
+                    </tr>`;
+            });
+        }
+
+        const lBody = document.getElementById('orderDetailList');
+        if(state.orders.length === 0) {
+            lBody.innerHTML = `<div class="empty-state"><span class="empty-icon">🍱</span><p>空空如也，快来下单吧~</p></div>`;
+        } else {
+            lBody.innerHTML = '';
+            const sorted = [...state.orders].sort((a,b)=>(b.time||0)-(a.time||0));
+            const myLockedName = localStorage.getItem('myOrderName');
+
+            sorted.forEach((o) => {
+                const isMy = (o.name === myLockedName);
+                const row = document.createElement('div');
+                row.className = 'order-row';
+                row.innerHTML = `
+                    <div class="order-main">
+                        <span class="order-name">${escapeHtml(o.name)} <span class="tag">${escapeHtml(o.food)}</span></span>
+                        <span class="order-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${formatTime(o.time)}</span>
+                    </div>
+                    <div class="order-right">
+                        <span class="order-price">¥${o.price}</span>
+                        ${isMy ? `
+                        <button class="btn-delete" onclick="cancelOrder('${escapeHtml(o.name)}')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>` : '<div style="width:32px;"></div>'}
+                    </div>`;
+                lBody.appendChild(row);
+            });
+        }
+    }
+
+    function updateSubmitBtn() {
         const btn = document.getElementById('submitBtn');
-        const grid = document.getElementById('foodGrid');
         const myName = localStorage.getItem('myOrderName');
 
         if (myName) {
             btn.disabled = true;
-            btn.classList.add('locked');
-            btn.innerHTML = `✅ 已点餐 · ${escapeHtml(myName)}`;
-            grid.classList.add('locked');
+            btn.className = 'btn locked-btn';
+            btn.innerHTML = `✅ ${escapeHtml(myName)} 已成功点餐`;
         } else {
-            btn.disabled = state.isSubmitting;
-            btn.classList.remove('locked');
-            btn.innerHTML = state.isSubmitting ? '⏳ 提交中...' : '✨ 提交订单';
-            grid.classList.remove('locked');
-        }
-    }
-
-    function renderSummary() {
-        const body = document.getElementById('summaryBody');
-        let total = 0, hasData = false;
-        body.innerHTML = '';
-
-        CONFIG.MENU.forEach(m => {
-            const count = state.orders.filter(o => o.food === m.name).length;
-            if (count > 0) {
-                hasData = true;
-                const sub = count * m.price;
-                total += sub;
-                body.innerHTML += `<tr>
-                    <td style="display:flex;align-items:center;gap:8px;">
-                        <span style="font-size:1.15rem;">${m.icon}</span>
-                        <span>${escapeHtml(m.name)}</span>
-                    </td>
-                    <td><span class="count-badge">${count}</span></td>
-                    <td style="font-weight:800;color:var(--accent-pink-deep);">¥${sub}</td>
-                </tr>`;
+            btn.className = 'btn';
+            if(!state.selectedName) {
+                btn.innerHTML = '👆 似乎还没在第一页选名字？'; btn.disabled = true;
+            } else if (state.selectedFoodIdx === null) {
+                btn.innerHTML = '👆 选一个好吃的吧'; btn.disabled = true;
+            } else {
+                btn.innerHTML = state.isSubmitting ? '⏳ 提交中...' : '✨ 确认提交订单';
+                btn.disabled = state.isSubmitting;
             }
-        });
-
-        if (!hasData) {
-            body.innerHTML = `<tr><td colspan="3">
-                <div class="empty-state">
-                    <span class="empty-icon">🛋️</span>
-                    <p>还没人点餐，快来抢沙发！</p>
-                </div>
-            </td></tr>`;
         }
-        document.getElementById('totalPrice').textContent = `¥${total}`;
     }
 
-    function renderOrderList() {
-        const list = document.getElementById('orderDetailList');
-
-        if (!state.orders.length) {
-            list.innerHTML = `
-                <div class="empty-state">
-                    <span class="empty-icon">🍱</span>
-                    <p>暂无订单，快来点餐吧～</p>
-                </div>`;
-            return;
-        }
-
-        const myName = localStorage.getItem('myOrderName');
-
-        list.innerHTML = '';
-        const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
-        sorted.forEach(o => {
-            const isMyOrder = (myName === o.name); // 判断该订单是否属于自己
-            const row = document.createElement('div');
-            row.className = 'order-row';
-            row.innerHTML = `
-                <div class="order-main">
-                    <span class="order-name">
-                        ${escapeHtml(o.name)}
-                        <span class="tag">${escapeHtml(o.food)}</span>
-                    </span>
-                    <span class="order-time">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        ${formatTime(o.time)}
-                    </span>
-                </div>
-                <div class="order-right">
-                    <span class="order-price">¥${o.price || 0}</span>
-                    <!-- 仅当此订单是当前设备提交的，才渲染撤销按钮 -->
-                    ${isMyOrder ? `
-                    <button class="btn-delete" data-name="${escapeHtml(o.name)}" title="撤销">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                    ` : '<div style="width: 32px"></div>'}
-                </div>
-            `;
-            list.appendChild(row);
-        });
-    }
-
-    function refreshUI() {
-        renderSummary();
-        renderOrderList();
-    }
-
-    function updateSyncStatus(ok) {
+    function updateNetStatus(ok) {
         const dot = document.getElementById('syncDot');
         const txt = document.getElementById('syncText');
         if (ok) {
             dot.className = 'sync-dot active';
-            const now = new Date();
-            txt.textContent = `已同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
+            const now = new Date(); txt.textContent = `已同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
         } else {
-            dot.className = 'sync-dot error';
-            txt.textContent = '离线 (╥_╥)';
-        }
-    }
-
-    // ============ 核心逻辑 ============
-    function checkDeviceLock() {
-        const myName = localStorage.getItem('myOrderName');
-        if (myName && !state.orders.some(o => o.name === myName)) {
-            localStorage.removeItem('myOrderName');
-            state.selectedFoodIdx = null;
-            renderFoodGrid();
+            dot.className = 'sync-dot error'; txt.textContent = '离线 (╥_╥)';
         }
     }
 
     async function fetchData() {
-        const data = await fetchOrders();
-        if (data !== null) {
-            state.orders = data;
-            checkDeviceLock();
-            renderNameSelect();
-            refreshUI();
-            updateSyncStatus(true);
-        } else {
-            updateSyncStatus(false);
-        }
+        try {
+            const res = await fetch(CONFIG.API_URL);
+            if (!res.ok) throw new Error();
+            state.orders = await res.json();
+
+            const myName = localStorage.getItem('myOrderName');
+            if (myName && !state.orders.some(o => o.name === myName)) {
+                localStorage.removeItem('myOrderName');
+                state.selectedName = null; state.selectedFoodIdx = null;
+            }
+            renderNameGrid(); renderFoodGrid(); updateDashboard(); updateSubmitBtn(); updateNetStatus(true);
+        } catch (e) { updateNetStatus(false); }
     }
 
     async function submitOrder() {
-        if (state.isSubmitting) return;
-        if (localStorage.getItem('myOrderName')) {
-            return showToast('已经点过餐啦～', true);
+        if(state.isSubmitting || !state.selectedName || state.selectedFoodIdx === null) {
+            if(!state.selectedName) switchPage(1);
+            return;
         }
-        const name = document.getElementById('studentSelect').value;
-        if (!name) return showToast('先选名字哦 (｡•́︿•̀｡)', true);
-        if (state.selectedFoodIdx === null) return showToast('还没选餐品呢～', true);
 
         const food = CONFIG.MENU[state.selectedFoodIdx];
-        state.isSubmitting = true;
-        updateSubmitButton();
+        state.isSubmitting = true; updateSubmitBtn();
 
         try {
-            // 向后端一并提交 deviceToken 设备特征，做绑定
-            await submitOrderToServer({
-                name, food: food.name, price: food.price, time: Date.now(), token: deviceToken
+            const res = await fetch(CONFIG.API_URL, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: state.selectedName, food: food.name, price: food.price, time: Date.now(), token: deviceToken })
             });
-            showToast(`点餐成功！${food.icon} ${food.name}`);
-            localStorage.setItem('myOrderName', name);
+            if (!res.ok) throw new Error();
+
+            localStorage.setItem('myOrderName', state.selectedName);
+            showToast(`成功下单：${food.name}！`);
             await fetchData();
-        } catch (e) {
-            showToast(e.message || '提交失败了 (╥_╥)', true);
-        } finally {
-            state.isSubmitting = false;
-            updateSubmitButton();
-        }
+            setTimeout(() => switchPage(3), 500);
+        } catch (e) { showToast('提交失败了，刷新重试~', true); }
+        finally { state.isSubmitting = false; updateSubmitBtn(); }
     }
 
-    async function cancelPersonalOrder(name) {
-        if (!confirm(`撤销【${name}】的订单？`)) return;
+    async function cancelOrder(name) {
+        if (!confirm(`确定不吃了吗，要撤销订单？`)) return;
         try {
-            await deleteOrderFromServer(name);
-            showToast(`已撤销 ${name} 的订单 ♪`);
-            if (localStorage.getItem('myOrderName') === name) {
-                localStorage.removeItem('myOrderName');
-                state.selectedFoodIdx = null;
-            }
+            const res = await fetch(CONFIG.API_URL, {
+                method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, token: deviceToken })
+            });
+            if (!res.ok) throw new Error();
+
+            localStorage.removeItem('myOrderName');
+            state.selectedName = null; state.selectedFoodIdx = null;
+            showToast('订单已撤销');
             await fetchData();
-        } catch (e) {
-            showToast(e.message || '撤销失败了～', true);
-        }
+            switchPage(1);
+        } catch (e) { showToast('撤销失败', true); }
     }
 
-    function copySummaryText() {
-        if (!state.orders.length) return showToast('还没有数据哦～', true);
+    document.getElementById('copyBtn').onclick = () => {
+        if (!state.orders.length) return showToast('还没有数据哦', true);
 
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
-        let text = `📋 今日点饭汇总 (${timeStr})\n═══════════════════\n`;
-        let totalAll = 0, totalCount = 0;
-
-        CONFIG.MENU.forEach(m => {
-            const count = state.orders.filter(o => o.food === m.name).length;
-            if (count > 0) {
-                const sub = count * m.price;
-                totalAll += sub; totalCount += count;
-                text += `${m.icon} ${m.name} × ${count}份 = ¥${sub}\n`;
-            }
+        let text = `📋 今日点单汇总 (${timeStr})\n═══════════════════\n`;
+        let total = 0, count = 0;
+        const summary = {};
+        state.orders.forEach(o => {
+            if(!summary[o.food]) summary[o.food] = { count: 0, price: o.price };
+            summary[o.food].count++;
         });
-
-        text += `───────────────────\n💰 总金额: ¥${totalAll}（共${totalCount}份）\n\n👤 详细：\n`;
-        const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
-        sorted.forEach(o => text += `  ${o.name} → ${o.food}\n`);
+        Object.keys(summary).forEach(food => {
+            text += `▪ ${food} × ${summary[food].count}份\n`;
+            total += (summary[food].count * summary[food].price);
+            count += summary[food].count;
+        });
+        text += `\n共计: ${count}份，总金额: ¥${total}\n\n👤 详细：\n`;
+        const sorted = [...state.orders].sort((a,b)=>(b.time||0)-(a.time||0));
+        sorted.forEach(o => text += `  ${o.name} ➔ ${o.food}\n`);
 
         const doFallback = () => {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.cssText = 'position:fixed;left:-9999px;';
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); showToast('复制成功 ♡'); }
-            catch(_) { showToast('复制失败...', true); }
+            const ta = document.createElement('textarea'); ta.value = text;
+            ta.style.cssText = 'position:fixed;left:-9999px;'; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); showToast('复制成功 ✨'); } catch(_) { showToast('复制失败', true); }
             ta.remove();
         };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(()=>showToast('复制成功 ✨')).catch(doFallback);
+        else doFallback();
+    };
 
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text)
-                .then(() => showToast('复制成功！(◕‿◕✿)'))
-                .catch(doFallback);
-        } else {
-            doFallback();
-        }
-    }
+    // 初始化
+    initTheme();
+    renderNameGrid(); renderFoodGrid(); updateSubmitBtn();
+    document.getElementById('submitBtn').onclick = submitOrder;
 
-    async function resetAll() {
-        const code = prompt('输入管理员密码：');
-        if (code === null) return;
-
-        try {
-            await clearAllOrders(code);
-            showToast('已清空所有数据！');
-            localStorage.removeItem('myOrderName');
-            state.selectedFoodIdx = null;
-            await fetchData();
-        } catch (e) {
-            showToast(e.message || '清空失败了～', true);
-        }
-    }
-
-    // ============ 初始化 ============
-    async function init() {
-        initTheme();
-        renderFoodGrid();
-
-        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-        document.getElementById('submitBtn').addEventListener('click', submitOrder);
-        document.getElementById('copyBtn').addEventListener('click', copySummaryText);
-        document.getElementById('resetBtn').addEventListener('click', resetAll);
-
-        document.getElementById('orderDetailList').addEventListener('click', (e) => {
-            const btn = e.target.closest('.btn-delete');
-            if (btn) cancelPersonalOrder(btn.dataset.name);
-        });
-
-        await fetchData();
-        setInterval(fetchData, CONFIG.REFRESH_INTERVAL);
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
+    fetchData();
+    setInterval(fetchData, CONFIG.REFRESH_INTERVAL);
 </script>
 </body>
 </html>
