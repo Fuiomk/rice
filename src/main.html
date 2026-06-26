@@ -721,7 +721,7 @@
         .btn-copy svg { stroke: var(--accent-purple); }
 
         /* ============ 表格 ============ */
-        .table-wrapper {
+        .table-wrap {
             overflow-x: auto;
             margin: 0 -4px;
             padding: 0 4px;
@@ -937,24 +937,6 @@
             animation: bounce-soft 2s ease-in-out infinite;
         }
 
-        .admin-reset {
-            background: none;
-            border: 1.5px dashed var(--border-soft);
-            color: var(--text-tertiary);
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: all 0.3s;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: 500;
-        }
-        .admin-reset:hover {
-            color: var(--accent-pink-deep);
-            border-color: var(--accent-pink);
-            background: rgba(255, 92, 141, 0.05);
-            transform: scale(1.03);
-        }
-
         /* ============ 空状态 ============ */
         .empty-state {
             text-align: center;
@@ -1094,7 +1076,7 @@
                 复制
             </button>
         </div>
-        <div class="table-wrapper">
+        <div class="table-wrap">
             <table>
                 <thead>
                 <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
@@ -1126,10 +1108,6 @@
                 <p>加载中...</p>
             </div>
         </div>
-        <hr class="divider">
-        <div style="text-align: center;">
-            <button class="admin-reset" id="resetBtn">⚠️ 管理员清空数据</button>
-        </div>
     </div>
 
     <footer>
@@ -1143,7 +1121,6 @@
     const CONFIG = {
         API_URL: 'https://api.yukiom.us.ci/',
         REFRESH_INTERVAL: 15000,
-        ADMIN_PASSWORD: '123',
         NAMES: ['周', '陈', '袁', '范', '祝', '何', '黄', '宋', '朱'],
         MENU: [
             { name: '炒饭', price: 6, icon: '🍚' },
@@ -1160,7 +1137,7 @@
         ]
     };
 
-    // ============ 设备标识 (防篡改) ============
+    // ============ 设备标识 ============
     let deviceToken = localStorage.getItem('deviceToken');
     if (!deviceToken) {
         deviceToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -1219,7 +1196,6 @@
         return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
     }
 
-    // 辅助防注入
     function escapeHtml(text) {
         const d = document.createElement('div');
         d.textContent = text;
@@ -1255,23 +1231,10 @@
         const res = await fetch(CONFIG.API_URL, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, token: deviceToken }) // 发送 token 给后端进行安全校验
+            body: JSON.stringify({ name, token: deviceToken })
         });
         if (!res.ok) {
             let errMsg = '删除失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
-    }
-
-    async function clearAllOrders(adminPassword) {
-        const res = await fetch(CONFIG.API_URL, { 
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ adminPassword }) // 发送管理员密码给后端校验
-        });
-        if (!res.ok) {
-            let errMsg = '清空失败';
             try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
             throw new Error(errMsg);
         }
@@ -1388,7 +1351,7 @@
         list.innerHTML = '';
         const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
         sorted.forEach(o => {
-            const isMyOrder = (myName === o.name); // 判断该订单是否属于自己
+            const isMyOrder = (myName === o.name);
             const row = document.createElement('div');
             row.className = 'order-row';
             row.innerHTML = `
@@ -1404,7 +1367,6 @@
                 </div>
                 <div class="order-right">
                     <span class="order-price">¥${o.price || 0}</span>
-                    <!-- 仅当此订单是当前设备提交的，才渲染撤销按钮 -->
                     ${isMyOrder ? `
                     <button class="btn-delete" data-name="${escapeHtml(o.name)}" title="撤销">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -1471,7 +1433,6 @@
         updateSubmitButton();
 
         try {
-            // 向后端一并提交 deviceToken 设备特征，做绑定
             await submitOrderToServer({
                 name, food: food.name, price: food.price, time: Date.now(), token: deviceToken
             });
@@ -1543,21 +1504,6 @@
         }
     }
 
-    async function resetAll() {
-        const code = prompt('输入管理员密码：');
-        if (code === null) return;
-
-        try {
-            await clearAllOrders(code);
-            showToast('已清空所有数据！');
-            localStorage.removeItem('myOrderName');
-            state.selectedFoodIdx = null;
-            await fetchData();
-        } catch (e) {
-            showToast(e.message || '清空失败了～', true);
-        }
-    }
-
     // ============ 初始化 ============
     async function init() {
         initTheme();
@@ -1566,7 +1512,6 @@
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
         document.getElementById('submitBtn').addEventListener('click', submitOrder);
         document.getElementById('copyBtn').addEventListener('click', copySummaryText);
-        document.getElementById('resetBtn').addEventListener('click', resetAll);
 
         document.getElementById('orderDetailList').addEventListener('click', (e) => {
             const btn = e.target.closest('.btn-delete');
