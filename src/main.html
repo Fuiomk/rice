@@ -167,10 +167,10 @@
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
-                radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
-                radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
-                radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
+                    radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
+                    radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
+                    radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
+                    radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
             pointer-events: none;
             z-index: 0;
             transition: background 0.5s ease;
@@ -1097,16 +1097,16 @@
         <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
+                <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
                 </thead>
                 <tbody id="summaryBody">
-                    <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary); padding: 24px;">加载中...</td></tr>
+                <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary); padding: 24px;">加载中...</td></tr>
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td colspan="2" style="text-align:right; padding-top:18px; font-weight:600; color:var(--text-secondary); background:transparent;">合计</td>
-                        <td class="total-amount" id="totalPrice" style="padding-top:18px; background:transparent;">¥0</td>
-                    </tr>
+                <tr>
+                    <td colspan="2" style="text-align:right; padding-top:18px; font-weight:600; color:var(--text-secondary); background:transparent;">合计</td>
+                    <td class="total-amount" id="totalPrice" style="padding-top:18px; background:transparent;">¥0</td>
+                </tr>
                 </tfoot>
             </table>
         </div>
@@ -1160,6 +1160,13 @@
         ]
     };
 
+    // ============ 设备标识 (防篡改) ============
+    let deviceToken = localStorage.getItem('deviceToken');
+    if (!deviceToken) {
+        deviceToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        localStorage.setItem('deviceToken', deviceToken);
+    }
+
     // ============ 状态 ============
     const state = {
         orders: [],
@@ -1212,6 +1219,7 @@
         return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
     }
 
+    // 辅助防注入
     function escapeHtml(text) {
         const d = document.createElement('div');
         d.textContent = text;
@@ -1247,14 +1255,26 @@
         const res = await fetch(CONFIG.API_URL, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, token: deviceToken }) // 发送 token 给后端进行安全校验
         });
-        if (!res.ok) throw new Error('删除失败');
+        if (!res.ok) {
+            let errMsg = '删除失败';
+            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
+            throw new Error(errMsg);
+        }
     }
 
-    async function clearAllOrders() {
-        const res = await fetch(CONFIG.API_URL, { method: 'DELETE' });
-        if (!res.ok) throw new Error('清空失败');
+    async function clearAllOrders(adminPassword) {
+        const res = await fetch(CONFIG.API_URL, { 
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ adminPassword }) // 发送管理员密码给后端校验
+        });
+        if (!res.ok) {
+            let errMsg = '清空失败';
+            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
+            throw new Error(errMsg);
+        }
     }
 
     // ============ 渲染 ============
@@ -1363,9 +1383,12 @@
             return;
         }
 
+        const myName = localStorage.getItem('myOrderName');
+
         list.innerHTML = '';
         const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
         sorted.forEach(o => {
+            const isMyOrder = (myName === o.name); // 判断该订单是否属于自己
             const row = document.createElement('div');
             row.className = 'order-row';
             row.innerHTML = `
@@ -1381,9 +1404,12 @@
                 </div>
                 <div class="order-right">
                     <span class="order-price">¥${o.price || 0}</span>
+                    <!-- 仅当此订单是当前设备提交的，才渲染撤销按钮 -->
+                    ${isMyOrder ? `
                     <button class="btn-delete" data-name="${escapeHtml(o.name)}" title="撤销">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
+                    ` : '<div style="width: 32px"></div>'}
                 </div>
             `;
             list.appendChild(row);
@@ -1445,8 +1471,9 @@
         updateSubmitButton();
 
         try {
+            // 向后端一并提交 deviceToken 设备特征，做绑定
             await submitOrderToServer({
-                name, food: food.name, price: food.price, time: Date.now()
+                name, food: food.name, price: food.price, time: Date.now(), token: deviceToken
             });
             showToast(`点餐成功！${food.icon} ${food.name}`);
             localStorage.setItem('myOrderName', name);
@@ -1470,7 +1497,7 @@
             }
             await fetchData();
         } catch (e) {
-            showToast('撤销失败了～', true);
+            showToast(e.message || '撤销失败了～', true);
         }
     }
 
@@ -1519,16 +1546,15 @@
     async function resetAll() {
         const code = prompt('输入管理员密码：');
         if (code === null) return;
-        if (code !== CONFIG.ADMIN_PASSWORD) return showToast('密码不对～', true);
 
         try {
-            await clearAllOrders();
+            await clearAllOrders(code);
             showToast('已清空所有数据！');
             localStorage.removeItem('myOrderName');
             state.selectedFoodIdx = null;
             await fetchData();
         } catch (e) {
-            showToast('清空失败了～', true);
+            showToast(e.message || '清空失败了～', true);
         }
     }
 
