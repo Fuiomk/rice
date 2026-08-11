@@ -134,10 +134,10 @@ document.getElementById("resumeBtn").onclick=()=>resume();
 const hiKey="gensokyo_danmaku_hi";
 let hi=Number(localStorage.getItem(hiKey)||0);
 const state={running:false,paused:false,mode:"stage",score:0,lives:3,bombs:3,power:1,grazes:0,time:0,frame:0,phase:1};
-let p,bullets,enemies,shots,particles,lasers,boss,stage,spawnTimer,last=0,raf=0;
+let p,bullets,enemies,shots,particles,lasers,boss,stage,spawnTimer,last=0,raf=0,bombVisual=0;
 
 function reset(){
- state.mode=selectedMode;state.score=0;state.lives=3;state.bombs=3;state.power=1;state.grazes=0;state.time=0;state.frame=0;state.phase=1;
+ state.mode=selectedMode;state.score=0;state.lives=3;state.bombs=3;state.power=1;state.grazes=0;state.time=0;state.frame=0;state.phase=1;bombVisual=0;
  p={x:350,y:780,r:3.2,speed:4.8,shotCd:0,inv:0,grazeCd:0};
  bullets=[];enemies=[];shots=[];particles=[];lasers=[];spawnTimer=0;
  boss=state.mode==="boss"?{x:350,y:145,hp:1000,max:1000,phase:0,t:0,spell:0}:null;
@@ -313,7 +313,7 @@ function damage(){
 }
 function useBomb(){
  if(!state.running||state.bombs<=0)return;
- state.bombs--;bullets=[];lasers=[];p.inv=80;state.score+=500;burst(p.x,p.y,50);snd("laser",.35);
+ state.bombs--;bullets=[];lasers=[];p.inv=80;state.score+=500;burst(p.x,p.y,50);bombVisual=1;snd("laser",.35);
 }
 addEventListener("keydown",e=>{if(e.key.toLowerCase()==="x")useBomb()});
 
@@ -349,6 +349,7 @@ function burst(x,y,n){
 function draw(){
  ctx.clearRect(0,0,W,H);
  drawBG();
+ if(bombVisual>0){drawBombCircle();bombVisual++;if(bombVisual>45)bombVisual=0}
  if(boss)drawBoss();
  for(const e of enemies)drawEnemy(e);
  for(const l of lasers)drawLaser(l);
@@ -363,14 +364,30 @@ function drawBG(){
  for(let i=0;i<70;i++){const x=(i*97)%W,y=(i*149+state.frame*.12)%H;ctx.globalAlpha=.25+((i*17)%60)/100;ctx.fillRect(x,y,1,1)}ctx.globalAlpha=1;
  ctx.strokeStyle="#ffffff08";for(let x=0;x<W;x+=50){ctx.beginPath();ctx.moveTo(x,60);ctx.lineTo(x,H);ctx.stroke()}
 }
+const PLAYER_SPRITE={frameW:32,frameH:48,cols:8,rows:{idle:0,left:1,right:2}};
+function playerSpriteRow(){
+ const l=keys.has("a")||keys.has("arrowleft"),r=keys.has("d")||keys.has("arrowright");
+ return l&&!r?1:r&&!l?2:0;
+}
 function drawPlayer(){
- if(p.inv>0 && Math.floor(p.inv/5)%2===0)return;
- if(playerImg.complete&&playerImg.naturalWidth){
-   const size=52;ctx.globalAlpha=.85;ctx.drawImage(playerImg,p.x-size/2,p.y-size/2,size,size);ctx.globalAlpha=1;
+ if(!playerImg.complete||!playerImg.naturalWidth)return;
+ if(p.inv>0&&Math.floor(p.inv/5)%2===0)return;
+ const row=playerSpriteRow();
+ const frame=Math.floor(state.frame*(keys.has("shift")?.13:.20))%8;
+ ctx.save();ctx.globalAlpha=.94;ctx.imageSmoothingEnabled=false;
+ ctx.drawImage(playerImg,frame*32,row*48,32,48,p.x-28,p.y-42,56,84);
+ ctx.restore();
+ if(keys.has("shift")){
+   ctx.save();ctx.strokeStyle="#8deaff99";ctx.shadowBlur=10;ctx.shadowColor="#8deaff";
+   ctx.beginPath();ctx.arc(p.x,p.y,p.r+3,0,Math.PI*2);ctx.stroke();
+   ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore();
  }
- ctx.save();ctx.translate(p.x,p.y);
- if(keys.has("shift")){ctx.strokeStyle="#8deaff66";ctx.beginPath();ctx.arc(0,0,12,0,Math.PI*2);ctx.stroke()}
- ctx.fillStyle="#fff";ctx.shadowBlur=14;ctx.shadowColor="#fff";ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();ctx.restore()
+}
+function drawBombCircle(){
+ if(!playerImg.complete||!playerImg.naturalWidth)return;
+ const frame=Math.min(3,Math.floor(bombVisual/12)),size=210+bombVisual*2.2;
+ ctx.save();ctx.globalAlpha=Math.max(0,1-bombVisual/55);ctx.translate(p.x,p.y);ctx.rotate(bombVisual*.035);
+ ctx.imageSmoothingEnabled=false;ctx.drawImage(playerImg,frame*64,192,64,64,-size/2,-size/2,size,size);ctx.restore();
 }
 function drawShot(s){ctx.fillStyle="#aaf2ff";ctx.shadowBlur=12;ctx.shadowColor="#aaf2ff";ctx.fillRect(s.x-2,s.y-8,4,14);ctx.shadowBlur=0}
 function drawBullet(b){
