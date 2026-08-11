@@ -1,929 +1,418 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>幻想乡 · Dream Gate</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>幻想乡 · 弹幕演舞</title>
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-:root{
-    --pink:#ff9ecb;
-    --pink2:#ff6fa9;
-    --purple:#b88cff;
-    --cyan:#89f7ff;
-    --glass:rgba(255,255,255,0.12);
-    --glass-border:rgba(255,255,255,0.24);
-}
-
-html,body{
-    width:100%;
-    min-height:100%;
-    overflow-x:hidden;
-    font-family:'Nunito','Noto Sans SC',sans-serif;
-    background:#090311;
-    color:white;
-}
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-    radial-gradient(circle at 20% 20%, rgba(255,120,180,.35), transparent 25%),
-    radial-gradient(circle at 80% 30%, rgba(137,247,255,.25), transparent 25%),
-    radial-gradient(circle at 50% 80%, rgba(184,140,255,.30), transparent 30%),
-    linear-gradient(135deg,#12051f,#1f0d30,#090311);
-    z-index:-5;
-    animation:bgMove 18s linear infinite alternate;
-}
-
-@keyframes bgMove{
-    from{
-        filter:hue-rotate(0deg);
-        transform:scale(1);
-    }
-    to{
-        filter:hue-rotate(20deg);
-        transform:scale(1.08);
-    }
-}
-
-.mouse-light{
-    position:fixed;
-    width:400px;
-    height:400px;
-    border-radius:50%;
-    pointer-events:none;
-    background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);
-    transform:translate(-50%,-50%);
-    mix-blend-mode:screen;
-    z-index:1;
-}
-
-.blob{
-    position:fixed;
-    border-radius:50%;
-    filter:blur(60px);
-    opacity:.5;
-    z-index:-1;
-    animation:blobFloat 12s ease-in-out infinite alternate;
-}
-
-.blob1{
-    width:320px;
-    height:320px;
-    background:#ff69b4;
-    top:-100px;
-    left:-60px;
-}
-
-.blob2{
-    width:300px;
-    height:300px;
-    background:#7a5cff;
-    bottom:-120px;
-    right:-50px;
-    animation-delay:2s;
-}
-
-.blob3{
-    width:250px;
-    height:250px;
-    background:#68eaff;
-    top:45%;
-    left:60%;
-    animation-delay:5s;
-}
-
-@keyframes blobFloat{
-    0%{
-        transform:translateY(0) translateX(0) scale(1);
-    }
-    100%{
-        transform:translateY(-40px) translateX(30px) scale(1.2);
-    }
-}
-
-.sparkles{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    pointer-events:none;
-}
-
-.sparkle{
-    position:absolute;
-    width:4px;
-    height:4px;
-    background:white;
-    border-radius:50%;
-    box-shadow:0 0 12px white;
-    opacity:.7;
-    animation:twinkle linear infinite;
-}
-
-@keyframes twinkle{
-    0%{
-        transform:translateY(0) scale(0);
-        opacity:0;
-    }
-    20%{
-        opacity:1;
-        transform:scale(1);
-    }
-    100%{
-        transform:translateY(-120vh) scale(0);
-        opacity:0;
-    }
-}
-
-/* ================== 新增：两侧御札（符卡）悬挂与魔法阵装饰 ================== */
-.side-decor {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.25;
-    transition: opacity 0.3s;
-}
-
-.left-decor {
-    left: 4.5%;
-}
-
-.right-decor {
-    right: 4.5%;
-}
-
-/* 纯 CSS 阴阳玉 */
-.yin-yang-css {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    background: linear-gradient(to right, #fff 50%, #12051f 50%);
-    border: 2px solid rgba(255,255,255,0.2);
-    position: relative;
-    box-shadow: 0 0 30px rgba(184,140,255,0.3);
-    animation: rotateClockwise 25s linear infinite;
-}
-.yin-yang-css::before, .yin-yang-css::after {
-    content: '';
-    position: absolute;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-.yin-yang-css::before {
-    top: 0;
-    background: #fff;
-    box-shadow: inset 0 0 0 14px #12051f;
-}
-.yin-yang-css::after {
-    bottom: 0;
-    background: #12051f;
-    box-shadow: inset 0 0 0 14px #fff;
-}
-
-/* 纯 CSS 八卦魔法阵 */
-.magic-circle-css {
-    width: 130px;
-    height: 130px;
-    border: 2px dashed rgba(255, 111, 169, 0.4);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    animation: rotateCounterClockwise 30s linear infinite;
-    box-shadow: 0 0 30px rgba(255, 111, 169, 0.25);
-}
-.magic-circle-css::before {
-    content: '☯';
-    font-size: 2.5rem;
-    color: rgba(255, 111, 169, 0.6);
-    text-shadow: 0 0 10px rgba(255, 111, 169, 0.4);
-}
-.magic-circle-css::after {
-    content: '';
-    position: absolute;
-    inset: 15px;
-    border: 1px solid rgba(255, 111, 169, 0.3);
-    border-radius: 50%;
-}
-
-/* 博丽神社悬挂符札 */
-.talisman {
-    position: fixed;
-    top: 20%;
-    width: 54px;
-    height: 140px;
-    background: #fffdf0;
-    border: 2px solid #e63946;
-    box-shadow: 0 10px 30px rgba(230, 57, 70, 0.25);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    opacity: 0.55;
-    pointer-events: none;
-    transform-origin: top center;
-    animation: swayTalisman 6s ease-in-out infinite alternate;
-}
-
-.talisman-left {
-    left: 2%;
-}
-
-.talisman-right {
-    right: 2%;
-    animation-delay: -3s;
-}
-
-.talisman::before {
-    writing-mode: vertical-rl;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-weight: 900;
-    color: #e63946;
-    font-size: 1rem;
-    letter-spacing: 5px;
-    border: 1px solid #e63946;
-    padding: 6px 3px;
-    border-radius: 2px;
-}
-
-.talisman-left::before {
-    content: '退治';
-}
-
-.talisman-right::before {
-    content: '结界';
-}
-
-.talisman::after {
-    content: '';
-    position: absolute;
-    bottom: 8px;
-    width: 10px;
-    height: 10px;
-    background: #e63946;
-    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-}
-
-@keyframes swayTalisman {
-    0% { transform: rotate(-6deg); }
-    100% { transform: rotate(6deg); }
-}
-
-@keyframes rotateClockwise {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-@keyframes rotateCounterClockwise {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
-}
-
-/* 樱花瓣降落的基础样式（仅限两侧飘落） */
-.petal {
-    position: fixed;
-    z-index: 1;
-    background: radial-gradient(circle, #ffb3d1, #ff77a8);
-    border-radius: 150% 0px 150% 150%;
-    opacity: 0.7;
-    pointer-events: none;
-    animation-name: petalFall;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-@keyframes petalFall {
-    0% {
-        transform: translateY(-20px) rotate(0deg) translateX(0);
-        opacity: 0;
-    }
-    15% {
-        opacity: 0.7;
-    }
-    90% {
-        opacity: 0.7;
-    }
-    100% {
-        transform: translateY(105vh) rotate(720deg) translateX(45px);
-        opacity: 0;
-    }
-}
-
-@media(max-width: 1350px) {
-    .side-decor, .talisman, .petal {
-        display: none !important;
-    }
-}
-/* =================================================== */
-
-.wrap{
-    position:relative;
-    z-index:2;
-    width:min(1080px,92%);
-    margin:50px auto;
-    transition: width 0.3s ease;
-}
-
-.hero{
-    position:relative;
-    overflow:hidden;
-    border:1px solid var(--glass-border);
-    background:var(--glass);
-    backdrop-filter:blur(30px) saturate(180%);
-    border-radius:42px;
-    padding:60px 40px;
-    box-shadow:
-    0 0 0 1px rgba(255,255,255,.08) inset,
-    0 20px 80px rgba(0,0,0,.45),
-    0 0 80px rgba(255,120,180,.15);
-}
-
-.hero::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:
-    linear-gradient(130deg,
-    rgba(255,255,255,.22),
-    transparent 40%,
-    transparent 60%,
-    rgba(255,255,255,.08));
-    pointer-events:none;
-}
-
-.main-title{
-    font-size:clamp(3rem,10vw,7rem);
-    font-weight:900;
-    line-height:1;
-    letter-spacing:-4px;
-    background:linear-gradient(135deg,#fff,#ffb6d9,#d3c0ff,#9cf7ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    filter:drop-shadow(0 0 30px rgba(255,255,255,.2));
-}
-
-.subtitle{
-    margin-top:18px;
-    font-size:1.1rem;
-    color:rgba(255,255,255,.75);
-    line-height:1.8;
-    max-width:700px;
-}
-
-.hero-buttons{
-    display:flex;
-    gap:18px;
-    margin-top:35px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    position:relative;
-    overflow:hidden;
-    text-decoration:none;
-    color:white;
-    padding:16px 28px;
-    border-radius:22px;
-    font-weight:800;
-    border:1px solid rgba(255,255,255,.18);
-    backdrop-filter:blur(12px);
-    transition:.35s cubic-bezier(.2,.9,.2,1);
-}
-
-.btn-primary{
-    background:linear-gradient(135deg,#ff77b7,#ff5f8d);
-    box-shadow:0 15px 40px rgba(255,80,140,.4);
-}
-
-.btn:hover{
-    transform:translateY(-6px) scale(1.03);
-}
-
-.grid{
-    position:relative;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:24px;
-    margin-top:35px;
-}
-
-.floating-anime{
-    position:absolute;
-    width:220px;
-    height:220px;
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-position:center;
-    pointer-events:none;
-    z-index:0;
-    opacity:.18;
-    filter:drop-shadow(0 0 25px rgba(255,255,255,.2));
-    animation:animeFloat 7s ease-in-out infinite;
-}
-
-.reimu{
-    background-image:url('img/reimu.png');
-    top:-80px;
-    right:-40px;
-}
-
-.marisa{
-    background-image:url('img/marisa.png');
-    bottom:-60px;
-    left:-60px;
-    animation-delay:2s;
-}
-
-@keyframes animeFloat{
-    0%,100%{
-        transform:translateY(0px) rotate(0deg);
-    }
-    50%{
-        transform:translateY(-18px) rotate(2deg);
-    }
-}
-
-.card{
-    z-index:2;
-    position:relative;
-    overflow:hidden;
-    padding:26px;
-    border-radius:30px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(24px);
-    transition:.4s cubic-bezier(.2,.9,.2,1);
-}
-
-.card::before{
-    content:"";
-    position:absolute;
-    inset:-1px;
-    background:linear-gradient(135deg,
-    rgba(255,255,255,.22),
-    transparent,
-    rgba(255,255,255,.05));
-    opacity:0;
-    transition:.4s;
-}
-
-.card:hover::before{
-    opacity:1;
-}
-
-.card:hover{
-    transform:translateY(-10px) rotate(-1deg);
-    box-shadow:0 20px 50px rgba(0,0,0,.35);
-}
-
-.card-icon{
-    font-size:3rem;
-    margin-bottom:15px;
-    filter:drop-shadow(0 0 15px rgba(255,255,255,.3));
-}
-
-.portrait{
-    position:absolute;
-    right:-10px;
-    bottom:0;
-    height:140px;
-    object-fit:contain;
-    opacity:.92;
-    filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));
-    transition:.4s;
-    pointer-events:none;
-    /* 新增：滤除自定义立绘的深色背景，使其完美融入玻璃容器 */
-    mix-blend-mode: screen; 
-}
-
-.card:hover .portrait{
-    transform:scale(1.08) translateY(-6px);
-}
-
-.card h3{
-    font-size:1.2rem;
-    margin-bottom:10px;
-}
-
-.card p{
-    color:rgba(255,255,255,.72);
-    line-height:1.7;
-    font-size:.95rem;
-}
-
-.live-panel{
-    margin-top:35px;
-    display:grid;
-    grid-template-columns:1.2fr .8fr;
-    gap:24px;
-}
-
-.message-box,
-.fortune-box{
-    position:relative;
-    overflow:hidden;
-    border-radius:30px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(22px);
-    padding:28px;
-}
-
-.message-title{
-    font-size:.9rem;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    color:#ffbada;
-    margin-bottom:15px;
-}
-
-.message-content{
-    font-size:1.2rem;
-    line-height:1.8;
-    color:white;
-}
-
-.fortune-box h2{
-    font-size:1.3rem;
-    margin-bottom:18px;
-}
-
-.fortune{
-    font-size:2rem;
-    font-weight:900;
-    background:linear-gradient(135deg,#fff,#ffd0f0);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    margin-bottom:18px;
-}
-
-.draw{
-    width:100%;
-    border:none;
-    cursor:pointer;
-    padding:16px;
-    border-radius:18px;
-    background:linear-gradient(135deg,#8a7dff,#ff73b3);
-    color:white;
-    font-weight:800;
-    font-size:1rem;
-    transition:.3s;
-}
-
-.draw:hover{
-    transform:scale(.98);
-}
-
-.floating-ui{
-    position:absolute;
-    border-radius:24px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(20px);
-    padding:14px 18px;
-    font-weight:700;
-    color:#ffe4f4;
-    animation:floatUI 5s ease-in-out infinite;
-    z-index: 10;
-}
-
-/* 响应式排布悬浮标签 */
-@media(min-width: 1350px) {
-    .float1 {
-        top: 60px;
-        left: -160px;
-        right: auto;
-    }
-    .float2 {
-        bottom: 120px;
-        right: -160px;
-        left: auto;
-        animation-delay: 2s;
-    }
-}
-@media(max-width: 1349px) {
-    .float1 {
-        top: 35px;
-        right: 35px;
-    }
-    .float2 {
-        bottom: 40px;
-        right: 80px;
-        animation-delay: 2s;
-    }
-}
-
-@keyframes floatUI{
-    0%,100%{
-        transform:translateY(0);
-    }
-    50%{
-        transform:translateY(-10px);
-    }
-}
-
-footer{
-    text-align:center;
-    margin:30px 0 10px;
-    color:rgba(255,255,255,.45);
-    font-size:.9rem;
-}
-
-@media(max-width:900px){
-    .live-panel{
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:640px){
-    .hero{
-        padding:35px 24px;
-        border-radius:30px;
-    }
-
-    .main-title{
-        letter-spacing:-2px;
-    }
-
-    .hero-buttons{
-        flex-direction:column;
-    }
-
-    .btn{
-        width:100%;
-        text-align:center;
-    }
-
-    .floating-ui{
-        display:none;
-    }
+:root{--pink:#ff8fbd;--cyan:#8deaff;--gold:#ffe29a;--bg:#05050b}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:#eee;font-family:"Segoe UI","Noto Sans SC",sans-serif}
+button{font:inherit}
+#app{position:fixed;inset:0;background:radial-gradient(circle at 50% 15%,#25142c 0,#0b0711 42%,#030308 100%)}
+#game{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) 310px;opacity:0;pointer-events:none;transition:opacity .25s}
+#game.active{opacity:1;pointer-events:auto}
+#stageWrap{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;background:#020207}
+canvas{display:block;width:min(78vw,calc(100vh * .78));height:min(100vh,calc(78vw * 1.282));max-width:900px;max-height:100vh;aspect-ratio:0.78;border-left:1px solid #ffffff10;border-right:1px solid #ffffff10;background:#05050b}
+#hud{position:absolute;left:16px;right:16px;top:12px;display:flex;justify-content:space-between;pointer-events:none;font-size:12px;text-shadow:0 2px 5px #000}
+.hudCol{display:flex;gap:16px;align-items:center}.label{color:#9d96a4}.value{color:#fff}.pink{color:var(--pink)}.cyan{color:var(--cyan)}.gold{color:var(--gold)}
+#bossHud{position:absolute;left:13%;right:13%;top:40px;pointer-events:none;text-align:center}
+#bossName{font-size:10px;letter-spacing:4px;color:#f5d9e8;text-shadow:0 1px 5px #000}
+#bossBar{height:5px;margin-top:7px;border-radius:5px;background:#ffffff13;overflow:hidden;box-shadow:0 0 12px #ff78ae22}
+#bossBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff5b94,#d9a2ff,#ffdf9a);transition:width .08s}
+#spellTimer{font-size:10px;color:#b9afba;margin-top:5px}
+#side{position:relative;padding:22px 20px;background:linear-gradient(180deg,#0b0810f2,#07060cf2);border-left:1px solid #ffffff10;box-shadow:-20px 0 70px #0006;overflow:auto}
+#side h1{font-size:15px;letter-spacing:4px;margin:0 0 4px}
+#side .sub{font-size:10px;color:#8f8792;letter-spacing:2px;margin-bottom:22px}
+.panel{border:1px solid #ffffff12;background:#ffffff05;border-radius:15px;padding:13px;margin-bottom:11px}
+.panel h2{font-size:10px;letter-spacing:3px;color:#d9ccd9;margin:0 0 10px}
+.stat{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#a9a1ac;padding:4px 0}.stat b{color:#fff;font-weight:600}
+.bar{height:5px;background:#ffffff0e;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--pink)}
+#powerBar i{background:var(--gold)}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:6px}.key{border:1px solid #ffffff14;background:#ffffff06;border-radius:8px;padding:6px;color:#bdb4c0;font-size:10px}.key b{color:#fff}
+.action{width:100%;border:1px solid #ffffff16;background:#ffffff08;color:#eee;border-radius:10px;padding:9px;margin-top:7px;cursor:pointer}.action:hover{background:#ff91bd16;border-color:#ff91bd44}
+#startScreen,#pauseScreen,#resultScreen{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:#020207bb;backdrop-filter:blur(7px)}
+.overlayBox{width:min(520px,90vw);padding:30px;border:1px solid #ffffff18;border-radius:24px;background:#0b0812ee;box-shadow:0 30px 100px #000}
+.overlayBox h2{font-size:26px;letter-spacing:5px;margin:0 0 8px}.overlayBox p{font-size:12px;color:#aaa0ad;line-height:1.9}
+.modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:18px 0}.modeBtn{padding:12px 8px;border-radius:11px;border:1px solid #ffffff15;background:#ffffff07;color:#ddd;cursor:pointer;font-size:11px}.modeBtn.active{border-color:#ff91bd77;background:#ff91bd14;color:#fff}
+.primary{border:1px solid #ff91bd66;background:#ff91bd19;color:#fff;border-radius:999px;padding:11px 26px;cursor:pointer}.primary:hover{background:#ff91bd2b;box-shadow:0 0 30px #ff91bd1f}
+#resultScreen,#pauseScreen{display:none}
+#mobileHint{display:none}
+@media(max-width:850px){
+ #game{grid-template-columns:1fr}#side{display:none}
+ canvas{width:min(78vw,100vh * .78);height:min(100vh,78vw * 1.282)}
+ #mobileHint{display:block;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:9px;color:#ffffff55;pointer-events:none}
 }
 </style>
 </head>
 <body>
+<div id="app">
+  <div id="game">
+    <div id="stageWrap">
+      <canvas id="cv" width="700" height="900"></canvas>
+      <div id="hud">
+        <div class="hudCol"><span class="label">SCORE</span><span id="score" class="value">00000000</span><span class="label">HI</span><span id="hi" class="value">00000000</span></div>
+        <div class="hudCol"><span class="pink" id="lives">♥♥♥</span><span class="gold" id="bombs">☆ ☆ ☆</span><span class="cyan" id="graze">GRAZE 000</span></div>
+      </div>
+      <div id="bossHud"><div id="bossName"></div><div id="bossBar"><i></i></div><div id="spellTimer"></div></div>
+      <div id="mobileHint">WASD / 方向键 · SHIFT 聚焦 · Z 射击 · X Bomb · ESC 暂停</div>
 
-<div class="mouse-light"></div>
+      <div id="startScreen">
+        <div class="overlayBox">
+          <h2>幻想乡 · 弹幕演舞</h2>
+          <p>一个单文件 STG 引擎。资源从 <code>./th_res/</code> 加载。<br>设计目标：固定 Pattern、擦弹、残机、Bomb、道中、Boss 符卡与音效反馈。</p>
+          <div class="modes">
+            <button class="modeBtn active" data-mode="stage">道中</button>
+            <button class="modeBtn" data-mode="free">自由</button>
+            <button class="modeBtn" data-mode="boss">符卡战</button>
+          </div>
+          <button class="primary" id="startBtn">开始演舞</button>
+        </div>
+      </div>
+      <div id="pauseScreen"><div class="overlayBox"><h2>PAUSE</h2><p>按 ESC 继续。</p><button class="primary" id="resumeBtn">继续</button></div></div>
+      <div id="resultScreen"><div class="overlayBox"><h2 id="resultTitle">MISS</h2><p id="resultText"></p><button class="primary" id="retryBtn">再来一次</button></div></div>
+    </div>
 
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="blob blob3"></div>
-
-<div class="sparkles" id="sparkles"></div>
-
-<!-- 宽屏下的两侧漂浮魔法阵 -->
-<div class="side-decor left-decor">
-    <div class="magic-circle-css"></div>
-</div>
-<div class="side-decor right-decor">
-    <div class="yin-yang-css"></div>
-</div>
-
-<!-- 两侧悬挂式和风退治符卡 -->
-<div class="talisman talisman-left"></div>
-<div class="talisman talisman-right"></div>
-
-<div class="wrap">
-
-<!-- 悬浮标签外拉排布 -->
-<div class="floating-ui float1">
-✨ 幻想粒子同步中
-</div>
-
-<div class="floating-ui float2">
-☯ 梦境结界稳定
-</div>
-
-<section class="hero">
-
-<h1 class="main-title">
-幻想乡
-</h1>
-
-<p class="subtitle">
-被遗忘之物、妖怪、梦与弹幕所构成的境界。
-</p>
-
-<div class="hero-buttons">
-<a class="btn btn-primary" href="https://yukiom.us.ci/Web/intro.html">
-✦ 进入幻想结界
-</a>
-</div>
-
-<div class="grid" id="cards">
-
-<div class="floating-anime reimu"></div>
-<div class="floating-anime marisa"></div>
-
-<div class="card">
-<img class="portrait" src="img/reimu.png">
-<div class="card-icon">⛩️</div>
-<h3>博丽灵梦</h3>
-<p>
-正在神社发呆中。
-如果你愿意塞钱的话，她也许会稍微认真一点。
-</p>
-</div>
-
-<div class="card">
-<img class="portrait" src="img/marisa.png">
-<div class="card-icon">⭐</div>
-<h3>雾雨魔理沙</h3>
-<p>
-今天也在借书。
-至于有没有还……这个问题不重要 DA☆ZE。
-</p>
-</div>
-
-<div class="card">
-<img class="portrait" src="img/cirno.png">
-<div class="card-icon">❄️</div>
-<h3>琪露诺</h3>
-<p>
-自称最强中的最强。
-正在试图把你的可乐冻成冰棒。
-</p>
-</div>
-
-<div class="card">
-<img class="portrait" src="img/yuyuko.png">
-<div class="card-icon">🌸</div>
-<h3>西行寺幽幽子</h3>
-<p>
-樱花仍在飘落。
-她已经吃掉第 47 份团子了。
-</p>
-</div>
-
-</div>
-
-<div class="live-panel">
-
-<div class="message-box">
-<div class="message-title">
-SYSTEM MESSAGE
-</div>
-
-<div class="message-content" id="message">
-✨ 境界裂缝稳定。
-检测到新的幻想访问者进入结界区域。
-</div>
-</div>
-
-<div class="fortune-box">
-<h2>🎴 今日灵签</h2>
-
-<div class="fortune" id="fortuneText">
-大吉
-</div>
-
-<button class="draw" id="drawBtn">
-重新抽取命运
-</button>
-</div>
-
-</div>
-
-</section>
-
-<footer>
-幻想乡 Dream Portal · Liquid Glass Edition
-</footer>
-
+    <aside id="side">
+      <h1>DANMAKU ENGINE</h1><div class="sub">幻想乡 · 弹幕演舞</div>
+      <div class="panel">
+        <h2>PLAYER</h2>
+        <div class="stat"><span>POWER</span><b id="powerText">1.00</b></div><div class="bar" id="powerBar"><i></i></div>
+        <div class="stat"><span>POSITION</span><b id="posText">350 / 760</b></div>
+        <div class="stat"><span>FOCUS</span><b id="focusText">OFF</b></div>
+      </div>
+      <div class="panel">
+        <h2>STAGE</h2>
+        <div class="stat"><span>MODE</span><b id="modeText">道中</b></div>
+        <div class="stat"><span>TIME</span><b id="timeText">00:00</b></div>
+        <div class="stat"><span>PHASE</span><b id="phaseText">1</b></div>
+      </div>
+      <div class="panel">
+        <h2>CONTROL</h2>
+        <div class="keys">
+          <div class="key"><b>WASD</b><br>移动</div><div class="key"><b>SHIFT</b><br>低速 / 判定点</div>
+          <div class="key"><b>Z</b><br>射击</div><div class="key"><b>X</b><br>Bomb</div>
+          <div class="key"><b>ESC</b><br>暂停</div><div class="key"><b>R</b><br>重开</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>RESOURCE MAP</h2>
+        <div class="stat"><span>PLAYER</span><b>th_res/pl00/pl00.png</b></div>
+        <div class="stat"><span>SHOT</span><b>se_gun00.wav</b></div>
+        <div class="stat"><span>GRAZE</span><b>se_graze.wav</b></div>
+        <div class="stat"><span>DAMAGE</span><b>se_damage00.wav</b></div>
+        <div class="stat"><span>DEAD</span><b>se_pldead00.wav</b></div>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script>
-const light = document.querySelector('.mouse-light')
+"use strict";
+const C=document.getElementById("cv"),ctx=C.getContext("2d"),W=700,H=900;
+const A="./th_res/audio/",IMG="./th_res/pl00/pl00.png";
+const SFX={shoot:"se_gun00.wav",bullet:["se_tan00.wav","se_tan01.wav","se_tan02.wav"],graze:"se_graze.wav",damage:["se_damage00.wav","se_damage01.wav"],dead:"se_pldead00.wav",enemy:"se_enep00.wav",card:"se_cardget.wav",timeout:"se_timeout.wav",extend:"se_extend.wav",power:"se_powerup.wav",plstart:"se_plst00.wav",pause:"se_pause.wav",ok:"se_ok00.wav",select:"se_select00.wav",cancel:"se_cancel00.wav",laser:["se_lazer00.wav","se_lazer01.wav"]};
+const audio={};
+for(const [k,v] of Object.entries(SFX)){if(Array.isArray(v))audio[k]=v.map(x=>new Audio(A+x));else audio[k]=new Audio(A+v)}
+function snd(k,vol=.42){const x=audio[k];if(!x)return;if(Array.isArray(x)){const a=x[Math.floor(Math.random()*x.length)];a.volume=vol;a.currentTime=0;a.play().catch(()=>{});return}x.volume=vol;x.currentTime=0;x.play().catch(()=>{})}
+const playerImg=new Image();playerImg.src=IMG;
+const keys=new Set();
+addEventListener("keydown",e=>{
+ const k=e.key.toLowerCase();keys.add(k);
+ if(["arrowup","arrowdown","arrowleft","arrowright"," ","shift"].includes(k))e.preventDefault();
+ if(k==="escape"){if(state.running)pause();else if(state.paused)resume()}
+ if(k==="r" && !state.running)start();
+});
+addEventListener("keyup",e=>keys.delete(e.key.toLowerCase()));
 
-window.addEventListener('mousemove',e=>{
-    light.style.left = e.clientX + 'px'
-    light.style.top = e.clientY + 'px'
-})
+let selectedMode="stage";
+document.querySelectorAll(".modeBtn").forEach(b=>b.onclick=()=>{document.querySelectorAll(".modeBtn").forEach(x=>x.classList.remove("active"));b.classList.add("active");selectedMode=b.dataset.mode;snd("select",.2)});
+document.getElementById("startBtn").onclick=()=>{snd("ok",.35);start()};
+document.getElementById("retryBtn").onclick=()=>{snd("ok",.35);start()};
+document.getElementById("resumeBtn").onclick=()=>resume();
 
-// 原有背景星光生成
-const sparkles = document.getElementById('sparkles')
-for(let i=0;i<45;i++){
-    const s = document.createElement('div')
-    s.className='sparkle'
+const hiKey="gensokyo_danmaku_hi";
+let hi=Number(localStorage.getItem(hiKey)||0);
+const state={running:false,paused:false,mode:"stage",score:0,lives:3,bombs:3,power:1,grazes:0,time:0,frame:0,phase:1};
+let p,bullets,enemies,shots,particles,lasers,boss,stage,spawnTimer,last=0,raf=0;
 
-    s.style.left=Math.random()*100+'%'
-    s.style.top=Math.random()*100+'%'
-
-    const size=Math.random()*4+2
-    s.style.width=size+'px'
-    s.style.height=size+'px'
-
-    s.style.animationDuration=(Math.random()*8+6)+'s'
-    s.style.animationDelay=Math.random()*6+'s'
-
-    sparkles.appendChild(s)
+function reset(){
+ state.mode=selectedMode;state.score=0;state.lives=3;state.bombs=3;state.power=1;state.grazes=0;state.time=0;state.frame=0;state.phase=1;
+ p={x:350,y:780,r:3.2,speed:4.8,shotCd:0,inv:0,grazeCd:0};
+ bullets=[];enemies=[];shots=[];particles=[];lasers=[];spawnTimer=0;
+ boss=state.mode==="boss"?{x:350,y:145,hp:1000,max:1000,phase:0,t:0,spell:0}:null;
+ stage={wave:0,ended:false};
+ syncUI();
+}
+function start(){
+ reset();
+ document.getElementById("startScreen").style.display="none";
+ document.getElementById("resultScreen").style.display="none";
+ document.getElementById("pauseScreen").style.display="none";
+ document.getElementById("game").classList.add("active");
+ state.running=true;state.paused=false;last=performance.now();snd("plstart",.4);loop(last);
+}
+function pause(){if(!state.running)return;state.running=false;state.paused=true;document.getElementById("pauseScreen").style.display="flex";snd("pause",.3)}
+function resume(){if(!state.paused)return;state.paused=false;document.getElementById("pauseScreen").style.display="none";state.running=true;last=performance.now();loop(last)}
+function end(win,reason){
+ state.running=false;state.paused=false;
+ if(state.score>hi){hi=state.score;localStorage.setItem(hiKey,hi)}
+ document.getElementById("resultTitle").textContent=win?"SPELL CARD CLEAR":"MISS";
+ document.getElementById("resultText").innerHTML=`${reason}<br>SCORE <b>${fmt(state.score)}</b> · GRAZE <b>${state.grazes}</b><br>HI SCORE <b>${fmt(hi)}</b>`;
+ document.getElementById("resultScreen").style.display="flex";
+ if(win)snd("card",.45);else snd("dead",.5);
 }
 
-// ================== 新增：两侧樱花瓣轻柔下落动画 ==================
-const maxPetals = 20;
-for (let i = 0; i < maxPetals; i++) {
-    const p = document.createElement('div');
-    p.className = 'petal';
-    
-    // 只分布在两侧区域（左边 0~12%，右边 88~100%）
-    const onLeft = Math.random() > 0.5;
-    p.style.left = onLeft ? (Math.random() * 12 + '%') : (Math.random() * 12 + 88 + '%');
-    p.style.top = (Math.random() * -30) + 'px';
-    
-    const size = Math.random() * 12 + 10; // 花瓣尺寸 10px 到 22px
-    p.style.width = size + 'px';
-    p.style.height = size + 'px';
-    
-    p.style.animationDuration = (Math.random() * 8 + 6) + 's';
-    p.style.animationDelay = (Math.random() * 10) + 's';
-    
-    // 随机初始旋转角度与倾斜弧度
-    p.style.transform = `rotate(${Math.random() * 360}deg)`;
-    
-    document.body.appendChild(p);
+function loop(t){
+ if(!state.running)return;
+ const dt=Math.min(2.2,(t-last)/16.6667);last=t;
+ update(dt);draw();raf=requestAnimationFrame(loop);
 }
-// =============================================================
 
-const fortunes=[
-'🌸 超大吉',
-'⭐ 吉',
-'☯ 幻想吉',
-'🍃 中吉',
-'✨ 梦境加护',
-'🌙 月之祝福',
-'❄️ 小凶但可爱'
-]
+function update(dt){
+ state.frame++;state.time+=dt/60;
+ control(dt);playerShoot(dt);
+ if(state.mode==="stage")updateStage(dt);
+ if(state.mode==="free")updateFree(dt);
+ if(state.mode==="boss")updateBoss(dt);
+ updateObjects(dt);collisions();particlesUpdate(dt);syncUI();
+}
 
-const messages=[
-'🍡 灵梦正在偷懒，但结界依然稳定。',
-'⭐ 魔理沙似乎又顺走了一本魔导书。',
-'🌸 白玉楼今天的樱花异常漂亮。',
-'✨ 检测到高浓度幻想粒子。',
-'☯ 结界波动正常，可以安全进入。'
-]
+function control(dt){
+ let dx=(keys.has("d")||keys.has("arrowright")?1:0)-(keys.has("a")||keys.has("arrowleft")?1:0);
+ let dy=(keys.has("s")||keys.has("arrowdown")?1:0)-(keys.has("w")||keys.has("arrowup")?1:0);
+ if(dx||dy){const l=Math.hypot(dx,dy);dx/=l;dy/=l}
+ const focus=keys.has("shift"),sp=(focus?2.2:p.speed)*dt;
+ p.x=Math.max(22,Math.min(W-22,p.x+dx*sp));p.y=Math.max(70,Math.min(H-25,p.y+dy*sp));
+ if(p.inv>0)p.inv-=dt;
+ if(p.grazeCd>0)p.grazeCd-=dt;
+}
 
-const btn=document.getElementById('drawBtn')
-const fortuneText=document.getElementById('fortuneText')
-const message=document.getElementById('message')
+function playerShoot(dt){
+ if(p.shotCd>0)p.shotCd-=dt;
+ if(!keys.has("z")||p.shotCd>0)return;
+ p.shotCd=4.5;
+ const n=state.power>=3?5:state.power>=2?3:2;
+ if(n===2){shots.push({x:p.x-7,y:p.y-15,vx:0,vy:-13,d:8});shots.push({x:p.x+7,y:p.y-15,vx:0,vy:-13,d:8})}
+ else for(let i=0;i<n;i++){const a=(i-(n-1)/2)*.06;shots.push({x:p.x,y:p.y-15,vx:Math.sin(a)*13,vy:-Math.cos(a)*13,d:8})}
+ snd("shoot",.18);
+}
 
-btn.addEventListener('click',()=>{
+function updateStage(dt){
+ spawnTimer-=dt;
+ if(spawnTimer<=0 && state.time<68){
+   spawnTimer=state.frame%180<90?26:38;
+   stage.wave++;
+   const type=stage.wave%4;
+   if(type===0)spawnPair();
+   else if(type===1)spawnLine(5);
+   else if(type===2)spawnV();
+   else spawnSpinner();
+ }
+ if(state.time>70 && !enemies.length && !stage.ended){stage.ended=true;end(true,"道中突破 · 妖怪之山")},
+ enemies.forEach(e=>enemyAI(e,dt));
+}
+function updateFree(dt){
+ if(state.frame%24===0)ring(24,1.55,(state.frame*.018),"pink");
+ if(state.frame%75===0)aimed(9,.085,2.9,"blue");
+ if(state.frame%135===0)spiral(18,1.7,.12,"purple");
+ if(state.time>90)end(true,"自由躲弹幕 · 生存完成");
+}
+function updateBoss(dt){
+ if(!boss)return;
+ boss.t+=dt;
+ if(boss.phase===0){
+   if(boss.t>2){boss.phase=1;boss.t=0;boss.spell=0;boss.hp=900;boss.max=900}
+ }else{
+   const phase=boss.phase;
+   if(phase===1){
+     if(state.frame%20===0)ring(22,1.65,state.frame*.025,"pink");
+     if(state.frame%70===0)aimed(7,.08,3.0,"red");
+     if(boss.t>20){nextSpell("红符「Scarlet Shoot」")}
+   }else if(phase===2){
+     if(state.frame%12===0)ring(28,1.8,-state.frame*.035,"red");
+     if(state.frame%58===0)aimed(11,.065,3.45,"blue");
+     if(state.frame%95===0)spiral(22,2.0,.17,"purple");
+     if(boss.t>25){nextSpell("幻符「红雾旋回」")}
+   }else if(phase===3){
+     if(state.frame%8===0)ring(36,2.05,state.frame*.052,"purple");
+     if(state.frame%42===0)aimed(15,.052,4.0,"gold");
+     if(state.frame%110===0)laserBurst();
+     if(boss.t>28){nextSpell("終符「Scarlet Devil」")}
+   }else{
+     if(state.frame%6===0)ring(44,2.25,-state.frame*.075,"gold");
+     if(state.frame%35===0)aimed(19,.04,4.3,"red");
+     if(state.frame%70===0)spiral(30,2.15,-.14,"pink");
+     if(boss.t>35){boss.phase=4;boss.t=0}
+   }
+   if(boss.hp<=0){
+     state.score+=10000+Math.max(0,Math.floor(boss.t*50));
+     if(boss.phase<4){snd("card",.5);nextSpell("SPELL CARD BREAK")}else end(true,"红魔馆 · 全符卡击破");
+   }
+   if(boss.t>45){snd("timeout",.4);nextSpell("TIME OUT")}
+ }
+}
 
-    fortuneText.style.transform='scale(.8)'
-    fortuneText.style.opacity='0'
+function nextSpell(name){
+ if(boss.phase>=4){end(true,"终符击破");return}
+ boss.phase++;boss.t=0;boss.hp=Math.max(450,1000-boss.phase*120);boss.max=boss.hp;state.phase=boss.phase;
+ bullets=[];lasers=[];flashText(name);
+ snd("card",.45);
+}
 
-    setTimeout(()=>{
+function flashText(name){
+ const old=document.getElementById("bossName").textContent;
+ document.getElementById("bossName").textContent=name;
+ setTimeout(()=>{if(boss)document.getElementById("bossName").textContent=old},1500);
+}
 
-        const f=fortunes[Math.floor(Math.random()*fortunes.length)]
-        const m=messages[Math.floor(Math.random()*messages.length)]
+function spawnPair(){
+ [-1,1].forEach(s=>enemies.push({x:350+s*260,y:100,vx:-s*1.1,vy:.9,hp:35,r:17,t:0,type:"pair"}));
+}
+function spawnLine(n){
+ for(let i=0;i<n;i++)enemies.push({x:100+i*125,y:95,vx:0,vy:1.0,hp:35,r:15,t:i*8,type:"line"});
+}
+function spawnV(){
+ for(let i=0;i<5;i++){const x=350+(i-2)*70;enemies.push({x,y:80,vx:(i-2)*.45,vy:.9,hp:40,r:16,t:i*6,type:"v"})}
+}
+function spawnSpinner(){enemies.push({x:350,y:80,vx:0,vy:1,hp:100,r:19,t:0,type:"spin"})}
+function enemyAI(e,dt){
+ e.t+=dt;e.x+=e.vx*dt;e.y+=e.vy*dt;
+ if(e.type==="pair" && e.t>45 && e.t<46)aimedFrom(e,5,.09,2.6,"red");
+ if(e.type==="line" && e.t>65 && e.t<66)aimedFrom(e,7,.12,2.4,"blue");
+ if(e.type==="v" && e.t>50 && e.t<51)ringFrom(e,9,1.6,"pink");
+ if(e.type==="spin" && e.t>20){e.t=0;ringFrom(e,18,1.7,"purple")}
+ if(e.y>H+60||e.x<-80||e.x>W+80)e.dead=true;
+}
+function updateObjects(dt){
+ for(const s of shots){s.x+=s.vx*dt;s.y+=s.vy*dt}
+ shots=shots.filter(s=>s.y>-30&&s.x>-30&&s.x<W+30);
+ for(const b of bullets){b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.life!=null)b.life-=dt}
+ bullets=bullets.filter(b=>b.life===undefined||b.life>0);
+ for(const l of lasers){l.t+=dt}
+ enemies=enemies.filter(e=>!e.dead&&e.hp>0);
+ bullets=bullets.filter(b=>b.x>-45&&b.x<W+45&&b.y>-45&&b.y<H+45);
+}
+function collisions(){
+ for(const s of shots){
+   for(const e of enemies){
+     if(Math.hypot(s.x-e.x,s.y-e.y)<e.r+7){e.hp-=s.d;s.y=-100;if(e.hp<=0){state.score+=100;burst(e.x,e.y,10);snd("enemy",.22);if(Math.random()<.06&&state.power<4){state.power=Math.min(4,state.power+.25);snd("power",.25)}}}
+   }
+   if(boss && boss.phase>0 && Math.hypot(s.x-boss.x,s.y-boss.y)<35){boss.hp-=s.d;s.y=-100;state.score+=15}
+ }
+ for(const b of bullets){
+   const d=Math.hypot(b.x-p.x,b.y-p.y);
+   if(d<18 && d>p.r+b.r && p.grazeCd<=0){state.grazes++;state.score+=50;p.grazeCd=2;snd("graze",.18);burst(p.x,p.y,3)}
+   if(d<p.r+b.r && p.inv<=0){damage();b.life=0;break}
+ }
+}
+function damage(){
+ state.lives--;p.inv=100;bullets=[];lasers=[];burst(p.x,p.y,30);snd("damage",.45);
+ if(state.lives<=0){snd("dead",.55);end(false,"自机被击破")}
+ else if(state.lives===1)snd("extend",.18);
+}
+function useBomb(){
+ if(!state.running||state.bombs<=0)return;
+ state.bombs--;bullets=[];lasers=[];p.inv=80;state.score+=500;burst(p.x,p.y,50);snd("laser",.35);
+}
+addEventListener("keydown",e=>{if(e.key.toLowerCase()==="x")useBomb()});
 
-        fortuneText.innerHTML=f
-        message.innerHTML=m
+function ring(n,s,off,color){
+ for(let i=0;i<n;i++){const a=off+i*Math.PI*2/n;bullets.push({x:350,y:145,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:5,color})}
+ snd("bullet",.12);
+}
+function ringFrom(e,n,s,color){
+ for(let i=0;i<n;i++){const a=i*Math.PI*2/n;bullets.push({x:e.x,y:e.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:5,color})}snd("bullet",.1)
+}
+function aimed(n,spread,s,color){
+ const a=Math.atan2(p.y-145,p.x-350);
+ for(let i=0;i<n;i++){const q=a+(i-(n-1)/2)*spread;bullets.push({x:350,y:145,vx:Math.cos(q)*s,vy:Math.sin(q)*s,r:5,color})}snd("bullet",.1)
+}
+function aimedFrom(e,n,spread,s,color){
+ const a=Math.atan2(p.y-e.y,p.x-e.x);
+ for(let i=0;i<n;i++){const q=a+(i-(n-1)/2)*spread;bullets.push({x:e.x,y:e.y,vx:Math.cos(q)*s,vy:Math.sin(q)*s,r:5,color})}snd("bullet",.1)
+}
+function spiral(n,s,delta,color){
+ const base=state.frame*.04;
+ for(let i=0;i<n;i++){const a=base+i*.35;bullets.push({x:350,y:145,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:5,color})}snd("bullet",.1)
+}
+function laserBurst(){
+ for(let i=-2;i<=2;i++)lasers.push({x:350+i*70,y:145,a:Math.PI/2+i*.16,t:0,duration:90});
+ snd("laser",.3)
+}
 
-        fortuneText.style.transform='scale(1)'
-        fortuneText.style.opacity='1'
+function particlesUpdate(dt){for(const q of particles){q.x+=q.vx*dt;q.y+=q.vy*dt;q.life-=dt}particles=particles.filter(q=>q.life>0)}
+function burst(x,y,n){
+ for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=.8+Math.random()*4;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:20+Math.random()*35})}
+}
 
-    },200)
-})
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ drawBG();
+ if(boss)drawBoss();
+ for(const e of enemies)drawEnemy(e);
+ for(const l of lasers)drawLaser(l);
+ for(const b of bullets)drawBullet(b);
+ for(const s of shots)drawShot(s);
+ drawPlayer();
+ for(const q of particles){ctx.globalAlpha=Math.max(0,q.life/40);ctx.fillStyle="#fff";ctx.fillRect(q.x-2,q.y-2,4,4)}ctx.globalAlpha=1;
+}
+function drawBG(){
+ const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#190a21");g.addColorStop(.5,"#090712");g.addColorStop(1,"#020208");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle="#fff";
+ for(let i=0;i<70;i++){const x=(i*97)%W,y=(i*149+state.frame*.12)%H;ctx.globalAlpha=.25+((i*17)%60)/100;ctx.fillRect(x,y,1,1)}ctx.globalAlpha=1;
+ ctx.strokeStyle="#ffffff08";for(let x=0;x<W;x+=50){ctx.beginPath();ctx.moveTo(x,60);ctx.lineTo(x,H);ctx.stroke()}
+}
+function drawPlayer(){
+ if(p.inv>0 && Math.floor(p.inv/5)%2===0)return;
+ if(playerImg.complete&&playerImg.naturalWidth){
+   const size=52;ctx.globalAlpha=.85;ctx.drawImage(playerImg,p.x-size/2,p.y-size/2,size,size);ctx.globalAlpha=1;
+ }
+ ctx.save();ctx.translate(p.x,p.y);
+ if(keys.has("shift")){ctx.strokeStyle="#8deaff66";ctx.beginPath();ctx.arc(0,0,12,0,Math.PI*2);ctx.stroke()}
+ ctx.fillStyle="#fff";ctx.shadowBlur=14;ctx.shadowColor="#fff";ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();ctx.restore()
+}
+function drawShot(s){ctx.fillStyle="#aaf2ff";ctx.shadowBlur=12;ctx.shadowColor="#aaf2ff";ctx.fillRect(s.x-2,s.y-8,4,14);ctx.shadowBlur=0}
+function drawBullet(b){
+ const colors={pink:"#ff8fbd",red:"#ff657f",blue:"#74dfff",purple:"#b68cff",gold:"#ffe08a"};
+ const c=colors[b.color]||colors.pink;
+ ctx.fillStyle=c;ctx.shadowBlur=10;ctx.shadowColor=c;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0
+}
+function drawEnemy(e){
+ ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.t*.02);
+ ctx.fillStyle="#ff7ca9";ctx.shadowBlur=16;ctx.shadowColor="#ff7ca9";ctx.beginPath();ctx.arc(0,0,e.r,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#fff8";ctx.fillRect(-4,-2,8,4);ctx.restore()
+}
+function drawBoss(){
+ if(!boss)return;
+ ctx.save();ctx.translate(boss.x,boss.y);ctx.rotate(state.frame*.008);
+ ctx.strokeStyle="#ff9fc8";ctx.shadowBlur=25;ctx.shadowColor="#ff6fae";
+ for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(0,0,28+i*8,i*.8,Math.PI*1.55+i*.8);ctx.stroke()}
+ ctx.restore()
+}
+function drawLaser(l){
+ ctx.save();ctx.translate(l.x,l.y);ctx.rotate(l.a);ctx.globalAlpha=Math.min(1,l.t/12)*Math.max(0,1-(l.t-l.duration+20)/20);
+ const grad=ctx.createLinearGradient(0,0,0,700);grad.addColorStop(0,"#fff");grad.addColorStop(.15,"#ff8fbd");grad.addColorStop(1,"#ff8fbd00");
+ ctx.fillStyle=grad;ctx.fillRect(-5,0,10,700);ctx.restore()
+}
 
-const cards=document.querySelectorAll('.card')
-
-cards.forEach(card=>{
-
-    card.addEventListener('mousemove',e=>{
-
-        const rect=card.getBoundingClientRect()
-
-        const x=e.clientX-rect.left
-        const y=e.clientY-rect.top
-
-        const rotateY=((x/rect.width)-0.5)*12
-        const rotateX=((y/rect.height)-0.5)*-12
-
-        card.style.transform=`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`
-
-    })
-
-    card.addEventListener('mouseleave',()=>{
-        card.style.transform=''
-    })
-})
+function fmt(n){return String(Math.max(0,Math.floor(n))).padStart(8,"0")}
+function syncUI(){
+ document.getElementById("score").textContent=fmt(state.score);
+ document.getElementById("hi").textContent=fmt(hi);
+ document.getElementById("lives").textContent="♥".repeat(state.lives)+"♡".repeat(3-state.lives);
+ document.getElementById("bombs").textContent="☆ ".repeat(state.bombs).trim()||"—";
+ document.getElementById("graze").textContent="GRAZE "+String(state.grazes).padStart(3,"0");
+ document.getElementById("powerText").textContent=state.power.toFixed(2);
+ document.querySelector("#powerBar i").style.width=(state.power/4*100)+"%";
+ document.getElementById("posText").textContent=`${Math.round(p?.x||350)} / ${Math.round(p?.y||780)}`;
+ document.getElementById("focusText").textContent=keys.has("shift")?"ON":"OFF";
+ document.getElementById("modeText").textContent={stage:"道中 · 妖怪之山",free:"自由躲弹幕",boss:"符卡战 · 红魔馆"}[state.mode];
+ document.getElementById("timeText").textContent=`${String(Math.floor(state.time/60)).padStart(2,"0")}:${String(Math.floor(state.time%60)).padStart(2,"0")}`;
+ document.getElementById("phaseText").textContent=state.mode==="boss"?boss?.phase||0:"—";
+ if(boss){document.querySelector("#bossBar i").style.width=Math.max(0,boss.hp/boss.max*100)+"%";document.getElementById("bossName").textContent=`PHASE ${boss.phase} · SCARLET DANMAKU`;document.getElementById("spellTimer").textContent=`${Math.max(0,45-boss.t/60).toFixed(1)}s`}
+ else {document.querySelector("#bossBar i").style.width="0";document.getElementById("bossName").textContent="";document.getElementById("spellTimer").textContent=""}
+}
 </script>
-
 </body>
 </html>
