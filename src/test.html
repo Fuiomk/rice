@@ -2,879 +2,1714 @@
 <html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <!-- 手机为主：锁掉双指/双击缩放，防止用餐高峰误触把布局顶飞。
+         注意：防 iOS「聚焦表单自动放大」靠的是下面 select 的 font-size:16px，不是靠这一行。 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>209点饭系统 ♡</title>
-    <!-- 引入高级无衬线字体组合 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* ============ 原汁原味的主题变量 (完全继承并优化) ============ */
-        :root, [data-theme="light"] {
-            --bg-primary: #FFF5F8;
-            --bg-secondary: #FFF0F5;
-            --bg-mesh-1: rgba(255, 182, 193, 0.25);
-            --bg-mesh-2: rgba(200, 170, 255, 0.2);
-            --bg-mesh-3: rgba(150, 230, 210, 0.15);
-            --bg-mesh-4: rgba(255, 210, 150, 0.12);
+        /* ============ 主题变量 ============ */
+        /* 配色对齐同站的「幻想乡 · 弹幕演舞」：近黑底 + 粉/青/金三色霓虹 + 极淡白色描边。
+           原来这里是浅粉可爱风，与站点主站风格割裂；四张角色图本身也偏暗，深色底才压得住。 */
+        :root {
+            --bg-glow-1: #25142c;
+            --bg-glow-2: #0b0711;
 
-            --card-bg: rgba(255, 255, 255, 0.65);
-            --card-border: rgba(255, 200, 220, 0.5);
-            --card-shadow: 0 8px 40px rgba(255, 150, 180, 0.1), 0 2px 8px rgba(0,0,0,0.02);
-            --card-shadow-hover: 0 16px 56px rgba(255, 150, 180, 0.18), 0 4px 12px rgba(0,0,0,0.03);
-            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.8);
+            /* 三色霓虹，直接取自站点设计系统 */
+            --pink: #ff8fbd;
+            --cyan: #8deaff;
+            --gold: #ffe29a;
+            /* 站点的 boss 血条渐变，这里作为品牌渐变 */
+            --tri-gradient: linear-gradient(90deg, #ff5b94, #d9a2ff, #ffdf9a);
 
-            --text-primary: #3D2C3E;
-            --text-secondary: #8B7A8E;
-            --text-tertiary: #B8A5BB;
+            --card-bg: #0b0810;
+            --card-border: #ffffff10;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.65);
 
-            --accent-pink: #FF7EB3;
-            --accent-pink-deep: #FF5C8D;
-            --accent-pink-glow: rgba(255, 126, 179, 0.25);
-            --accent-purple: #B088F9;
-            --accent-purple-deep: #9B6BEE;
-            --accent-purple-glow: rgba(176, 136, 249, 0.2);
-            --accent-mint: #6FD4B5;
-            --accent-mint-deep: #4DC9A4;
-            --accent-peach: #FFB088;
-            --accent-yellow: #FFD93D;
-            --accent-sky: #7EC8E3;
+            /* 深底上的三级文字，保证对比度 */
+            --text-primary: #eee;
+            --text-secondary: #9d96a4;
+            --text-tertiary: #6f6876;
 
-            --surface-light: rgba(255, 255, 255, 0.7);
-            --surface-medium: rgba(255, 240, 245, 0.6);
-            --surface-tag: linear-gradient(135deg, rgba(255,126,179,0.1), rgba(176,136,249,0.1));
+            --accent-pink: #ff8fbd;
+            --accent-pink-deep: #ff5b94;
+            --accent-pink-glow: rgba(255, 91, 148, 0.22);
+            --accent-purple: #d9a2ff;
+            --accent-purple-deep: #c07ce8;
+            --accent-mint: #8deaff;
 
-            --border-soft: rgba(255, 200, 220, 0.4);
-            --border-medium: rgba(255, 180, 210, 0.6);
+            --surface-light: #ffffff08;
+            --surface-medium: #ffffff0d;
+            --surface-tag: #ffffff0a;
 
-            --gradient-primary: linear-gradient(135deg, #FF5C8D 0%, #FF7EB3 40%, #B088F9 100%);
-            --gradient-success: linear-gradient(135deg, #4DC9A4 0%, #6FD4B5 100%);
-            --gradient-tag: linear-gradient(135deg, #FFF0F5 0%, #F0E8FF 100%);
-            --gradient-badge: linear-gradient(135deg, rgba(255,126,179,0.12), rgba(176,136,249,0.12));
+            --border-soft: #ffffff10;
+            --border-medium: #ff8fbd55;
 
-            --status-bg: rgba(255, 255, 255, 0.75);
-            --status-border: rgba(255, 200, 220, 0.5);
+            --status-bg: #0b0810;
+            --status-border: #ffffff10;
 
-            --food-bg: rgba(255, 255, 255, 0.6);
-            --food-bg-active: linear-gradient(145deg, #FFF0F5 0%, #FFE8F0 50%, #F0E8FF 100%);
-            --food-border: rgba(255, 210, 225, 0.6);
-            --food-shadow-active: 0 8px 32px rgba(255, 126, 179, 0.18), 0 2px 8px rgba(176, 136, 249, 0.1);
+            --food-bg: #ffffff05;
+            --food-bg-active: rgba(255, 91, 148, 0.1);
+            --food-border: #ffffff12;
+            --food-shadow-active: 0 0 0 1px var(--accent-pink-deep), 0 0 22px rgba(255, 91, 148, 0.28);
 
-            --input-bg: rgba(255, 255, 255, 0.8);
-            --table-row-bg: rgba(255, 245, 248, 0.5);
-            --order-row-bg: rgba(255, 255, 255, 0.5);
-            --order-row-hover: rgba(255, 255, 255, 0.9);
+            --input-bg: #ffffff08;
+            --table-row-bg: #ffffff05;
+            --order-row-bg: #ffffff05;
 
-            --divider: rgba(255, 200, 220, 0.3);
-            --scrollbar-track: rgba(255, 230, 240, 0.3);
-            --scrollbar-thumb: rgba(255, 180, 210, 0.5);
+            --divider: #ffffff0d;
+            --scrollbar-track: transparent;
+            --scrollbar-thumb: #ffffff1f;
 
-            --deco-opacity: 0.5;
-            --noise-opacity: 0.015;
-            --glass-blur: blur(24px);
-            --radius-sm: 12px;
-            --radius-md: 18px;
-            --radius-lg: 24px;
-            --radius-xl: 28px;
+            --toast-bg: #14101c;
+            --toast-fg: #ffffff;
+            --toast-border: #ffffff18;
+            --toast-error-bg: #2a0f1c;
+            --toast-error-fg: #ffb8cf;
+            --toast-error-border: rgba(255, 184, 207, 0.25);
+            --toast-hint-bg: #1a1426;
+            --toast-hint-fg: #d9c7ff;
+            --toast-hint-border: rgba(217, 199, 255, 0.22);
         }
 
-        [data-theme="dark"] {
-            --bg-primary: #1A1118;
-            --bg-secondary: #1E1420;
-            --bg-mesh-1: rgba(255, 92, 141, 0.08);
-            --bg-mesh-2: rgba(155, 107, 238, 0.08);
-            --bg-mesh-3: rgba(77, 201, 164, 0.05);
-            --bg-mesh-4: rgba(255, 176, 136, 0.05);
-
-            --card-bg: rgba(35, 25, 38, 0.7);
-            --card-border: rgba(255, 126, 179, 0.12);
-            --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0,0,0,0.15);
-            --card-shadow-hover: 0 16px 56px rgba(255, 92, 141, 0.1), 0 4px 12px rgba(0,0,0,0.2);
-            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.05);
-
-            --text-primary: #F0E4F2;
-            --text-secondary: #A892AB;
-            --text-tertiary: #6B5A6E;
-
-            --accent-pink: #FF8FBF;
-            --accent-pink-deep: #FF5C8D;
-            --accent-pink-glow: rgba(255, 92, 141, 0.2);
-            --accent-purple: #C4A0FF;
-            --accent-purple-deep: #A87CFF;
-            --accent-purple-glow: rgba(168, 124, 255, 0.15);
-            --accent-mint: #7FE0C3;
-            --accent-mint-deep: #5DD4AA;
-            --accent-peach: #FFC0A0;
-            --accent-yellow: #FFE066;
-            --accent-sky: #90D4F0;
-
-            --surface-light: rgba(40, 30, 45, 0.6);
-            --surface-medium: rgba(50, 35, 55, 0.5);
-            --surface-tag: linear-gradient(135deg, rgba(255,92,141,0.12), rgba(168,124,255,0.12));
-
-            --border-soft: rgba(255, 126, 179, 0.1);
-            --border-medium: rgba(255, 126, 179, 0.18);
-
-            --gradient-primary: linear-gradient(135deg, #FF3D7F 0%, #FF5C8D 40%, #A87CFF 100%);
-            --gradient-success: linear-gradient(135deg, #3DB88E 0%, #5DD4AA 100%);
-            --gradient-tag: linear-gradient(135deg, rgba(50,35,55,0.8) 0%, rgba(40,30,50,0.8) 100%);
-            --gradient-badge: linear-gradient(135deg, rgba(255,92,141,0.15), rgba(168,124,255,0.15));
-
-            --status-bg: rgba(35, 25, 38, 0.8);
-            --status-border: rgba(255, 126, 179, 0.12);
-
-            --food-bg: rgba(40, 30, 45, 0.5);
-            --food-bg-active: linear-gradient(145deg, rgba(60,35,55,0.8) 0%, rgba(50,30,60,0.8) 50%, rgba(40,25,55,0.8) 100%);
-            --food-border: rgba(255, 126, 179, 0.15);
-            --food-shadow-active: 0 8px 32px rgba(255, 92, 141, 0.15), 0 0 0 1px rgba(255,126,179,0.2);
-
-            --input-bg: rgba(40, 30, 45, 0.6);
-            --table-row-bg: rgba(40, 30, 45, 0.4);
-            --order-row-bg: rgba(40, 30, 45, 0.4);
-            --order-row-hover: rgba(50, 38, 55, 0.8);
-
-            --divider: rgba(255, 126, 179, 0.08);
-            --scrollbar-track: rgba(30, 20, 32, 0.5);
-            --scrollbar-thumb: rgba(255, 126, 179, 0.2);
-
-            --deco-opacity: 0.25;
-            --noise-opacity: 0.025;
+        /* 四张角色图与站点一样是暗调，浅色主题压不住；
+           这里让 light 主题也走深色底，只保留切换按钮的语义。 */
+        [data-theme="light"] {
+            color-scheme: dark;
         }
 
-        /* ============ 基础重置与网格排版 ============ */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        * { font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        /* ============ 基础重置 ============ */
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
+        * {
+            font-family: 'Noto Sans SC', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            /* 横屏时 iOS 会擅自放大文字 */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
         body {
-            background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.7;
-            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-            min-height: 100vh; overflow-x: hidden;
-            padding: max(40px, env(safe-area-inset-top)) 16px env(safe-area-inset-bottom);
-            transition: background-color 0.5s ease, color 0.4s ease; position: relative;
+            /* 夜空辉光，取自站点 #app 的背景写法 */
+            background: radial-gradient(circle at 50% 15%, var(--bg-glow-1) 0, var(--bg-glow-2) 42%, #030308 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            /* 手机为主：左右留白，并用 max() 兼顾刘海屏横屏时的侧边安全区 */
+            padding: max(18px, env(safe-area-inset-top))
+                     max(14px, env(safe-area-inset-right))
+                     max(18px, env(safe-area-inset-bottom))
+                     max(14px, env(safe-area-inset-left));
+            position: relative;
         }
 
-        /* 呼吸渐变背景与噪点 */
-        body::before {
-            content: ''; position: fixed; inset: 0; z-index: -2; pointer-events: none;
-            background:
-                    radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
-                    radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
-                    radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
-                    radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
-            transition: background 0.5s ease;
-        }
-        body::after {
-            content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none; mix-blend-mode: overlay; opacity: var(--noise-opacity);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        /* ============ 动画 ============ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ============ 优雅浮动装饰 ============ */
-        .floating-deco { position: fixed; pointer-events: none; z-index: -1; opacity: var(--deco-opacity); font-size: 1.4rem; transition: opacity 0.5s ease; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08)); }
-        .floating-deco:nth-child(1) { top: 6%; left: 4%; animation: floatA 8s ease-in-out infinite; font-size: 1.6rem; }
-        .floating-deco:nth-child(2) { top: 14%; right: 6%; animation: floatB 10s ease-in-out infinite 1s; font-size: 1.2rem; }
-        .floating-deco:nth-child(3) { top: 40%; left: 2%; animation: floatA 12s ease-in-out infinite 2s; font-size: 1.5rem; }
-        .floating-deco:nth-child(4) { top: 65%; right: 4%; animation: floatB 9s ease-in-out infinite 0.5s; font-size: 1.4rem;}
-        .floating-deco:nth-child(5) { top: 82%; left: 8%; animation: floatA 11s ease-in-out infinite 3s; font-size: 1.1rem; }
-        .floating-deco:nth-child(6) { top: 30%; right: 2%; animation: floatB 7s ease-in-out infinite 1.5s; font-size: 1rem; }
-        .floating-deco:nth-child(7) { top: 55%; left: 6%; animation: floatA 9s ease-in-out infinite 2.5s; font-size: 0.9rem; }
-        .floating-deco:nth-child(8) { top: 90%; right: 10%; animation: floatB 13s ease-in-out infinite 0.8s; font-size: 1.3rem; }
-
-        @keyframes floatA {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(6px, -14px) rotate(4deg); }
-            50% { transform: translate(-4px, -6px) rotate(-2deg); }
-            75% { transform: translate(8px, 8px) rotate(3deg); }
-        }
-        @keyframes floatB {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-8px, -10px) rotate(-5deg); }
-            66% { transform: translate(5px, 12px) rotate(3deg); }
-        }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg) scale(1.15); }
-            25% { transform: rotate(-6deg) scale(1.15); }
-            75% { transform: rotate(6deg) scale(1.15); }
+            0%, 100% { transform: rotate(0deg) scale(1.12); }
+            25% { transform: rotate(-6deg) scale(1.12); }
+            55% { transform: rotate(4deg) scale(1.12); }
+            75% { transform: rotate(-2deg) scale(1.12); }
         }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(111, 212, 181, 0.4); }
-            50% { box-shadow: 0 0 0 8px transparent; }
-        }
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.3) rotate(15deg); }
-        }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-        /* ============ 左右留白 超级卡片 ============ */
+        /* ============ 布局 ============ */
         .container {
-            max-width: 640px; margin: 0 auto; position: relative; z-index: 1;
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        /* 主题切换与导航标签页 */
-        .theme-toggle {
-            position: fixed; top: 24px; right: 24px; z-index: 100;
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-soft); color: var(--text-primary);
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            cursor: pointer; box-shadow: var(--card-shadow), var(--card-inner-glow); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        /* ============ 状态栏 ============ */
+        .status-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            padding: 7px 14px;
+            border-radius: 50px;
+            background: var(--status-bg);
+            border: 1px solid var(--status-border);
+            box-shadow: var(--card-shadow);
+            color: var(--text-secondary);
+            transition: border-color 0.3s ease;
         }
-        .theme-toggle:hover { transform: scale(1.1) rotate(15deg); box-shadow: var(--card-shadow-hover); border-color: var(--border-medium); }
-
-        .book-tabs {
-            display: flex; gap: 4px; padding: 6px; margin: 0 auto 32px auto; max-width: 380px;
-            background: var(--status-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--status-border); border-radius: 100px;
-            box-shadow: var(--card-shadow), var(--card-inner-glow);
-            position: relative; z-index: 10;
-        }
-        .book-tab {
-            flex: 1; padding: 11px 0; border: none; background: transparent;
-            color: var(--text-secondary); font-weight: 600; font-size: 0.88rem;
-            border-radius: 100px; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .book-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
-        .book-tab.active {
-            background: var(--gradient-primary); color: white;
-            box-shadow: 0 4px 14px var(--accent-pink-glow), var(--card-inner-glow);
+        .status-bar-wrap {
+            display: flex;
+            justify-content: center;
         }
 
-        /* 磨砂玻璃超大卡片 */
+        .sync-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+        }
+        .sync-dot.active {
+            background: var(--accent-mint);
+        }
+        .sync-dot.error {
+            background: var(--accent-pink-deep);
+        }
+
+        /* ============ 卡片 ============ */
         .card {
-            background: var(--card-bg); backdrop-filter: var(--glass-blur) saturate(1.2); -webkit-backdrop-filter: var(--glass-blur) saturate(1.2);
-            border-radius: var(--radius-xl); padding: 40px 36px;
-            box-shadow: var(--card-shadow), var(--card-inner-glow);
-            border: 1px solid var(--card-border); position: relative; z-index: 5;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden;
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 24px 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            position: relative;
+            transition: box-shadow 0.25s ease;
         }
+        .card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        /* 卡片顶部渐变条：换成站点 boss 血条的霓虹细线 */
         .card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--gradient-primary); opacity: 0.8; z-index: 10;
+            content: '';
+            position: absolute;
+            top: 0; left: 22px; right: 22px;
+            height: 1px;
+            background: var(--tri-gradient);
+            opacity: 0.55;
+            box-shadow: 0 0 14px rgba(255, 120, 174, 0.35);
         }
 
-        .book-page { display: none; animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .book-page.active { display: block; }
-
-        /* ============ 🍎 高级 Typography + 闪烁星星 ============ */
-        .header { text-align: center; margin-bottom: 36px; position: relative; }
-        .header-emoji { font-size: 3rem; display: block; margin-bottom: 8px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.1)); }
-        .header h1 { font-size: 2.1rem; font-weight: 900; letter-spacing: -0.8px; color: var(--text-primary); }
-        .header h1 .accent { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .header .subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
-
-        /* 闪烁的小星星 */
-        .header .deco-sparkle { position: absolute; animation: sparkle 2.5s ease-in-out infinite; font-size: 1.1rem; opacity: 0.6; color: var(--accent-pink-deep); }
-        .header .deco-sparkle:nth-child(1) { top: -10px; right: 20%; animation-delay: 0s; }
-        .header .deco-sparkle:nth-child(2) { top: 15px; left: 16%; animation-delay: 0.8s; font-size: 0.8rem; }
-        .header .deco-sparkle:nth-child(3) { bottom: -10px; right: 30%; animation-delay: 1.5s; font-size: 0.95rem; }
-
-        /* ============ 网格项设计 (完美融合) ============ */
-        .name-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .food-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-        .food-grid.locked { opacity: 0.5; pointer-events: none; filter: grayscale(30%) blur(0.3px); }
-
-        .grid-item {
-            background: var(--food-bg); border: 1.5px solid var(--food-border);
-            border-radius: var(--radius-md); text-align: center; cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative;
-            box-shadow: var(--card-inner-glow);
+        /* ============ 头部 ============ */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+            position: relative;
         }
-        .name-item { padding: 18px 8px; font-weight: 700; font-size: 1.05rem; }
-        .food-item { padding: 24px 10px 18px; border-radius: var(--radius-lg); }
-
-        .grid-item:hover:not(.locked) {
-            background: var(--order-row-hover); border-color: var(--accent-pink);
-            transform: translateY(-4px); box-shadow: 0 10px 24px var(--accent-pink-glow), var(--card-inner-glow);
+        .header-emoji {
+            font-size: 2.3rem;
+            display: block;
+            margin-bottom: 4px;
+            /* 深底上给 emoji 一点辉光，否则发闷 */
+            filter: drop-shadow(0 0 16px rgba(255, 143, 189, 0.45));
         }
-        .grid-item:active:not(.locked) { transform: scale(0.95); }
-
-        /* 选中状态 */
-        .grid-item.active {
-            background: var(--food-bg-active); border-color: var(--accent-pink-deep);
-            box-shadow: var(--food-shadow-active), var(--card-inner-glow); transform: translateY(-4px);
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            /* 站点标题的标志性宽字距 */
+            letter-spacing: 3px;
+            line-height: 1.25;
+            color: var(--text-primary);
         }
-        .name-item.active { color: var(--accent-pink-deep); font-weight: 800; }
-
-        /* 锁定状态 */
-        .name-item.locked {
-            background: rgba(0,0,0,0.06); color: var(--text-tertiary);
-            border-color: transparent; cursor: not-allowed; box-shadow: none;
+        .header h1 .accent {
+            background: var(--tri-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        [data-theme="dark"] .name-item.locked { background: rgba(0,0,0,0.25); }
-
-        .name-status {
-            position: absolute; top: -1px; right: -1px; background: var(--border-soft); color: var(--text-secondary);
-            font-size: 0.68rem; padding: 3px 8px; border-radius: 0 var(--radius-md) 0 12px; font-weight: 700;
-            border-left: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
+        .header .subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-weight: 400;
+            letter-spacing: 2px;
         }
 
-        .food-icon { font-size: 2.6rem; display: block; margin-bottom: 10px; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05)); }
-        .grid-item:hover .food-icon { transform: scale(1.12) rotate(-5deg); }
-        .grid-item.active .food-icon { animation: wiggle 0.6s ease forwards; }
+        /* ============ 表单 ============ */
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+        /* 标签行：左边文案，右边折叠按钮 */
+        .deck-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 9px;
+        }
+        .deck-head .form-label {
+            margin-bottom: 0;
+        }
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 9px;
+        }
+        .label-icon {
+            width: 22px; height: 22px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            flex-shrink: 0;
+            background: var(--surface-light);
+            border: 1px solid var(--border-soft);
+        }
 
-        .food-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); display: block; }
+        select {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border-soft);
+            /* 必须 ≥16px：iOS 聚焦到更小的表单元素时会自动放大整个页面，
+               以前是靠 viewport 里锁 user-scalable 硬压下去的，那样会连带禁掉用户缩放。 */
+            font-size: 16px;
+            outline: none;
+            background-color: var(--input-bg);
+            appearance: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: 500;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff8fbd' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 13px center;
+            background-size: 15px;
+        }
+        select:focus {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 0 3px var(--accent-pink-glow);
+        }
+        select:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+            background-color: var(--surface-medium);
+        }
+        /* 深色底上原生下拉列表项会沿用系统色，显式指定避免白底黑字跳出来 */
+        select option {
+            background: #14101c;
+            color: var(--text-primary);
+        }
+
+        /* ============ 餐品网格 ============ */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .food-item {
+            border: 1px solid var(--food-border);
+            border-radius: 14px;
+            padding: 14px 10px 11px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease,
+                        background 0.18s ease, transform 0.12s ease;
+            background: var(--food-bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .food-item:hover {
+            border-color: var(--border-medium);
+        }
+        .food-item:active {
+            transform: scale(0.97);
+        }
+        .food-item.active {
+            border-color: var(--accent-pink-deep);
+            background: var(--food-bg-active);
+            box-shadow: var(--food-shadow-active);
+        }
+
+        .food-icon {
+            font-size: 1.75rem;
+            line-height: 1.15;
+            display: block;
+        }
+        /* 只在「刚被选中」时抖一下，不再每次重建都重放动画 */
+        .food-item.just-picked .food-icon {
+            animation: wiggle 0.45s ease;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: block;
+        }
         .food-price {
-            font-size: 0.8rem; color: var(--accent-pink-deep); display: inline-block; margin-top: 8px; font-weight: 800;
-            background: var(--surface-light); padding: 3px 14px; border-radius: 100px; border: 1px solid var(--border-soft);
-            transition: all 0.3s; box-shadow: var(--card-inner-glow);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: inline-block;
+            font-weight: 600;
+            background: var(--surface-light);
+            padding: 1px 9px;
+            border-radius: 20px;
+            transition: background 0.2s ease, color 0.2s ease;
         }
-        .grid-item.active .food-price { background: var(--gradient-primary); color: white; border-color: transparent; }
+        .food-item.active .food-price {
+            background: var(--accent-pink-deep);
+            color: white;
+        }
 
         .checkmark {
-            position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%;
-            background: var(--gradient-primary); color: white; font-size: 11px; font-weight: 800;
-            display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0) rotate(-180deg);
-            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 4px 12px var(--accent-pink-glow);
+            position: absolute;
+            top: 7px; right: 7px;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: var(--accent-pink-deep);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.16s ease, transform 0.16s ease;
             z-index: 2;
+            box-shadow: 0 0 12px var(--accent-pink-glow);
         }
-        .grid-item.active .checkmark { opacity: 1; transform: scale(1) rotate(0deg); }
+        .food-item.active .checkmark {
+            opacity: 1;
+            transform: scale(1);
+        }
 
-        /* ============ Shimmer 发光提交按钮 ============ */
+        /* ============ 菜单折叠 ============ */
+        /* 折叠态默认只展示前 4 个（手机 2 列 × 2 行，正好铺满）。
+           用 nth-child 隐藏，不重建 DOM，展开/收起只是一次 class 切换。 */
+        .food-grid.is-collapsed .food-item:nth-child(n + 5) {
+            display: none;
+        }
+
+        .deck-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-soft);
+            border-radius: 50px;
+            padding: 5px 11px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .deck-toggle:hover {
+            border-color: var(--border-medium);
+            color: var(--accent-pink-deep);
+        }
+        .deck-toggle:active { transform: scale(0.96); }
+        .deck-toggle svg {
+            stroke: currentColor;
+            transition: transform 0.22s ease;
+            flex-shrink: 0;
+        }
+        .deck-toggle.is-expanded svg {
+            transform: rotate(180deg);
+        }
+
+        /* ============ 按钮 ============ */
         .btn {
-            border: none; padding: 18px; border-radius: var(--radius-lg); font-weight: 800; cursor: pointer; font-size: 1.05rem; width: 100%;
-            display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 36px; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: var(--gradient-primary); color: white; box-shadow: 0 8px 28px var(--accent-pink-glow), var(--card-inner-glow);
-            position: relative; overflow: hidden;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            transition: background 0.2s ease, box-shadow 0.2s ease,
+                        transform 0.12s ease, opacity 0.2s ease;
         }
-        .btn::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite;
-        }
-        .btn:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 14px 40px var(--accent-pink-glow), var(--card-inner-glow); }
-        .btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
-        .btn:disabled { background: var(--surface-medium); box-shadow: none; color: var(--text-tertiary); border-color: var(--border-soft); cursor: not-allowed; }
-        .btn:disabled::before { display: none; }
-        .btn.locked-btn { background: var(--gradient-success); box-shadow: 0 8px 24px rgba(77, 201, 164, 0.25); color: white; }
 
-        /* ============ 实时汇总 Dashboard 数据卡 ============ */
-        .status-bar {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; font-weight: 600;
-            padding: 8px 22px; border-radius: 100px; background: var(--status-bg); border: 1px solid var(--status-border);
-            color: var(--text-secondary); margin-bottom: 24px; box-shadow: var(--card-inner-glow), var(--card-shadow);
+        /* -------- 提交区：吸附在视口底部，选完餐不用滚回去找按钮 -------- */
+        .submit-dock {
+            position: sticky;
+            bottom: 0;
+            z-index: 5;
+            margin-top: 16px;
+            padding: 12px 0 4px;
+            /* 覆盖下方滚过的餐品，顶部做一层柔和渐隐而不是硬切断 */
+            background: linear-gradient(
+                to bottom,
+                transparent 0,
+                var(--card-bg) 14px,
+                var(--card-bg) 100%
+            );
         }
-        .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); transition: 0.4s; }
-        .sync-dot.active { background: var(--accent-mint); animation: pulse-glow 2.5s infinite; box-shadow: 0 0 8px rgba(111, 212, 181, 0.5); }
-        .sync-dot.error { background: var(--accent-pink-deep); box-shadow: 0 0 8px var(--accent-pink-glow); }
-
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
-        .dash-card {
-            background: var(--table-row-bg); border-radius: var(--radius-md); padding: 24px;
-            border: 1px solid var(--border-soft); display: flex; flex-direction: column; justify-content: center;
-            box-shadow: var(--card-inner-glow); transition: 0.3s;
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: var(--tri-gradient);
+            color: #1a0a14;
+            box-shadow: 0 4px 22px rgba(255, 91, 148, 0.3);
         }
-        .dash-card:hover { transform: translateY(-2px); background: var(--order-row-hover); }
-        .dash-val { font-size: 2.2rem; font-weight: 900; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.5px; }
-        .dash-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 600; margin-top: 8px; }
-
-        /* 表格与一键复制 */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 32px 0 16px 0; }
-        .section-title { font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
-        .section-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 1px solid var(--border-soft); }
-        .section-icon.purple { background: var(--surface-tag); }
-        .section-icon.mint { background: linear-gradient(135deg, rgba(111,212,181,0.12), rgba(111,212,181,0.05)); }
+        .btn-submit:hover:not(:disabled) {
+            box-shadow: 0 6px 30px rgba(255, 91, 148, 0.45);
+            transform: translateY(-1px);
+        }
+        .btn-submit:active:not(:disabled) {
+            transform: translateY(0) scale(0.99);
+        }
+        .btn-submit:disabled {
+            background: var(--surface-medium);
+            box-shadow: none;
+            cursor: not-allowed;
+            color: var(--text-tertiary);
+        }
+        .btn-submit.danger {
+            background: transparent;
+            color: var(--accent-pink);
+            border: 1px solid var(--border-medium);
+            box-shadow: none;
+        }
+        .btn-submit.danger:hover {
+            background: rgba(255, 91, 148, 0.14);
+            color: var(--accent-pink);
+            border-color: var(--accent-pink-deep);
+        }
 
         .btn-copy {
-            background: var(--gradient-badge); color: var(--text-primary); font-size: 0.78rem; padding: 8px 16px;
-            border-radius: 100px; border: 1px solid var(--border-soft); font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; gap: 6px; transition: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--surface-light);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            padding: 7px 14px;
+            border-radius: 50px;
+            border: 1px solid var(--border-soft);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
         }
-        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--accent-purple-glow); border-color: var(--accent-purple); }
-        .btn-copy svg { stroke: var(--accent-purple); }
+        .btn-copy:hover {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple-deep);
+        }
+        .btn-copy:active { transform: scale(0.96); }
+        .btn-copy svg { stroke: currentColor; }
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
-        th { text-align: left; padding: 4px 16px; color: var(--text-tertiary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        td { padding: 14px 16px; font-size: 0.92rem; font-weight: 600; background: var(--table-row-bg); border-top: 1px solid transparent; border-bottom: 1px solid transparent; transition: 0.3s; }
-        tr td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
-        tr td:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
-        tr:hover td { background: var(--order-row-hover); }
-        .count-badge { background: var(--gradient-badge); padding: 3px 12px; border-radius: 100px; font-size: 0.8rem; font-weight: 800; color: var(--accent-pink-deep); border: 1px solid var(--border-soft); }
+        /* ============ 表格 ============ */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+            position: relative;
+            z-index: 1;
+        }
+        th {
+            text-align: left;
+            padding: 6px 10px;
+            color: var(--text-tertiary);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        th:last-child,
+        td:last-child {
+            text-align: right;
+        }
+        td {
+            padding: 10px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            background: var(--table-row-bg);
+        }
+        tr td:first-child { border-radius: 12px 0 0 12px; }
+        tr td:last-child { border-radius: 0 12px 12px 0; }
 
-        /* ============ 优雅订单列表行 ============ */
+        .total-amount {
+            color: var(--accent-pink-deep);
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .count-badge {
+            background: var(--surface-tag);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: inline-block;
+        }
+
+        /* ============ 订单行 ============ */
         .order-row {
-            display: flex; justify-content: space-between; align-items: center; padding: 14px 18px;
-            background: var(--order-row-bg); border-radius: var(--radius-md); margin-bottom: 10px;
-            border: 1px solid transparent; transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            animation: slideInLeft 0.4s ease backwards;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--order-row-bg);
+            border-radius: 14px;
+            margin-bottom: 6px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            /* 注意：这里刻意不加入场动画。列表每次轮询都会重建，
+               原来的 slideInLeft 会让整份记录每 15 秒闪一次。 */
         }
-        .order-row:hover { background: var(--order-row-hover); border-color: var(--border-soft); box-shadow: 0 6px 20px rgba(0,0,0,0.03); transform: translateX(4px); }
-        .order-main { display: flex; flex-direction: column; gap: 4px; }
-        .order-name { font-weight: 700; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
-        .tag { background: var(--surface-tag); color: var(--accent-pink-deep); padding: 2px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--border-soft); }
-        .order-time { font-size: 0.75rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
+        .order-row:hover {
+            border-color: var(--border-soft);
+        }
+        .order-row.is-mine {
+            border-color: var(--border-medium);
+            background: var(--food-bg-active);
+        }
 
-        .order-right { display: flex; align-items: center; gap: 14px; }
-        .order-price { font-weight: 800; color: var(--accent-pink-deep); font-size: 1rem; }
+        .order-main {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            flex: 1;
+        }
+        .order-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.88rem;
+            min-width: 0;
+        }
+        .order-time {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .order-time svg {
+            stroke: currentColor;
+            flex-shrink: 0;
+        }
+
+        .tag {
+            background: var(--surface-tag);
+            color: var(--text-secondary);
+            padding: 2px 9px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .order-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .order-price {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-variant-numeric: tabular-nums;
+        }
         .btn-delete {
-            background: rgba(255, 92, 141, 0.08); width: 32px; height: 32px; border-radius: 10px; border: 1px solid rgba(255, 92, 141, 0.15);
-            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: transparent;
+            color: var(--text-tertiary);
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--border-soft);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
-        .btn-delete:hover { background: var(--accent-pink-deep); border-color: var(--accent-pink-deep); transform: rotate(90deg) scale(1.1); box-shadow: 0 4px 12px var(--accent-pink-glow); }
-        .btn-delete:hover svg { stroke: white; }
-        .btn-delete svg { stroke: var(--accent-pink-deep); transition: stroke 0.3s; }
+        .btn-delete svg { stroke: currentColor; }
+        .btn-delete:hover {
+            background: var(--accent-pink-deep);
+            border-color: var(--accent-pink-deep);
+            color: white;
+        }
 
-        footer { text-align: center; margin-top: 40px; font-size: 0.8rem; color: var(--text-tertiary); font-weight: 500; }
-        footer .heart { color: var(--accent-pink-deep); display: inline-block; animation: bounce-soft 2s infinite; }
-        @keyframes bounce-soft { 0%, 100% { transform: scale(1) translateY(0); } 50% { transform: scale(1.15) translateY(-4px); } }
-        .empty-state { text-align: center; padding: 40px 16px; color: var(--text-tertiary); font-size: 0.9rem; font-weight: 500; }
-        .empty-state .empty-icon { font-size: 2.8rem; display: block; margin-bottom: 8px; opacity: 0.4; }
+        /* ============ Section Header ============ */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+        }
+        .section-icon {
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            border: 1px solid var(--border-soft);
+            background: var(--surface-light);
+            flex-shrink: 0;
+        }
 
+        /* ============ 封面头图 ============ */
+        .hero {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            aspect-ratio: 16 / 7;
+            display: block;
+            background: #0b0810;
+        }
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 原图是中心构图，这里略向上裁，保住人物头部 */
+            object-position: center 32%;
+            display: block;
+        }
+        /* 底部压一层暗渐变，保证标题与副标题在任何画面上都读得清 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(3, 3, 8, 0.92) 0%,
+                rgba(3, 3, 8, 0.55) 42%,
+                rgba(3, 3, 8, 0.05) 78%,
+                transparent 100%
+            );
+        }
+        .hero-text {
+            position: absolute;
+            left: 16px; right: 16px; bottom: 12px;
+            z-index: 2;
+        }
+        .hero-text .kicker {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: 0.9;
+        }
+        .hero-text .title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-top: 1px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        }
+        .hero-text .sub {
+            font-size: 0.68rem;
+            color: #cfc6d4;
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+
+        /* ============ 人物卡片 ============ */
+        .chars {
+            margin-bottom: 16px;
+        }
+        .chars-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+        .chars-head .kicker {
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: 0.85;
+        }
+        .chars-head .hint {
+            font-size: 0.62rem;
+            color: var(--text-tertiary);
+        }
+        .char-row {
+            display: flex;
+            gap: 9px;
+            overflow-x: auto;
+            /* 手机主要靠横向滑动，隐藏滚动条但保留可滚动 */
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
+            /* 负外边距 + 内边距，让首尾卡片贴边而不被裁掉阴影 */
+            margin: 0 -14px;
+            padding: 2px 14px 6px;
+        }
+        .char-row::-webkit-scrollbar { display: none; }
+
+        .char-card {
+            position: relative;
+            flex: 0 0 132px;
+            aspect-ratio: 3 / 4;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            background: #0b0810;
+            scroll-snap-align: start;
+            transition: border-color 0.22s ease, transform 0.22s ease;
+        }
+        .char-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 裁到画面上部，保住脸部 */
+            object-position: center 22%;
+            display: block;
+        }
+        .char-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(3, 3, 8, 0.9) 0%, transparent 62%);
+            pointer-events: none;
+        }
+        .char-card .name {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            z-index: 2;
+            padding: 8px 9px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .char-card .name i {
+            flex: 0 0 auto;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+            background: currentColor;
+        }
+        /* 四张卡片各给一个站点色系里的辨识色 */
+        .char-card.c-pink .name { color: var(--pink); }
+        .char-card.c-cyan .name { color: var(--cyan); }
+        .char-card.c-gold .name { color: var(--gold); }
+        .char-card.c-purple .name { color: var(--accent-purple); }
+        .char-card.c-pink .name span,
+        .char-card.c-cyan .name span,
+        .char-card.c-gold .name span,
+        .char-card.c-purple .name span {
+            color: #fff;
+        }
+
+        /* ============ 分割线 ============ */
+        .divider {
+            border: none;
+            height: 1px;
+            background: var(--divider);
+            margin: 18px 0;
+        }
+
+        /* ============ 底部 ============ */
+        footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            padding-bottom: 24px;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+            line-height: 1.8;
+        }
+        footer .heart {
+            color: var(--accent-pink-deep);
+            display: inline-block;
+        }
+
+        /* ============ 空状态 ============ */
+        .empty-state {
+            text-align: center;
+            padding: 28px 16px;
+        }
+        .empty-state .empty-icon {
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+            display: block;
+            opacity: 0.4;
+        }
+        .empty-state p {
+            color: var(--text-tertiary);
+            font-size: 0.83rem;
+            font-weight: 500;
+        }
+
+        /* ============ Toast ============ */
         #toast {
-            position: fixed; top: max(env(safe-area-inset-top, 24px), 24px); left: 50%; transform: translateX(-50%) translateY(-30px) scale(0.85);
-            color: #fff; padding: 12px 28px; border-radius: 100px; font-size: 0.88rem; font-weight: 600;
-            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: rgba(45, 35, 50, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; gap: 8px; box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+            position: fixed;
+            top: max(env(safe-area-inset-top, 16px), 16px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-14px);
+            padding: 11px 20px;
+            border-radius: 50px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            max-width: calc(100vw - 32px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+            background: var(--toast-bg);
+            color: var(--toast-fg);
+            border: 1px solid var(--toast-border);
         }
-        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(16px) scale(1); }
+        #toast.error {
+            background: var(--toast-error-bg);
+            color: var(--toast-error-fg);
+            border-color: var(--toast-error-border);
+        }
+        /* 中性提示：既不是成功也不是错误，比如「收起时顺带取消了你的选择」 */
+        #toast.hint {
+            background: var(--toast-hint-bg);
+            color: var(--toast-hint-fg);
+            border-color: var(--toast-hint-border);
+        }
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        #toast .toast-icon { flex-shrink: 0; }
 
-        /* ============ 自适应调整 ============ */
-        @media (max-width: 480px) {
-            .card { padding: 32px 20px; border-radius: var(--radius-lg); }
-            .header-emoji { font-size: 2.5rem; }
-            .header h1 { font-size: 1.7rem; }
-            .name-grid { gap: 8px; }
-            .food-grid { gap: 10px; }
-            .food-item { padding: 18px 8px 14px; }
-            .dashboard-grid { grid-template-columns: 1fr; }
+        /* ============ 键盘可达性 ============ */
+        :focus-visible {
+            outline: 2px solid var(--accent-purple);
+            outline-offset: 2px;
+        }
+        .food-item:focus-visible {
+            outline-offset: 3px;
+        }
+
+        /* ============ 滚动条 ============ */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+
+        /* ============ 响应式 ============ */
+        /* 手机（主战场）：375px 这类窄屏上状态栏要收窄，避免和人物卡片抢视觉重量 */
+        @media (max-width: 420px) {
+            .status-bar {
+                padding: 6px 11px;
+                font-size: 0.72rem;
+            }
+            .char-card { flex-basis: 118px; }
+        }
+
+        @media (max-width: 380px) {
+            .food-grid { gap: 6px; }
+            .food-item { padding: 11px 6px 9px; border-radius: 12px; }
+            .food-icon { font-size: 1.5rem; }
+            .food-name { font-size: 0.8rem; }
+            .card { padding: 18px 14px; border-radius: 18px; }
+            .header h1 { font-size: 1.4rem; letter-spacing: 2px; }
+            .char-card { flex-basis: 104px; }
+        }
+
+        /* 手机端：主按钮吸附在底部，必须避开 iPhone 的 Home 指示条 */
+        @media (max-width: 899px) {
+            .submit-dock {
+                bottom: calc(env(safe-area-inset-bottom, 0px));
+                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            }
+        }
+
+        /* 桌面端：原来只有 480px 一条窄竖条，两边全浪费。
+           改成「左边点餐 + 右边数据」双栏，顺带把字阶和间距放大。 */
+        @media (min-width: 900px) {
+            body {
+                padding: max(36px, env(safe-area-inset-top))
+                         max(32px, env(safe-area-inset-right))
+                        max(48px, env(safe-area-inset-bottom))
+                         max(32px, env(safe-area-inset-left));
+            }
+            .container {
+                max-width: 1180px;
+                display: grid;
+                /* 左栏给点餐区多一点宽度，菜单名不会挤成两行 */
+                grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+                grid-template-areas:
+                    "status status"
+                    "hero   hero"
+                    "chars  chars"
+                    "order  summary"
+                    "order  records"
+                    "footer footer";
+                gap: 20px;
+                align-items: start;
+            }
+            .status-bar-wrap { grid-area: status; }
+            .hero { grid-area: hero; aspect-ratio: 21 / 7; }
+            .chars { grid-area: chars; }
+            .card-order { grid-area: order; }
+            .card-summary { grid-area: summary; }
+            .card-records { grid-area: records; }
+            footer { grid-area: footer; margin-top: 4px; }
+
+            /* 桌面空间充裕，四张卡片直接铺满一行，不用横滑 */
+            .char-row {
+                overflow: visible;
+                margin: 0;
+                padding: 0;
+                gap: 14px;
+            }
+            .char-card { flex: 1 1 0; }
+            .chars-head .hint { display: none; }
+            .char-card:hover { border-color: var(--border-medium); transform: translateY(-2px); }
+            .hero-text { left: 26px; bottom: 20px; }
+            .hero-text .title { font-size: 1.5rem; letter-spacing: 5px; }
+            .hero-text .kicker { font-size: 0.68rem; }
+            .hero-text .sub { font-size: 0.78rem; }
+
+            /* 桌面端不需要吸附：点餐卡片本身就在视口里 */
+            .submit-dock {
+                position: static;
+                background: none;
+                padding: 18px 0 0;
+                margin-top: 18px;
+                border-top: 1px solid var(--divider);
+            }
+
+            .card { margin-bottom: 0; padding: 28px 26px; }
+            .header h1 { font-size: 1.8rem; }
+            /* 桌面左栏比手机宽得多，13 个餐品排 2 列会拉成一条条大卡片，改 3 列 */
+            .food-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+            /* 列数变了，折叠预览数要跟着走：3 列 × 2 行 = 6，
+               否则折叠态会剩下一格孤零零占一整行（3 + 1）。 */
+            .food-grid.is-collapsed .food-item:nth-child(n + 7) {
+                display: none;
+            }
+            .food-item { padding: 16px 8px 13px; }
+            .food-icon { font-size: 2rem; }
+            .order-row { padding: 14px 16px; }
+        }
+
+        /* 减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- 浮动装饰 (原装 8 浮子) -->
-<div class="floating-deco">🌸</div>
-<div class="floating-deco">✨</div>
-<div class="floating-deco">🍰</div>
-<div class="floating-deco">💫</div>
-<div class="floating-deco">🧁</div>
-<div class="floating-deco">⭐</div>
-<div class="floating-deco">🎀</div>
-<div class="floating-deco">🌙</div>
-
-<!-- 主题切换 -->
-<button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <div class="container">
-
-    <div class="book-tabs">
-        <button class="book-tab active" onclick="switchPage(1)">1. 选人</button>
-        <button class="book-tab" onclick="switchPage(2)">2. 选餐</button>
-        <button class="book-tab" onclick="switchPage(3)">3. 总览</button>
+    <!-- 状态栏 -->
+    <div class="status-bar-wrap">
+        <div class="status-bar">
+            <span id="syncDot" class="sync-dot" aria-hidden="true"></span>
+            <span id="syncText" role="status" aria-live="polite">正在连接…</span>
+        </div>
     </div>
 
-    <div class="card">
+    <!-- 封面头图 -->
+    <a class="hero" href="https://yukiom.us.ci" target="_blank" rel="noopener">
+        <img src="img/opt/intro.webp" alt="幻想乡 · 点饭系统封面" width="800" height="800">
+        <div class="hero-text">
+            <div class="kicker">GENSOKYO · DREAM PORTAL</div>
+            <div class="title">幻想乡</div>
+            <div class="sub">yukiom.us.ci</div>
+        </div>
+    </a>
 
-        <!-- PAGE 1: 选人 -->
-        <div id="page-1" class="book-page active">
-            <div class="header">
-                <span class="deco-sparkle">✦</span>
-                <span class="deco-sparkle">⟡</span>
-                <span class="deco-sparkle">✧</span>
-                <span class="header-emoji">👤</span>
-                <h1>你是<span class="accent">哪位呀</span></h1>
-                <div class="subtitle">第一步：请先找到自己的名字</div>
-            </div>
+    <!-- 人物卡片 -->
+    <section class="chars" aria-label="幻想乡人物">
+        <div class="chars-head">
+            <span class="kicker">CHARACTERS</span>
+            <span class="hint">左右滑动</span>
+        </div>
+        <div class="char-row">
+            <figure class="char-card c-pink">
+                <img src="img/opt/reimu.webp" alt="博丽灵梦" width="640" height="819" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>博丽灵梦</span></figcaption>
+            </figure>
+            <figure class="char-card c-cyan">
+                <img src="img/opt/cirno.webp" alt="琪露诺" width="640" height="1034" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>琪露诺</span></figcaption>
+            </figure>
+            <figure class="char-card c-gold">
+                <img src="img/opt/marisa.webp" alt="雾雨魔理沙" width="640" height="792" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>雾雨魔理沙</span></figcaption>
+            </figure>
+            <figure class="char-card c-purple">
+                <img src="img/opt/yuyuko.webp" alt="西行寺幽幽子" width="640" height="934" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>西行寺幽幽子</span></figcaption>
+            </figure>
+        </div>
+    </section>
 
-            <div class="name-grid" id="nameGrid">
-                <!-- JS Render -->
-            </div>
-
-            <div style="text-align: center; margin-top: 36px;">
-                <button class="btn-copy" style="display: inline-flex; padding: 12px 24px; font-size:0.9rem;" onclick="switchPage(2)">继续下一步 ➜</button>
-            </div>
+    <!-- 点餐卡片 -->
+    <div class="card card-order">
+        <div class="header">
+            <span class="header-emoji" aria-hidden="true">🍱</span>
+            <h1>点饭<span class="accent">系统</span></h1>
+            <div class="subtitle">今天想吃什么呀 ～</div>
         </div>
 
-        <!-- PAGE 2: 选餐品 -->
-        <div id="page-2" class="book-page">
-            <div class="header">
-                <span class="deco-sparkle">✦</span>
-                <span class="deco-sparkle">⟡</span>
-                <span class="deco-sparkle">✧</span>
-                <span class="header-emoji">🍱</span>
-                <h1>想吃<span class="accent">什么呢</span></h1>
-                <div class="subtitle">第二步：今天想点些什么好吃的</div>
-            </div>
-
-            <div class="food-grid" id="foodGrid">
-                <!-- JS Render -->
-            </div>
-
-            <button class="btn" id="submitBtn">✨ 确认点单</button>
+        <div class="form-group">
+            <label class="form-label" for="studentSelect">
+                <span class="label-icon" aria-hidden="true">👤</span>
+                你的名字
+            </label>
+            <select id="studentSelect">
+                <option value="">加载中…</option>
+            </select>
         </div>
 
-        <!-- PAGE 3: 聚合总览 -->
-        <div id="page-3" class="book-page">
-            <div class="header" style="margin-bottom: 24px;">
-                <span class="deco-sparkle">✦</span>
-                <span class="deco-sparkle">⟡</span>
-                <span class="deco-sparkle">✧</span>
-                <span class="header-emoji">📊</span>
-                <h1>数据<span class="accent">大揭秘</span></h1>
-            </div>
-
-            <div style="text-align: center;">
-                <div class="status-bar">
-                    <span id="syncDot" class="sync-dot"></span>
-                    <span id="syncText">正在连接...</span>
+        <div class="form-group">
+            <div class="deck-head">
+                <div class="form-label" id="foodLabel">
+                    <span class="label-icon" aria-hidden="true">🍽️</span>
+                    想吃什么呢
                 </div>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <div class="dash-val" id="topStatCount">0</div>
-                    <div class="dash-label">今日点餐人数</div>
-                </div>
-                <div class="dash-card">
-                    <div class="dash-val" id="topStatMoney" style="color: var(--accent-pink-deep);">¥0</div>
-                    <div class="dash-label">预计总金额</div>
-                </div>
-            </div>
-
-            <div class="section-header">
-                <div class="section-title">
-                    <span class="section-icon purple">👨‍🍳</span>
-                    商家报单
-                </div>
-                <button class="btn-copy" id="copyBtn">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    一键复制
+                <button class="deck-toggle" id="deckToggle" type="button"
+                        aria-expanded="false" aria-controls="foodGrid"
+                        title="展开/收起菜单">
+                    <span id="deckToggleText">全部 13 项</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
             </div>
-            <table>
-                <tbody id="summaryBody">
-                <tr><td colspan="3" class="empty-state">加载中...</td></tr>
-                </tbody>
-            </table>
-
-            <div class="section-header">
-                <div class="section-title">
-                    <span class="section-icon mint">📋</span>
-                    大家点了啥
-                </div>
-            </div>
-            <div id="orderDetailList">
-                <div class="empty-state">加载中...</div>
-            </div>
+            <div class="food-grid is-collapsed" id="foodGrid" role="group" aria-labelledby="foodLabel"></div>
         </div>
 
+        <div class="submit-dock">
+            <button class="btn btn-submit" id="submitBtn" type="button">✨ 提交订单</button>
+        </div>
+    </div>
+
+    <!-- 汇总卡片 -->
+    <div class="card card-summary">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon" aria-hidden="true">📊</span>
+                实时汇总
+            </div>
+            <button class="btn-copy" id="copyBtn" type="button">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                复制
+            </button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
+                </thead>
+                <tbody id="summaryBody">
+                <tr><td colspan="3"><div class="empty-state"><p>加载中…</p></div></td></tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align:right; padding-top:16px; font-weight:600; color:var(--text-secondary); background:transparent;">合计</td>
+                    <td class="total-amount" id="totalPrice" style="padding-top:16px; background:transparent;">¥0</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- 订单记录 -->
+    <div class="card card-records">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon" aria-hidden="true">📋</span>
+                点单记录
+            </div>
+        </div>
+        <div id="orderDetailList" role="list" aria-live="polite">
+            <div class="empty-state">
+                <span class="empty-icon" aria-hidden="true">🍱</span>
+                <p>加载中…</p>
+            </div>
+        </div>
     </div>
 
     <footer>
-        Code with <span class="heart">♥</span> by Yuki<br>
+        Code with <span class="heart" aria-hidden="true">♥</span> by Yuki<br>
         © 2026 209点饭系统
     </footer>
 </div>
 
-<!-- ============ JS 部分：保证 100% 精准绑定并逻辑一致 ============ -->
 <script>
+    // ============ 配置 ============
     const CONFIG = {
         API_URL: 'https://api.yukiom.us.ci/',
         REFRESH_INTERVAL: 15000,
         NAMES: ['周', '陈', '袁', '范', '祝', '何', '黄', '宋', '朱'],
         MENU: [
-            { name: '炒饭', price: 6, icon: '🍚' }, { name: '炒粉', price: 7, icon: '🍜' },
-            { name: '汤粉', price: 5, icon: '🍲' }, { name: '炒河粉', price: 6, icon: '🍝' },
-            { name: '饭', price: 6, icon: '🍛' }, { name: '面', price: 5, icon: '🍜' },
-            { name: '面+蛋', price: 6, icon: '🍜' }, { name: '汤粉+蛋', price: 6, icon: '🍲' } ,
-            { name: '白饭', price: 2, icon: '🍚' }, { name: '拌面', price: 6, icon: '🍜' },
-            { name: '拌粉', price: 6, icon: '🍜' }
+            { name: '饭', price: 6, icon: '🍛' },
+            { name: '汤粉', price: 5, icon: '🍲' },
+            { name: '炒饭', price: 6, icon: '🍚' },
+            { name: '炒粉', price: 7, icon: '🍜' },
+            { name: '炒河粉', price: 6, icon: '🍝' },
+            { name: '面', price: 5, icon: '🍜' },
+            { name: '面+蛋', price: 6, icon: '🍜' },
+            { name: '汤粉+蛋', price: 6, icon: '🍲' } ,
+            { name: '白饭', price: 2, icon: '🍚' },
+            { name: '拌面', price: 6, icon: '🍜' },
+            { name: '拌粉', price: 6, icon: '🍜' },
+            { name: '水饺', price: 6, icon: '🥟' },
+            { name: '混沌', price: 6, icon: '🍜' },
         ]
     };
 
-    const state = { orders: [], selectedName: null, selectedFoodIdx: null, isSubmitting: false };
+    // 折叠态预览几行（手机 2 列 × 2 行 = 4；桌面 3 列 × 2 行 = 6）
+    const PREVIEW_ROWS = 2;
 
+    // ============ 设备标识 ============
     let deviceToken = localStorage.getItem('deviceToken');
     if (!deviceToken) {
         deviceToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
         localStorage.setItem('deviceToken', deviceToken);
     }
 
-    function switchPage(pageIndex) {
-        const tabs = document.querySelectorAll('.book-tab');
-        tabs.forEach((tab, index) => {
-            if (index + 1 === pageIndex) tab.classList.add('active');
-            else tab.classList.remove('active');
+    // ============ 状态 ============
+    const state = {
+        orders: [],
+        selectedFoodIdx: null,
+        isSubmitting: false
+    };
+
+    // ============ 主题 ============
+    // 配色已对齐幻想乡站点，固定为深色霓虹，不再提供浅色主题。
+    // 原来这里有 light/dark 切换与系统主题跟随，那两个分支现在都会渲染成同一套深色，
+    // 留着只会让 applyTheme 写一个无效属性、并让按钮看起来可点却没反应。
+    const THEME = 'dark';
+
+    function applyTheme() {
+        document.documentElement.setAttribute('data-theme', THEME);
+        localStorage.setItem('theme', THEME);
+    }
+
+    // ============ 工具函数 ============
+    // 用 textContent 而不是 innerHTML：msg 里可能带服务端返回的错误文本
+    // type: 'ok'（默认）| 'error' | 'hint'（中性提示）
+    function showToast(msg, type = 'ok') {
+        const toast = document.getElementById('toast');
+        toast.textContent = '';
+
+        const icon = document.createElement('span');
+        icon.className = 'toast-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = type === 'error' ? '⚠️' : type === 'hint' ? '💡' : '✅';
+
+        const text = document.createElement('span');
+        text.textContent = msg;
+
+        toast.append(icon, text);
+        toast.classList.toggle('error', type === 'error');
+        toast.classList.toggle('hint', type === 'hint');
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function formatTime(timestamp) {
+        if (!timestamp) return '未知';
+        const d = new Date(timestamp);
+        return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    function escapeHtml(text) {
+        const d = document.createElement('div');
+        d.textContent = text;
+        return d.innerHTML;
+    }
+
+    // ============ API ============
+    async function fetchOrders() {
+        try {
+            const res = await fetch(CONFIG.API_URL);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return await res.json();
+        } catch (e) {
+            console.error('Fetch error:', e);
+            return null;
+        }
+    }
+
+    async function submitOrderToServer(data) {
+        const res = await fetch(CONFIG.API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
-        const pages = document.querySelectorAll('.book-page');
-        pages.forEach((page, index) => {
-            if (index + 1 === pageIndex) page.classList.add('active');
-            else page.classList.remove('active');
+        if (!res.ok) {
+            let errMsg = '提交失败';
+            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
+            throw new Error(errMsg);
+        }
+    }
+
+    async function deleteOrderFromServer(name) {
+        const res = await fetch(CONFIG.API_URL, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, token: deviceToken })
         });
+        if (!res.ok) {
+            let errMsg = '删除失败';
+            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
+            throw new Error(errMsg);
+        }
     }
 
-    function initTheme() {
-        const saved = localStorage.getItem('theme');
-        const theme = saved || 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-        document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-    }
-    document.getElementById('themeToggle').onclick = () => {
-        const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', t);
-        localStorage.setItem('theme', t);
-        document.getElementById('themeToggle').textContent = t === 'dark' ? '☀️' : '🌙';
-    }
-    function showToast(msg, isError = false) {
-        const t = document.getElementById('toast');
-        t.innerHTML = `${isError ? '⚠️' : '✅'} ${msg}`;
-        t.style.background = isError ? 'rgba(255, 70, 100, 0.92)' : 'rgba(45, 35, 50, 0.92)';
-        t.classList.add('show');
-        clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 3000);
-    }
-    function formatTime(ts) {
-        if(!ts) return '-'; const d = new Date(ts);
-        return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-    }
-    function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
-
-    function renderNameGrid() {
-        const grid = document.getElementById('nameGrid');
-        const myLockedName = localStorage.getItem('myOrderName');
-        grid.innerHTML = '';
-
-        if(myLockedName && !state.selectedName) state.selectedName = myLockedName;
-
-        CONFIG.NAMES.forEach(name => {
-            const hasOrdered = state.orders.some(o => o.name === name);
-            const isMe = (name === myLockedName);
-            const isLocked = hasOrdered && !isMe;
-            const isActive = (state.selectedName === name);
-
-            const div = document.createElement('div');
-            div.className = `grid-item name-item ${isLocked ? 'locked' : ''} ${isActive ? 'active' : ''}`;
-
-            let statusBadge = '';
-            if (isLocked) statusBadge = `<div class="name-status">已点</div>`;
-            else if (isMe) statusBadge = `<div class="name-status" style="background:var(--accent-pink-deep); color:white;">我</div>`;
-
-            div.innerHTML = `
-                ${isActive ? '<div class="checkmark">✓</div>' : ''}
-                ${statusBadge}
-                ${escapeHtml(name)}
-            `;
-
-            div.onclick = () => {
-                if (isLocked || myLockedName) return;
-                state.selectedName = name;
-                renderNameGrid();
-                updateSubmitBtn();
-                setTimeout(() => switchPage(2), 350);
-            };
-            grid.appendChild(div);
-        });
-    }
-
+    // ============ 渲染 ============
+    // 只在初始化时建一次 DOM。选餐时只切 class，不再重建节点 ——
+    // 原版每次点击都 innerHTML = '' 重建 13 个节点，所有入场动画重放，看起来就是「闪一下」。
     function renderFoodGrid() {
         const grid = document.getElementById('foodGrid');
-        const myLockedName = localStorage.getItem('myOrderName');
-        grid.innerHTML = '';
 
+        grid.innerHTML = '';
         CONFIG.MENU.forEach((item, i) => {
-            const isActive = (state.selectedFoodIdx === i);
             const div = document.createElement('div');
-            div.className = `grid-item food-item ${isActive ? 'active' : ''} ${myLockedName ? 'locked' : ''}`;
+            div.className = 'food-item';
+            div.dataset.idx = String(i);
+            div.setAttribute('role', 'button');
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('aria-pressed', 'false');
             div.innerHTML = `
-                ${isActive ? '<div class="checkmark">✓</div>' : ''}
-                <span class="food-icon">${item.icon}</span>
+                <div class="checkmark" aria-hidden="true">✓</div>
+                <span class="food-icon" aria-hidden="true">${item.icon}</span>
                 <span class="food-name">${escapeHtml(item.name)}</span>
                 <span class="food-price">¥${item.price}</span>
             `;
-            div.onclick = () => {
-                if (myLockedName) return;
-                state.selectedFoodIdx = i;
-                renderFoodGrid();
-                updateSubmitBtn();
-            };
             grid.appendChild(div);
         });
+
+        syncFoodSelection();
     }
 
-    function updateDashboard() {
-        let total = 0; state.orders.forEach(o => total += (o.price || 0));
-        document.getElementById('topStatCount').innerText = `${state.orders.length} / ${CONFIG.NAMES.length}`;
-        document.getElementById('topStatMoney').innerText = `¥${total}`;
+    // 原地同步选中态：只动 class 和 aria，不碰节点结构
+    function syncFoodSelection() {
+        const grid = document.getElementById('foodGrid');
+        grid.querySelectorAll('.food-item').forEach(el => {
+            const on = state.selectedFoodIdx === Number(el.dataset.idx);
+            el.classList.toggle('active', on);
+            el.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+    }
 
-        const sBody = document.getElementById('summaryBody');
-        const summary = {};
-        state.orders.forEach(o => {
-            if(!summary[o.food]) summary[o.food] = { count:0, price:o.price, icon: CONFIG.MENU.find(m=>m.name===o.food)?.icon || '🍱' };
-            summary[o.food].count++;
+    function selectFood(i) {
+        if (localStorage.getItem('myOrderName')) return;
+        if (state.selectedFoodIdx === i) return;
+
+        const grid = document.getElementById('foodGrid');
+        state.selectedFoodIdx = i;
+        syncFoodSelection();
+
+        // 只让「这一次刚选中」的那个抖一下，而不是每次重建都集体重放动画
+        const el = grid.querySelector(`.food-item[data-idx="${i}"]`);
+        if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            el.classList.remove('just-picked');
+            void el.offsetWidth; // 强制重排，让动画可以重复触发
+            el.classList.add('just-picked');
+            el.addEventListener('animationend', () => el.classList.remove('just-picked'), { once: true });
+        }
+    }
+
+    // ============ 菜单折叠 ============
+    // 折叠态可见数量由实际列数算出来，而不是写死。
+    // 手机 2 列 -> 预览 4 个；桌面 3 列 -> 预览 6 个（避免剩下 1 格独占一行）。
+    function getPreviewCount() {
+        const grid = document.getElementById('foodGrid');
+        let cols = 2;
+        try {
+            const tpl = getComputedStyle(grid).gridTemplateColumns || '';
+            // 未布局时这里会是 'none'，会被误算成 1 列，所以只认真正的轨道值
+            const tracks = tpl.split(/\s+/).filter(t => /\d/.test(t));
+            if (tracks.length >= 2) cols = tracks.length;
+        } catch (_) { /* 计算样式取不到时退回 2 列 */ }
+        return Math.min(PREVIEW_ROWS * cols, CONFIG.MENU.length);
+    }
+
+    function updateDeckToggle() {
+        const grid = document.getElementById('foodGrid');
+        const btn = document.getElementById('deckToggle');
+        const txt = document.getElementById('deckToggleText');
+        const collapsed = grid.classList.contains('is-collapsed');
+
+        btn.classList.toggle('is-expanded', !collapsed);
+        btn.setAttribute('aria-expanded', String(!collapsed));
+        btn.setAttribute('aria-label', collapsed
+            ? `展开全部 ${CONFIG.MENU.length} 项菜单`
+            : `收起菜单，只显示前 ${getPreviewCount()} 项`);
+        txt.textContent = collapsed ? `全部 ${CONFIG.MENU.length} 项` : '收起';
+    }
+
+    function setDeckCollapsed(collapsed) {
+        const grid = document.getElementById('foodGrid');
+
+        // 要收起、而当前选中的餐品会被藏起来 —— 必须清掉选择。
+        // 否则用户会提交一个自己在界面上根本看不到的餐品。
+        let cleared = null;
+        if (collapsed && state.selectedFoodIdx !== null && state.selectedFoodIdx >= getPreviewCount()) {
+            cleared = CONFIG.MENU[state.selectedFoodIdx];
+            state.selectedFoodIdx = null;
+            syncFoodSelection();
+        }
+
+        grid.classList.toggle('is-collapsed', collapsed);
+        updateDeckToggle();
+
+        if (cleared) showToast(`已取消「${cleared.name}」的选择（它被收起了）`, 'hint');
+    }
+
+    function toggleDeck() {
+        const grid = document.getElementById('foodGrid');
+        setDeckCollapsed(!grid.classList.contains('is-collapsed'));
+    }
+
+    function renderNameSelect() {
+        const select = document.getElementById('studentSelect');
+        const myName = localStorage.getItem('myOrderName');
+        const currentVal = select.value;
+
+        select.innerHTML = '<option value="">请选择名字…</option>';
+        CONFIG.NAMES.forEach(name => {
+            const ordered = state.orders.some(o => o.name === name);
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.text = name + (ordered ? '（已点 ✓）' : '');
+            opt.disabled = ordered;
+            select.appendChild(opt);
         });
 
-        if(Object.keys(summary).length === 0) {
-            sBody.innerHTML = `<tr><td colspan="3" class="empty-state"><span class="empty-icon">🛋️</span><p>还没人点餐哦~ 快来抢沙发！</p></td></tr>`;
+        if (myName) {
+            select.value = myName;
+            select.disabled = true;
         } else {
-            sBody.innerHTML = '';
-            Object.keys(summary).forEach(food => {
-                const r = summary[food];
-                sBody.innerHTML += `
-                    <tr>
-                        <td style="display:flex;align-items:center;gap:8px;"><span style="font-size:1.15rem;">${r.icon}</span> ${escapeHtml(food)}</td>
-                        <td><span class="count-badge">${r.count}</span></td>
-                        <td style="text-align:right; font-weight:800; color:var(--accent-pink-deep);">¥${r.count * r.price}</td>
-                    </tr>`;
-            });
+            select.disabled = false;
+            if (currentVal) select.value = currentVal;
         }
-
-        const lBody = document.getElementById('orderDetailList');
-        if(state.orders.length === 0) {
-            lBody.innerHTML = `<div class="empty-state"><span class="empty-icon">🍱</span><p>空空如也，快来下单吧~</p></div>`;
-        } else {
-            lBody.innerHTML = '';
-            const sorted = [...state.orders].sort((a,b)=>(b.time||0)-(a.time||0));
-            const myLockedName = localStorage.getItem('myOrderName');
-
-            sorted.forEach((o) => {
-                const isMy = (o.name === myLockedName);
-                const row = document.createElement('div');
-                row.className = 'order-row';
-                row.innerHTML = `
-                    <div class="order-main">
-                        <span class="order-name">${escapeHtml(o.name)} <span class="tag">${escapeHtml(o.food)}</span></span>
-                        <span class="order-time"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${formatTime(o.time)}</span>
-                    </div>
-                    <div class="order-right">
-                        <span class="order-price">¥${o.price}</span>
-                        ${isMy ? `
-                        <button class="btn-delete" onclick="cancelOrder('${escapeHtml(o.name)}')">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </button>` : '<div style="width:32px;"></div>'}
-                    </div>`;
-                lBody.appendChild(row);
-            });
-        }
+        updateSubmitButton();
     }
 
-    function updateSubmitBtn() {
+    // 主按钮承载两种动作：未点餐 = 提交；已点餐 = 撤销。
+    // 原版点过之后按钮直接 disabled，想改只能去点单记录里找小 ×，这是主要的交互痛点之一。
+    function updateSubmitButton() {
         const btn = document.getElementById('submitBtn');
         const myName = localStorage.getItem('myOrderName');
 
+        btn.disabled = false;
         if (myName) {
-            btn.disabled = true;
-            btn.className = 'btn locked-btn';
-            btn.innerHTML = `✅ ${escapeHtml(myName)} 已成功点餐`;
+            btn.classList.add('danger');
+            btn.textContent = '↩ 撤销我的订单（' + myName + '）';
+            btn.setAttribute('aria-label', `撤销 ${myName} 的订单`);
         } else {
-            btn.className = 'btn';
-            if(!state.selectedName) {
-                btn.innerHTML = '👆 似乎还没在第一页选名字？'; btn.disabled = true;
-            } else if (state.selectedFoodIdx === null) {
-                btn.innerHTML = '👆 选一个好吃的吧'; btn.disabled = true;
-            } else {
-                btn.innerHTML = state.isSubmitting ? '⏳ 提交中...' : '✨ 确认提交订单';
-                btn.disabled = state.isSubmitting;
-            }
+            btn.classList.remove('danger');
+            btn.disabled = state.isSubmitting;
+            btn.textContent = state.isSubmitting ? '⏳ 提交中…' : '✨ 提交订单';
+            btn.removeAttribute('aria-label');
         }
     }
 
-    function updateNetStatus(ok) {
+    async function handlePrimaryAction() {
+        if (localStorage.getItem('myOrderName')) {
+            await cancelPersonalOrder(localStorage.getItem('myOrderName'));
+        } else {
+            await submitOrder();
+        }
+    }
+
+    function renderSummary() {
+        const body = document.getElementById('summaryBody');
+        let total = 0, hasData = false;
+        body.innerHTML = '';
+
+        CONFIG.MENU.forEach(m => {
+            const count = state.orders.filter(o => o.food === m.name).length;
+            if (count > 0) {
+                hasData = true;
+                const sub = count * m.price;
+                total += sub;
+                body.innerHTML += `<tr>
+                    <td style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:1.15rem;">${m.icon}</span>
+                        <span>${escapeHtml(m.name)}</span>
+                    </td>
+                    <td><span class="count-badge">${count}</span></td>
+                    <td style="font-weight:800;color:var(--accent-pink-deep);">¥${sub}</td>
+                </tr>`;
+            }
+        });
+
+        if (!hasData) {
+            body.innerHTML = `<tr><td colspan="3">
+                <div class="empty-state">
+                    <span class="empty-icon">🛋️</span>
+                    <p>还没人点餐，快来抢沙发！</p>
+                </div>
+            </td></tr>`;
+        }
+        document.getElementById('totalPrice').textContent = `¥${total}`;
+    }
+
+    function renderOrderList() {
+        const list = document.getElementById('orderDetailList');
+
+        if (!state.orders.length) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">🍱</span>
+                    <p>暂无订单，快来点餐吧～</p>
+                </div>`;
+            return;
+        }
+
+        const myName = localStorage.getItem('myOrderName');
+
+        list.innerHTML = '';
+        const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
+        sorted.forEach(o => {
+            const isMyOrder = (myName === o.name);
+            const row = document.createElement('div');
+            row.className = 'order-row' + (isMyOrder ? ' is-mine' : '');
+            row.setAttribute('role', 'listitem');
+            row.innerHTML = `
+                <div class="order-main">
+                    <span class="order-name">
+                        ${escapeHtml(o.name)}
+                        <span class="tag">${escapeHtml(o.food)}</span>
+                    </span>
+                    <span class="order-time">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        ${formatTime(o.time)}
+                    </span>
+                </div>
+                <div class="order-right">
+                    <span class="order-price">¥${o.price || 0}</span>
+                    ${isMyOrder ? `
+                    <button class="btn-delete" type="button" data-name="${escapeHtml(o.name)}" title="撤销" aria-label="撤销 ${escapeHtml(o.name)} 的订单">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                    ` : ''}
+                </div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function refreshUI() {
+        renderSummary();
+        renderOrderList();
+    }
+
+    function updateSyncStatus(ok) {
         const dot = document.getElementById('syncDot');
         const txt = document.getElementById('syncText');
         if (ok) {
             dot.className = 'sync-dot active';
-            const now = new Date(); txt.textContent = `已同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
+            const now = new Date();
+            txt.textContent = `同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
         } else {
-            dot.className = 'sync-dot error'; txt.textContent = '离线 (╥_╥)';
+            dot.className = 'sync-dot error';
+            txt.textContent = '离线 (╥_╥)';
+        }
+    }
+
+    // ============ 核心逻辑 ============
+    function checkDeviceLock() {
+        const myName = localStorage.getItem('myOrderName');
+        // 自己的订单在服务端不存在了（被清空或换了一天），解除本机锁定
+        if (myName && !state.orders.some(o => o.name === myName)) {
+            localStorage.removeItem('myOrderName');
+            state.selectedFoodIdx = null;
+            syncFoodSelection();
         }
     }
 
     async function fetchData() {
-        try {
-            const res = await fetch(CONFIG.API_URL);
-            if (!res.ok) throw new Error();
-            state.orders = await res.json();
-
-            const myName = localStorage.getItem('myOrderName');
-            if (myName && !state.orders.some(o => o.name === myName)) {
-                localStorage.removeItem('myOrderName');
-                state.selectedName = null; state.selectedFoodIdx = null;
-            }
-            renderNameGrid(); renderFoodGrid(); updateDashboard(); updateSubmitBtn(); updateNetStatus(true);
-        } catch (e) { updateNetStatus(false); }
+        const data = await fetchOrders();
+        if (data !== null) {
+            state.orders = data;
+            checkDeviceLock();
+            renderNameSelect();
+            refreshUI();
+            updateSyncStatus(true);
+        } else {
+            updateSyncStatus(false);
+        }
     }
 
     async function submitOrder() {
-        if(state.isSubmitting || !state.selectedName || state.selectedFoodIdx === null) {
-            if(!state.selectedName) switchPage(1);
-            return;
+        if (state.isSubmitting) return;
+        if (localStorage.getItem('myOrderName')) {
+            return showToast('已经点过餐啦～', 'error');
         }
+        const name = document.getElementById('studentSelect').value;
+        if (!name) return showToast('先选名字哦 (｡•́︿•̀｡)', 'error');
+        if (state.selectedFoodIdx === null) return showToast('还没选餐品呢～', 'error');
 
         const food = CONFIG.MENU[state.selectedFoodIdx];
-        state.isSubmitting = true; updateSubmitBtn();
+        state.isSubmitting = true;
+        updateSubmitButton();
 
         try {
-            const res = await fetch(CONFIG.API_URL, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: state.selectedName, food: food.name, price: food.price, time: Date.now(), token: deviceToken })
+            await submitOrderToServer({
+                name, food: food.name, price: food.price, time: Date.now(), token: deviceToken
             });
-            if (!res.ok) throw new Error();
-
-            localStorage.setItem('myOrderName', state.selectedName);
-            showToast(`成功下单：${food.name}！`);
+            showToast(`点餐成功！${food.icon} ${food.name}`);
+            localStorage.setItem('myOrderName', name);
             await fetchData();
-            setTimeout(() => switchPage(3), 500);
-        } catch (e) { showToast('提交失败了，刷新重试~', true); }
-        finally { state.isSubmitting = false; updateSubmitBtn(); }
+        } catch (e) {
+            showToast(e.message || '提交失败了 (╥_╥)', 'error');
+        } finally {
+            state.isSubmitting = false;
+            updateSubmitButton();
+        }
     }
 
-    async function cancelOrder(name) {
-        if (!confirm(`确定不吃了吗，要撤销订单？`)) return;
+    async function cancelPersonalOrder(name) {
+        if (!name) return;
+        if (!confirm(`撤销【${name}】的订单？`)) return;
         try {
-            const res = await fetch(CONFIG.API_URL, {
-                method: 'DELETE', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, token: deviceToken })
-            });
-            if (!res.ok) throw new Error();
-
-            localStorage.removeItem('myOrderName');
-            state.selectedName = null; state.selectedFoodIdx = null;
-            showToast('订单已撤销');
+            await deleteOrderFromServer(name);
+            showToast(`已撤销 ${name} 的订单 ♪`);
+            // 撤销后回到「还没点」的状态，而不是把界面锁死
+            if (localStorage.getItem('myOrderName') === name) {
+                localStorage.removeItem('myOrderName');
+                state.selectedFoodIdx = null;
+                syncFoodSelection();
+            }
             await fetchData();
-            switchPage(1);
-        } catch (e) { showToast('撤销失败', true); }
+        } catch (e) {
+            showToast(e.message || '撤销失败了～', 'error');
+        }
     }
 
-    document.getElementById('copyBtn').onclick = () => {
-        if (!state.orders.length) return showToast('还没有数据哦', true);
+    function copySummaryText() {
+        if (!state.orders.length) return showToast('还没有数据哦～', 'error');
 
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
-        let text = `📋 今日点单汇总 (${timeStr})\n═══════════════════\n`;
-        let total = 0, count = 0;
-        const summary = {};
-        state.orders.forEach(o => {
-            if(!summary[o.food]) summary[o.food] = { count: 0, price: o.price };
-            summary[o.food].count++;
+        let text = `📋 今日点饭汇总 (${timeStr})\n═══════════════════\n`;
+        let totalAll = 0, totalCount = 0;
+
+        CONFIG.MENU.forEach(m => {
+            const count = state.orders.filter(o => o.food === m.name).length;
+            if (count > 0) {
+                const sub = count * m.price;
+                totalAll += sub; totalCount += count;
+                text += `${m.icon} ${m.name} × ${count}份 = ¥${sub}\n`;
+            }
         });
-        Object.keys(summary).forEach(food => {
-            text += `▪ ${food} × ${summary[food].count}份\n`;
-            total += (summary[food].count * summary[food].price);
-            count += summary[food].count;
-        });
-        text += `\n共计: ${count}份，总金额: ¥${total}\n\n👤 详细：\n`;
-        const sorted = [...state.orders].sort((a,b)=>(b.time||0)-(a.time||0));
-        sorted.forEach(o => text += `  ${o.name} ➔ ${o.food}\n`);
+
+        text += `───────────────────\n💰 总金额: ¥${totalAll}（共${totalCount}份）\n\n👤 详细：\n`;
+        const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
+        sorted.forEach(o => text += `  ${o.name} → ${o.food}\n`);
 
         const doFallback = () => {
-            const ta = document.createElement('textarea'); ta.value = text;
-            ta.style.cssText = 'position:fixed;left:-9999px;'; document.body.appendChild(ta); ta.select();
-            try { document.execCommand('copy'); showToast('复制成功 ✨'); } catch(_) { showToast('复制失败', true); }
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;left:-9999px;';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); showToast('复制成功 ♡'); }
+            catch(_) { showToast('复制失败...', 'error'); }
             ta.remove();
         };
-        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(()=>showToast('复制成功 ✨')).catch(doFallback);
-        else doFallback();
-    };
 
-    // 初始化
-    initTheme();
-    renderNameGrid(); renderFoodGrid(); updateSubmitBtn();
-    document.getElementById('submitBtn').onclick = submitOrder;
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('复制成功！(◕‿◕✿)'))
+                .catch(doFallback);
+        } else {
+            doFallback();
+        }
+    }
 
-    fetchData();
-    setInterval(fetchData, CONFIG.REFRESH_INTERVAL);
+    // ============ 初始化 ============
+    async function init() {
+        applyTheme();
+        renderFoodGrid();
+
+        document.getElementById('submitBtn').addEventListener('click', handlePrimaryAction);
+        document.getElementById('copyBtn').addEventListener('click', copySummaryText);
+        document.getElementById('deckToggle').addEventListener('click', toggleDeck);
+
+        // 菜单默认折叠：初始只展示前 DECK_PREVIEW 个
+        setDeckCollapsed(true);
+
+        // 餐品选择用事件委托 + 键盘支持，替代原来「每格挂 onclick 且重建 DOM」的写法
+        const grid = document.getElementById('foodGrid');
+        grid.addEventListener('click', (e) => {
+            const item = e.target.closest('.food-item');
+            if (item) selectFood(Number(item.dataset.idx));
+        });
+        grid.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const item = e.target.closest('.food-item');
+            if (!item) return;
+            e.preventDefault();
+            selectFood(Number(item.dataset.idx));
+        });
+
+        document.getElementById('orderDetailList').addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-delete');
+            if (btn) cancelPersonalOrder(btn.dataset.name);
+        });
+
+        await fetchData();
+        setInterval(fetchData, CONFIG.REFRESH_INTERVAL);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
