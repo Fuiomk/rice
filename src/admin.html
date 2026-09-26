@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>209点饭系统 - 后台</title>
+    <title>205点饭系统 - 后台</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* ============ 完全复用主站主题与变量 ============ */
-        /* ============================================================
-           配色与点饭页 (main (2).html) 保持一致：近黑底 + 粉/青/金三色霓虹。
-           令牌同名同值，改一处两边同步。
-           注意：原本这里是浅粉可爱风，与点饭页是两套视觉，这里统一掉。
-           ============================================================ */
+
         :root, [data-theme="light"], [data-theme="dark"] {
             --bg-glow-1: #25142c;
             --bg-glow-2: #0b0711;
@@ -256,6 +251,57 @@
 
         .mini-label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
         .tiny-hint { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 7px; line-height: 1.6; }
+        .tiny-hint b { color: var(--accent-pink); font-weight: 700; }
+
+        /* 只读展示框：和输入框同高，视觉上对齐 */
+        .readout {
+            padding: 11px 12px; border-radius: 14px; border: 1px dashed var(--border-soft);
+            background: var(--surface-light); color: var(--text-primary);
+            font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* ============ 多时段编辑器 ============ */
+        .window-list { display: flex; flex-direction: column; gap: 8px; }
+        .window-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px; border-radius: 14px;
+            background: var(--surface-light); border: 1px solid var(--border-soft);
+        }
+        .window-row .widx {
+            font-size: 0.7rem; font-weight: 700; color: var(--text-tertiary);
+            flex: 0 0 26px;
+        }
+        .window-row input[type="time"] {
+            flex: 1; min-width: 0; padding: 9px 10px; border-radius: 11px;
+            border: 1px solid var(--border-soft); background: var(--input-bg);
+            color: var(--text-primary); font-size: 16px; font-weight: 600;
+            font-family: inherit; outline: none;
+        }
+        .window-row input[type="time"]:focus {
+            border-color: var(--accent-pink); box-shadow: 0 0 0 3px var(--accent-pink-glow);
+        }
+        .window-row .wsep { color: var(--text-tertiary); font-weight: 700; flex-shrink: 0; }
+        .window-row .wdel {
+            flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
+            border: 1px solid var(--border-soft); background: transparent;
+            color: var(--text-tertiary); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .window-row .wdel:hover { background: var(--accent-pink-deep); color: #fff; border-color: var(--accent-pink-deep); }
+        .window-empty {
+            font-size: 0.78rem; color: var(--text-tertiary); text-align: center;
+            padding: 14px; border: 1px dashed var(--border-soft); border-radius: 14px;
+        }
+
+        /* 缺勤名单 */
+        .miss-list { display: flex; flex-wrap: wrap; gap: 7px; }
+        .miss-chip {
+            padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
+            background: rgba(255, 145, 189, 0.09); border: 1px solid var(--border-medium);
+            color: var(--accent-pink);
+        }
+        .miss-none { font-size: 0.82rem; color: var(--text-secondary); padding: 6px 0; }
 
         .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
         .btn-row .btn { flex: 1 1 auto; min-width: 108px; padding: 11px 14px; font-size: 0.8rem; }
@@ -411,18 +457,13 @@
             <span>只在以下时间段内允许点单</span>
         </label>
 
-        <div class="time-row">
-            <div>
-                <label class="mini-label" for="openTime">开始</label>
-                <input type="time" id="openTime" value="06:00">
-            </div>
-            <div class="time-sep">–</div>
-            <div>
-                <label class="mini-label" for="closeTime">结束</label>
-                <input type="time" id="closeTime" value="10:30">
-            </div>
-        </div>
-        <p class="tiny-hint">支持跨零点，例如 22:00 – 02:00。起止相同表示全天开放。</p>
+        <!-- 多时段：一天可设多组，任一段内都可点单 -->
+        <div id="windowList" class="window-list"></div>
+        <button class="btn btn-ghost btn-sm" id="addWindowBtn" type="button" style="margin-top:8px;">+ 添加时间段</button>
+        <p class="tiny-hint">
+            可设多组，例如早饭 <b>06:00–09:00</b> + 午饭 <b>10:00–11:00</b>，任一段内都能点单。
+            支持跨零点（如 22:00–02:00）。起止填相同表示全天开放。
+        </p>
 
         <div class="field" style="margin-top:12px;">
             <label class="mini-label" for="closedMessage">封盘时页面上显示</label>
@@ -430,9 +471,30 @@
         </div>
 
         <label class="switch-row" style="margin-top:10px;">
-            <input type="checkbox" id="autoDailyReset" checked>
-            <span>每天首次打开时自动清空昨天的订单</span>
+            <input type="checkbox" id="keepHistory" checked>
+            <span>清空时保留历史（用于周统计与对账）</span>
         </label>
+
+        <label class="switch-row" style="margin-top:2px;">
+            <input type="checkbox" id="autoDailyReset" checked>
+            <span>每天自动清空订单</span>
+        </label>
+
+        <div class="time-row" style="margin-top:2px;">
+            <div>
+                <label class="mini-label" for="resetTime">清空时刻</label>
+                <input type="time" id="resetTime" value="06:00">
+            </div>
+            <div class="time-sep"></div>
+            <div style="flex:2;">
+                <label class="mini-label">下一次清空</label>
+                <div class="readout" id="nextResetAt">—</div>
+            </div>
+        </div>
+        <p class="tiny-hint">
+            到点后由<b>第一个打开页面的人</b>触发清空，因此不需要在 Cloudflare 配定时任务。
+            把「清空时刻」设成 03:00，就等价于每天凌晨 3 点清。
+        </p>
 
         <div class="btn-row">
             <button class="btn btn-primary" id="saveScheduleBtn" type="button">保存设置</button>
@@ -455,6 +517,39 @@
         </div>
         <div id="detailedList">
             <div style="text-align: center; padding: 20px; color: var(--text-tertiary);">加载中...</div>
+        </div>
+    </div>
+
+    <!-- 缺勤名单：发群里催人 -->
+    <div class="card">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon">📣</span>
+                还没点的人
+            </div>
+            <button class="btn-copy" id="copyMissingBtn" type="button">复制催单</button>
+        </div>
+        <div id="missingBox"></div>
+    </div>
+
+    <!-- 周统计：谁点了几次、该给多少钱 -->
+    <div class="card">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon">📈</span>
+                近期统计
+            </div>
+            <select id="statsDays" style="width:auto;padding:7px 30px 7px 10px;font-size:13px;">
+                <option value="1">今天</option>
+                <option value="7" selected>近 7 天</option>
+                <option value="30">近 30 天</option>
+            </select>
+        </div>
+        <div class="table-wrap">
+            <table class="stack-table">
+                <thead><tr><th>成员</th><th>次数</th><th class="num">应付</th></tr></thead>
+                <tbody id="statsList"></tbody>
+            </table>
         </div>
     </div>
 
@@ -503,7 +598,8 @@
         initialized: false,
         refreshTimer: null,
         requestId: 0,
-        schedule: null      // 服务端当前的定时状态
+        schedule: null,     // 服务端当前的定时状态（含缺勤名单）
+        stats: null         // 最近 N 天的统计
     };
 
     const $ = (id) => document.getElementById(id);
@@ -752,6 +848,12 @@
                 method: 'POST',
                 body: JSON.stringify({ action: 'startNewDay', adminPassword: session.password })
             });
+        },
+
+        /** 最近 N 天的统计（每人次数与花费） */
+        async getStats(days = 7) {
+            const pwd = encodeURIComponent(session.password);
+            return apiRequest(`stats?days=${days}&adminPassword=${pwd}`);
         }
     };
 
@@ -821,6 +923,57 @@
 
     /* -------------------- 定时设置 -------------------- */
 
+    /** 当前编辑器里的时间段（[{start,end}]），供保存时读取 */
+    function readWindows() {
+        return [...document.querySelectorAll('#windowList .window-row')].map(row => ({
+            start: row.querySelector('[data-role="start"]').value,
+            end: row.querySelector('[data-role="end"]').value
+        }));
+    }
+
+    /** 画一个时间段输入行 */
+    function renderWindowRow(win, index) {
+        const row = document.createElement('div');
+        row.className = 'window-row';
+        row.innerHTML = `
+            <span class="widx">${index + 1}</span>
+            <input type="time" data-role="start" value="${escapeHtml(win.start || '06:00')}"
+                   aria-label="第 ${index + 1} 个时间段开始时间">
+            <span class="wsep">–</span>
+            <input type="time" data-role="end" value="${escapeHtml(win.end || '10:30')}"
+                   aria-label="第 ${index + 1} 个时间段结束时间">
+            <button class="wdel" type="button" data-role="del"
+                    aria-label="删除第 ${index + 1} 个时间段">✕</button>`;
+        return row;
+    }
+
+    function renderWindowList(windows) {
+        const box = $('windowList');
+        box.innerHTML = '';
+
+        if (!windows.length) {
+            box.innerHTML = '<div class="window-empty">还没有时间段，添加一个才能限制点单时间</div>';
+            return;
+        }
+        windows.forEach((w, i) => box.appendChild(renderWindowRow(w, i)));
+    }
+
+    function addWindow() {
+        const box = $('windowList');
+        // 空状态占位要先清掉
+        const empty = box.querySelector('.window-empty');
+        if (empty) empty.remove();
+
+        const n = box.querySelectorAll('.window-row').length;
+        // 新增时给一个不重叠的默认值，省得手动改两个框
+        const defaults = [
+            { start: '06:00', end: '09:00' },
+            { start: '10:00', end: '11:00' },
+            { start: '17:00', end: '18:00' }
+        ];
+        box.appendChild(renderWindowRow(defaults[n % defaults.length], n));
+    }
+
     /** 把服务端状态画到面板上 */
     function renderSchedule() {
         const s = state.schedule;
@@ -828,9 +981,26 @@
 
         $('scheduleEnabled').checked = !!s.enabled;
         $('autoDailyReset').checked = !!s.autoDailyReset;
-        $('openTime').value = s.openTime || '06:00';
-        $('closeTime').value = s.closeTime || '10:30';
+        $('keepHistory').checked = s.keepHistory !== false;
         $('closedMessage').value = s.message || '';
+
+        // 多时段：服务端没给 windows 时，用单窗口字段兜一个
+        const windows = Array.isArray(s.windows) && s.windows.length
+            ? s.windows
+            : [{ start: s.openTime || '06:00', end: s.closeTime || '10:30' }];
+        renderWindowList(windows);
+
+        // 清空时刻 + 下一次清空的时间点
+        $('resetTime').value = s.resetTime || '06:00';
+        const next = s.nextResetAt ? new Date(s.nextResetAt) : null;
+        $('nextResetAt').textContent = !s.autoDailyReset
+            ? '已关闭自动清空'
+            : (next
+                ? `${next.getMonth() + 1}/${next.getDate()} ${String(next.getHours()).padStart(2, '0')}:${String(next.getMinutes()).padStart(2, '0')}`
+                : '—');
+
+        // 关掉自动清空后，清空时刻没有意义
+        $('resetTime').disabled = !s.autoDailyReset;
 
         const pill = $('scheduleStatus');
         if (!s.enabled) {
@@ -844,8 +1014,13 @@
             pill.className = 'status-pill is-closed';
         }
 
-        // 未启用时段时，时间输入没有意义，置灰以示区分
-        ['openTime', 'closeTime'].forEach(id => { $(id).disabled = !s.enabled; });
+        // 未启用时段时，时间段输入没有意义，置灰以示区分
+        document.querySelectorAll('#windowList input, #addWindowBtn').forEach(el => {
+            el.disabled = !s.enabled;
+        });
+
+        // 缺勤名单随响应头一起回来，和设置同一份数据
+        renderMissing();
     }
 
     async function fetchSettings() {
@@ -874,6 +1049,15 @@
 
     async function saveSchedule() {
         const btn = $('saveScheduleBtn');
+        const windows = readWindows();
+
+        // 前端先挡一道：空时间段的给出明确提示，而不是让后端报序号
+        if ($('scheduleEnabled').checked && !windows.length) {
+            return showToast('启用时段限制时至少要有一个时间段', 'error');
+        }
+        const badIdx = windows.findIndex(w => !w.start || !w.end);
+        if (badIdx >= 0) return showToast(`第 ${badIdx + 1} 个时间段没填完整`, 'error');
+
         btn.disabled = true;
         btn.textContent = '保存中…';
 
@@ -881,12 +1065,17 @@
             const res = await API.updateSettings({
                 scheduleEnabled: $('scheduleEnabled').checked,
                 autoDailyReset: $('autoDailyReset').checked,
-                openTime: $('openTime').value,
-                closeTime: $('closeTime').value,
+                keepHistory: $('keepHistory').checked,
+                windows,
+                // 单窗口字段一并写，保持与旧版后端/前端的兼容
+                openTime: windows[0] ? windows[0].start : '06:00',
+                closeTime: windows[0] ? windows[0].end : '10:30',
+                resetTime: $('resetTime').value,
                 closedMessage: $('closedMessage').value
             });
             showToast(res.message || '设置已保存');
             await fetchSettings();
+            await fetchStats();
         } catch (error) {
             if (!handleAuthError(error)) showToast(error.message || '保存失败', 'error');
         } finally {
@@ -902,6 +1091,7 @@
             showToast(res.message || '已开始新一天');
             await fetchData();
             await fetchSettings();
+            await fetchStats();
         } catch (error) {
             if (!handleAuthError(error)) showToast(error.message || '操作失败', 'error');
         }
@@ -914,6 +1104,7 @@
             showToast(res.message || '已清空订单');
             await fetchData();
             await fetchSettings();
+            await fetchStats();
         } catch (error) {
             if (!handleAuthError(error)) showToast(error.message || '操作失败', 'error');
         }
@@ -1091,6 +1282,7 @@
         await initApplication();
         await fetchData();
         await fetchSettings();
+        await fetchStats();
     }
 
     function logout() {
@@ -1106,6 +1298,84 @@
             return true;
         }
         return false;
+    }
+
+    /* -------------------- 统计与缺勤名单 -------------------- */
+
+    async function fetchStats() {
+        const days = Number($('statsDays').value) || 7;
+        try {
+            state.stats = await API.getStats(days);
+            renderStatsTable();
+        } catch (error) {
+            if (error?.status === 403 || error?.status === 401) {
+                handleAuthError(error);
+                return;
+            }
+            // 后端未升级时 /stats 会 404，不该刷一屏报错
+            $('statsList').innerHTML =
+                '<tr><td colspan="3"><div class="empty-state"><p>无法获取统计</p></div></td></tr>';
+            console.error('[Admin] fetchStats:', error);
+        }
+    }
+
+    function renderStatsTable() {
+        const body = $('statsList');
+        const s = state.stats;
+
+        if (!s || !s.people || !s.people.length) {
+            body.innerHTML = `<tr><td colspan="3"><div class="empty-state">
+                <span class="empty-icon">📈</span><p>这段时间还没有记录</p>
+            </div></td></tr>`;
+            return;
+        }
+
+        const rows = s.people.map(p => `
+            <tr>
+                <td data-label="成员">${escapeHtml(p.name)}</td>
+                <td data-label="次数">×${p.count}</td>
+                <td class="num" data-label="应付" style="color:var(--accent-pink);font-weight:800;">
+                    ${formatMoney(p.money)}
+                </td>
+            </tr>`).join('');
+
+        const foot = `
+            <tr>
+                <td data-label="成员" style="font-weight:800;">合计</td>
+                <td data-label="次数" style="font-weight:800;">×${s.totalCount}</td>
+                <td class="num" data-label="应付" style="font-weight:800;color:var(--accent-pink);">
+                    ${formatMoney(s.totalMoney)}
+                </td>
+            </tr>`;
+
+        body.innerHTML = rows + foot;
+    }
+
+    function renderMissing() {
+        const box = $('missingBox');
+        // 缺勤名单随响应头一起回来，和订单同步更新
+        const missing = (state.schedule && state.schedule.missing) || [];
+
+        if (!missing.length) {
+            box.innerHTML = '<div class="miss-none">🎉 所有人都点过了</div>';
+            return;
+        }
+        box.innerHTML = '<div class="miss-list">' +
+            missing.map(n => `<span class="miss-chip">${escapeHtml(n)}</span>`).join('') +
+            '</div>';
+    }
+
+    async function copyMissing() {
+        const missing = (state.schedule && state.schedule.missing) || [];
+        if (!missing.length) return showToast('所有人都点过了', 'hint');
+
+        const text = `🍚 还没点饭的：${missing.join('、')}（共 ${missing.length} 人）`;
+        try {
+            await copyText(text);
+            showToast('已复制，发群里就行');
+        } catch {
+            showToast('复制失败，请手动选择', 'error');
+        }
     }
 
     /* -------------------- Actions -------------------- */
@@ -1335,9 +1605,38 @@
         $('saveScheduleBtn').addEventListener('click', saveSchedule);
         $('startNewDayBtn').addEventListener('click', startNewDay);
         $('clearNowBtn').addEventListener('click', clearOrdersNow);
-        // 勾选框变化时立即让时间输入框的可用状态跟上
+        $('addWindowBtn').addEventListener('click', addWindow);
+
+        // 时间段行的删除按钮：事件委托，行是动态生成的
+        $('windowList').addEventListener('click', (e) => {
+            const del = e.target.closest('[data-role="del"]');
+            if (!del) return;
+            const rows = document.querySelectorAll('#windowList .window-row');
+            // 只留一个时不建议删空，但允许 —— 保存时会提示至少要有一个
+            del.closest('.window-row').remove();
+            if (!document.querySelector('#windowList .window-row')) {
+                $('windowList').innerHTML =
+                    '<div class="window-empty">还没有时间段，添加一个才能限制点单时间</div>';
+            }
+            // 重新编号，避免删掉中间一个后序号断档
+            document.querySelectorAll('#windowList .window-row').forEach((row, i) => {
+                row.querySelector('.widx').textContent = String(i + 1);
+            });
+        });
+
+        // 统计：切换天数
+        $('statsDays').addEventListener('change', fetchStats);
+        $('copyMissingBtn').addEventListener('click', copyMissing);
+
+        // 勾选框变化时立即让对应输入框的可用状态跟上
         $('scheduleEnabled').addEventListener('change', (e) => {
-            ['openTime', 'closeTime'].forEach(id => { $(id).disabled = !e.target.checked; });
+            document.querySelectorAll('#windowList input, #addWindowBtn').forEach(el => {
+                el.disabled = !e.target.checked;
+            });
+        });
+        $('autoDailyReset').addEventListener('change', (e) => {
+            $('resetTime').disabled = !e.target.checked;
+            if (!e.target.checked) $('nextResetAt').textContent = '已关闭自动清空';
         });
     }
 
@@ -1377,6 +1676,7 @@
         await initApplication();
         await fetchData();
         await fetchSettings();
+        await fetchStats();
     }
 
     boot();
