@@ -2,11 +2,12 @@
 <html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>205点饭系统 - 后台</title>
+    <title>209点饭系统 ♡</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        :root, [data-theme="light"], [data-theme="dark"] {
+        :root {
             --bg-glow-1: #25142c;
             --bg-glow-2: #0b0711;
 
@@ -20,18 +21,17 @@
             --card-border: #ffffff10;
             --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.65);
-            --card-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
 
             --text-primary: #eee;
             --text-secondary: #9d96a4;
+
             --text-tertiary: #8f8792;
 
             --accent-pink: #ff91bd;
             --accent-pink-deep: #ff91bd;
             --accent-pink-glow: rgba(255, 145, 189, 0.22);
             --accent-purple: #d9a2ff;
-            --accent-purple-deep: #d9a2ff;
-            --accent-purple-glow: rgba(217, 162, 255, 0.18);
             --accent-mint: #8deaff;
 
             --surface-light: #ffffff08;
@@ -41,17 +41,18 @@
             --border-soft: #ffffff10;
             --border-medium: #ff91bd55;
 
-            --gradient-primary: var(--tri-gradient);
-            --gradient-badge: rgba(255, 145, 189, 0.12);
+            --status-bg: #0b0810;
+            --status-border: #ffffff10;
 
-            --input-bg: #ffffff08;
+            --food-bg: #ffffff05;
+            --food-bg-active: rgba(255, 145, 189, 0.1);
+            --food-border: #ffffff12;
+            --food-shadow-active: 0 0 0 1px var(--accent-pink-deep), 0 0 22px rgba(255, 145, 189, 0.28);
+
             --table-row-bg: #ffffff05;
             --order-row-bg: #ffffff05;
-            --order-row-hover: #ffffff0a;
 
             --divider: #ffffff0d;
-            --danger-bg: rgba(255, 145, 189, 0.1);
-
             --scrollbar-track: transparent;
             --scrollbar-thumb: #ffffff1f;
 
@@ -61,34 +62,55 @@
             --toast-error-bg: #2a0f1c;
             --toast-error-fg: #ffb8cf;
             --toast-error-border: rgba(255, 184, 207, 0.25);
+            --toast-hint-bg: #1a1426;
+            --toast-hint-fg: #d9c7ff;
+            --toast-hint-border: rgba(217, 199, 255, 0.22);
+        }
 
+
+        [data-theme="light"] {
             color-scheme: dark;
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        * { font-family: 'Noto Sans SC', 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* ============ 基础重置 ============ */
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
+        * {
+            font-family: 'Noto Sans SC', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         html {
+            scroll-behavior: smooth;
+            /* 横屏时 iOS 会擅自放大文字 */
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
 
         body {
-            /* 夜空辉光，与点饭页同一写法 */
+            /* 夜空辉光，取自站点 #app 的背景写法 */
             background: radial-gradient(circle at 50% 15%, var(--bg-glow-1) 0, var(--bg-glow-2) 42%, #030308 100%);
             background-attachment: fixed;
             color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             min-height: 100vh;
             min-height: 100dvh;
             overflow-x: hidden;
+            /* 手机为主：左右留白，并用 max() 兼顾刘海屏横屏时的侧边安全区 */
             padding: max(18px, env(safe-area-inset-top))
                      max(14px, env(safe-area-inset-right))
-                     max(28px, env(safe-area-inset-bottom))
+                     max(18px, env(safe-area-inset-bottom))
                      max(14px, env(safe-area-inset-left));
             position: relative;
         }
 
-        /* 极淡网格纹理：大面积近黑底会显得"死"，叠一层 2.5% 白网格有纵深又不抢内容 */
+        /* 极淡的网格纹理：大面积近黑背景会显得"死"，
+           叠一层 2.5% 白网格就有了纵深，又不至于抢内容。
+           固定定位，滚动时网格不跟着动。 */
         body::before {
             content: '';
             position: fixed;
@@ -99,372 +121,1234 @@
                 linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
             background-size: 38px 38px;
+            /* 顶部亮、向下淡出，免得整屏格子太机械 */
             -webkit-mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
             mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
         }
 
-        .container { max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; display: none; }
-
-        /* 登录页 */
-        #loginOverlay {
-            position: fixed; inset: 0; background: transparent; z-index: 999;
-            display: flex; align-items: center; justify-content: center; padding: 20px;
+        /* ============ 动画 ============ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* 卡片 & 元素 */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg) scale(1.12); }
+            25% { transform: rotate(-6deg) scale(1.12); }
+            55% { transform: rotate(4deg) scale(1.12); }
+            75% { transform: rotate(-2deg) scale(1.12); }
+        }
+
+        /* ============ 布局 ============ */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* ============ 状态栏 ============ */
+        .status-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            padding: 7px 14px;
+            border-radius: 50px;
+            background: var(--status-bg);
+            border: 1px solid var(--status-border);
+            box-shadow: var(--card-shadow);
+            color: var(--text-secondary);
+            transition: border-color 0.3s ease;
+        }
+        .status-bar-wrap {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sync-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+        }
+        .sync-dot.active {
+            background: var(--accent-mint);
+        }
+        .sync-dot.error {
+            background: var(--accent-pink-deep);
+        }
+
+        /* ============ 卡片 ============ */
         .card {
-            background: var(--card-bg); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
-            border-radius: 28px; padding: 28px 22px; box-shadow: var(--card-inner-glow), var(--card-shadow);
-            margin-bottom: 20px; border: 1px solid var(--card-border); position: relative; overflow: hidden;
-            transition: all 0.4s;
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 24px 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            position: relative;
+            transition: box-shadow 0.25s ease;
         }
+        .card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        /* 卡片顶部渐变条：换成站点 boss 血条的霓虹细线 */
         .card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--gradient-primary); opacity: 0.6; border-radius: 28px 28px 0 0;
+            content: '';
+            position: absolute;
+            top: 0; left: 22px; right: 22px;
+            height: 1px;
+            background: var(--tri-gradient);
+            opacity: 0.55;
+            box-shadow: 0 0 14px rgba(255, 120, 174, 0.35);
         }
 
-        .header { text-align: center; margin-bottom: 24px; }
-        .header h1 { font-size: 1.6rem; font-weight: 900; }
-        .header h1 .accent { background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        input[type="password"], select {
-            width: 100%; padding: 14px 18px; border-radius: 18px; border: 1.5px solid var(--border-soft);
-            background: var(--input-bg); color: var(--text-primary); font-size: 0.95rem; outline: none; transition: 0.25s;
+        /* ============ 头部 ============ */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+            position: relative;
         }
-        select {
-            appearance: none; cursor: pointer; padding-right: 44px; font-weight: 500;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF7EB3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
+        .header-emoji {
+            font-size: 2.3rem;
+            display: block;
+            margin-bottom: 4px;
+            /* 深底上给 emoji 一点辉光，否则发闷 */
+            filter: drop-shadow(0 0 16px rgba(255, 143, 189, 0.45));
         }
-        input[type="password"]:focus, select:focus { border-color: var(--accent-pink); box-shadow: 0 0 0 4px var(--accent-pink-glow); }
-        [data-theme="dark"] select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF8FBF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); }
-
-        .btn {
-            border: none; padding: 14px; border-radius: 16px; font-weight: 700; cursor: pointer;
-            font-size: 0.9rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
-            letter-spacing: 1px; font-family: inherit;
-            /* 与点饭页主按钮一致：半透明粉底 + 描边 + 大范围柔光，而不是实心渐变块 */
-            background: rgba(255, 145, 189, 0.1); color: #fff;
-            border: 1px solid rgba(255, 145, 189, 0.4);
-            box-shadow: 0 0 30px rgba(255, 145, 189, 0.12);
-            transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, transform 0.12s ease;
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            /* 站点标题的标志性宽字距 */
+            letter-spacing: 3px;
+            line-height: 1.25;
+            color: var(--text-primary);
         }
-        .btn:hover:not(:disabled) { background: rgba(255, 145, 189, 0.17); box-shadow: 0 0 30px rgba(255, 145, 189, 0.25); }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-        .btn-danger {
-            background: transparent; color: var(--accent-pink);
-            border: 1px solid var(--border-medium); box-shadow: none;
+        .header h1 .accent {
+            background: var(--tri-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .btn-danger:hover:not(:disabled) { background: rgba(255, 145, 189, 0.14); }
-
-        .btn-copy {
-            background: var(--gradient-badge); color: var(--text-primary); font-size: 0.78rem; padding: 8px 16px;
-            border-radius: 50px; border: 1px solid var(--border-soft); font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; gap: 5px; transition: 0.25s;
-        }
-        .btn-copy:hover { transform: translateY(-2px) scale(1.04); border-color: var(--accent-purple); }
-        .btn-copy svg { stroke: var(--accent-purple); }
-
-        /* Dashboard 数据网格 */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-card {
-            background: var(--card-bg); border-radius: 20px; padding: 20px; text-align: center;
-            border: 1px solid var(--card-border); box-shadow: var(--card-shadow);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-        }
-        .stat-value { font-size: 1.8rem; font-weight: 900; color: var(--accent-pink-deep); line-height: 1.2; }
-        .stat-label { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; }
-
-        /* 表格排版 */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .section-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
-        .section-icon {
-            width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            font-size: 0.9rem; border: 1px solid var(--border-soft);
-        }
-        .section-icon.purple { background: linear-gradient(135deg, rgba(176,136,249,0.12), rgba(176,136,249,0.05)); }
-        .section-icon.mint { background: linear-gradient(135deg, rgba(111,212,181,0.12), rgba(111,212,181,0.05)); }
-
-        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
-        th { text-align: left; padding: 8px 12px; color: var(--text-tertiary); font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; }
-        td { padding: 12px; font-size: 0.88rem; font-weight: 600; background: var(--table-row-bg); }
-        tr td:first-child { border-radius: 14px 0 0 14px; }
-        tr td:last-child { border-radius: 0 14px 14px 0; }
-        .count-badge {
-            background: var(--gradient-badge); padding: 3px 12px; border-radius: 20px; font-size: 0.78rem;
-            font-weight: 700; color: var(--accent-pink-deep); display: inline-block; border: 1px solid var(--border-soft);
+        .header .subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-weight: 400;
+            letter-spacing: 2px;
         }
 
-        /* 订单行 */
-        .order-row {
-            display: flex; justify-content: space-between; align-items: center; padding: 14px 16px;
-            background: var(--order-row-bg); border-radius: 18px; margin-bottom: 8px; border: 1px solid transparent;
+        /* ============ 表单 ============ */
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
         }
-        .order-main { display: flex; flex-direction: column; gap: 4px; }
-        .order-name { font-weight: 700; display: flex; align-items: center; gap: 8px; font-size: 0.92rem; }
-        .tag { background: var(--surface-tag); color: var(--accent-pink-deep); padding: 3px 10px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; border: 1px solid var(--border-soft); }
-        .order-time { font-size: 0.75rem; color: var(--text-tertiary); display: flex; align-items: center; gap: 4px; }
-        .order-right { display: flex; align-items: center; gap: 12px; }
-
-        .btn-delete {
-            background: var(--danger-bg); width: 32px; height: 32px; border-radius: 11px; border: 1px solid var(--border-soft);
-            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+        /* 标签行：左边文案，右边折叠按钮 */
+        .deck-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 9px;
         }
-        .btn-delete svg { stroke: var(--accent-pink-deep); transition: stroke 0.3s; }
-        .btn-delete:hover { background: var(--accent-pink-deep); border-color: var(--accent-pink-deep); transform: rotate(90deg) scale(1.1); }
-        .btn-delete:hover svg { stroke: white; }
-
-        .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 10px; }
-        .form-row .btn { padding: 0 20px; border-radius: 18px; }
-
-        /* ============ 定时设置 ============ */
-        .status-pill {
-            font-size: 0.72rem; font-weight: 700; padding: 3px 11px; border-radius: 50px;
-            border: 1px solid var(--border-soft); background: var(--surface-light); color: var(--text-secondary);
-            white-space: nowrap;
+        .deck-head .form-label {
+            margin-bottom: 0;
         }
-        .status-pill.is-open { color: #4DC9A4; border-color: rgba(77,201,164,0.4); background: rgba(77,201,164,0.1); }
-        .status-pill.is-closed { color: var(--accent-pink-deep); border-color: rgba(255,92,141,0.4); background: rgba(255,92,141,0.1); }
-
-        .switch-row {
-            display: flex; align-items: center; gap: 9px;
-            font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
-            padding: 9px 0; cursor: pointer;
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 9px;
         }
-        .switch-row input[type="checkbox"] {
-            width: 18px; height: 18px; accent-color: var(--accent-pink-deep); cursor: pointer; flex-shrink: 0;
+        .label-icon {
+            width: 22px; height: 22px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            flex-shrink: 0;
+            background: var(--surface-light);
+            border: 1px solid var(--border-soft);
         }
 
-        .time-row {
-            display: flex; align-items: flex-end; gap: 10px; margin-top: 4px;
-        }
-        .time-row > div { flex: 1; }
-        .time-row input[type="time"] {
-            width: 100%; padding: 11px 12px; border-radius: 14px; border: 1.5px solid var(--border-soft);
-            background: var(--input-bg); color: var(--text-primary); font-size: 16px; font-weight: 600;
-            font-family: inherit; outline: none;
-        }
-        .time-row input[type="time"]:focus { border-color: var(--accent-pink); box-shadow: 0 0 0 3px var(--accent-pink-glow); }
-        .time-sep { flex: 0 0 auto; padding-bottom: 12px; color: var(--text-tertiary); font-weight: 700; }
-
-        .mini-label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
-        .tiny-hint { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 7px; line-height: 1.6; }
-        .tiny-hint b { color: var(--accent-pink); font-weight: 700; }
-
-        /* 只读展示框：和输入框同高，视觉上对齐 */
-        .readout {
-            padding: 11px 12px; border-radius: 14px; border: 1px dashed var(--border-soft);
-            background: var(--surface-light); color: var(--text-primary);
-            font-size: 0.85rem; font-weight: 600; white-space: nowrap;
-            overflow: hidden; text-overflow: ellipsis;
-        }
-
-        /* ============ 多时段编辑器 ============ */
-        .window-list { display: flex; flex-direction: column; gap: 8px; }
-        .window-row {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 10px; border-radius: 14px;
-            background: var(--surface-light); border: 1px solid var(--border-soft);
-        }
-        .window-row .widx {
-            font-size: 0.7rem; font-weight: 700; color: var(--text-tertiary);
-            flex: 0 0 26px;
-        }
-        .window-row input[type="time"] {
-            flex: 1; min-width: 0; padding: 9px 10px; border-radius: 11px;
-            border: 1px solid var(--border-soft); background: var(--input-bg);
-            color: var(--text-primary); font-size: 16px; font-weight: 600;
-            font-family: inherit; outline: none;
-        }
-        .window-row input[type="time"]:focus {
-            border-color: var(--accent-pink); box-shadow: 0 0 0 3px var(--accent-pink-glow);
-        }
-        .window-row .wsep { color: var(--text-tertiary); font-weight: 700; flex-shrink: 0; }
-        .window-row .wdel {
-            flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px;
-            border: 1px solid var(--border-soft); background: transparent;
-            color: var(--text-tertiary); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .window-row .wdel:hover { background: var(--accent-pink-deep); color: #fff; border-color: var(--accent-pink-deep); }
-        .window-empty {
-            font-size: 0.78rem; color: var(--text-tertiary); text-align: center;
-            padding: 14px; border: 1px dashed var(--border-soft); border-radius: 14px;
-        }
-
-        /* 缺勤名单 */
-        .miss-list { display: flex; flex-wrap: wrap; gap: 7px; }
-        .miss-chip {
-            padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
-            background: rgba(255, 145, 189, 0.09); border: 1px solid var(--border-medium);
-            color: var(--accent-pink);
-        }
-        .miss-none { font-size: 0.82rem; color: var(--text-secondary); padding: 6px 0; }
-
-        /* ============ 帮点一下：可折叠餐品卡片 ============ */
-        /* 与点饭页的菜单 deck 同一套交互：默认只露前若干个，点按钮展开全部 */
-        .deck-toggle {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: var(--surface-light); color: var(--text-secondary);
-            border: 1px solid var(--border-soft); border-radius: 50px;
-            padding: 5px 11px; font-size: 0.75rem; font-weight: 600;
-            cursor: pointer; font-family: inherit; flex-shrink: 0;
-            transition: border-color 0.2s ease, color 0.2s ease;
-        }
-        .deck-toggle:hover { border-color: var(--border-medium); color: var(--accent-pink); }
-        .deck-toggle:active { transform: scale(0.96); }
-        .deck-toggle svg { stroke: currentColor; transition: transform 0.22s ease; flex-shrink: 0; }
-        .deck-toggle.is-expanded svg { transform: rotate(180deg); }
 
         .food-grid {
-            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            position: relative;
+            z-index: 1;
         }
+
         .food-item {
-            position: relative; display: flex; flex-direction: column;
-            align-items: center; gap: 2px; text-align: center;
-            padding: 12px 8px 10px; border-radius: 14px;
-            border: 1px solid var(--border-soft); background: var(--surface-light);
-            cursor: pointer; user-select: none; font-family: inherit;
-            transition: border-color 0.18s ease, background 0.18s ease,
-                        box-shadow 0.18s ease, transform 0.12s ease;
+            border: 1px solid var(--food-border);
+            border-radius: 14px;
+            padding: 14px 10px 11px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease,
+                        background 0.18s ease, transform 0.12s ease;
+            background: var(--food-bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .food-item:hover { border-color: var(--border-medium); }
-        .food-item:active { transform: scale(0.97); }
+        .food-item:hover {
+            border-color: var(--border-medium);
+        }
+        .food-item:active {
+            transform: scale(0.97);
+        }
         .food-item.active {
-            border-color: var(--accent-pink);
-            background: rgba(255, 145, 189, 0.12);
-            box-shadow: 0 0 0 1px var(--accent-pink), 0 0 18px rgba(255, 145, 189, 0.25);
+            border-color: var(--accent-pink-deep);
+            background: var(--food-bg-active);
+            box-shadow: var(--food-shadow-active);
         }
-        .food-item .fi-icon { font-size: 1.5rem; line-height: 1.15; }
-        .food-item .fi-name { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); }
-        .food-item .fi-price { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); }
-        .food-item.active .fi-price { color: var(--accent-pink); }
-        /* 被点次数角标 */
-        .food-item .fi-count {
-            position: absolute; top: 5px; left: 5px;
-            padding: 1px 5px; border-radius: 20px; font-size: 0.58rem; font-weight: 700;
-            background: rgba(255, 226, 154, 0.16); color: var(--gold);
-            border: 1px solid rgba(255, 226, 154, 0.3);
+
+        .food-icon {
+            font-size: 1.75rem;
+            line-height: 1.15;
+            display: block;
         }
-        .food-item .fi-count:empty { display: none; }
-        /* 折叠态隐藏：必须带 .is-collapsed 限定。
-           少了它标记会永久生效，展开后卡片也回不来。 */
-        .food-grid.is-collapsed .food-item.is-hidden { display: none; }
-        .food-grid.is-closed .food-item { opacity: 0.45; pointer-events: none; }
+        /* 只在「刚被选中」时抖一下，不再每次重建都重放动画 */
+        .food-item.just-picked .food-icon {
+            animation: wiggle 0.45s ease;
+        }
 
-        .picked-hint { font-weight: 500; color: var(--accent-pink); margin-left: 6px; }
+        .food-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            display: block;
+        }
+        .food-price {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: inline-block;
+            font-weight: 600;
+            background: var(--surface-light);
+            padding: 1px 9px;
+            border-radius: 20px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .food-item.active .food-price {
+            background: var(--accent-pink-deep);
+            color: white;
+        }
 
-        /* ============ 帮点一下：名字平铺 ============ */
-        /* 9 个人一屏放得下，不需要折叠；一眼看全比下拉快 */
+        .checkmark {
+            position: absolute;
+            top: 7px; right: 7px;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: var(--accent-pink-deep);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.16s ease, transform 0.16s ease;
+            z-index: 2;
+            box-shadow: 0 0 12px var(--accent-pink-glow);
+        }
+        .food-item.active .checkmark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+
+        .food-grid.is-collapsed .food-item.is-hidden {
+            display: none;
+        }
+
+        .deck-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-soft);
+            border-radius: 50px;
+            padding: 5px 11px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .deck-toggle:hover {
+            border-color: var(--border-medium);
+            color: var(--accent-pink-deep);
+        }
+        .deck-toggle:active { transform: scale(0.96); }
+        .deck-toggle svg {
+            stroke: currentColor;
+            transition: transform 0.22s ease;
+            flex-shrink: 0;
+        }
+        .deck-toggle.is-expanded svg {
+            transform: rotate(180deg);
+        }
+
+        /* ============ 按钮 ============ */
+        .btn {
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            transition: background 0.2s ease, box-shadow 0.2s ease,
+                        transform 0.12s ease, opacity 0.2s ease;
+        }
+
+        /* -------- 提交区：吸附在视口底部，选完餐不用滚回去找按钮 -------- */
+        .submit-dock {
+            position: sticky;
+            bottom: 0;
+            z-index: 5;
+
+            margin-top: 16px;
+            padding: 16px 0 6px;
+            /* 覆盖下方滚过的餐品，顶部做一层柔和渐隐而不是硬切断 */
+            background: linear-gradient(
+                to bottom,
+                transparent 0,
+                var(--card-bg) 18px,
+                var(--card-bg) 100%
+            );
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+
+            background: rgba(255, 145, 189, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 145, 189, 0.4);
+            box-shadow: 0 0 30px rgba(255, 145, 189, 0.12);
+            letter-spacing: 2px;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: rgba(255, 145, 189, 0.17);
+            box-shadow: 0 0 30px rgba(255, 145, 189, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-submit:active:not(:disabled) {
+            transform: translateY(0) scale(0.99);
+        }
+        .btn-submit:disabled {
+            background: var(--surface-medium);
+            box-shadow: none;
+            border-color: var(--border-soft);
+            cursor: not-allowed;
+            color: var(--text-tertiary);
+        }
+        .btn-submit.danger {
+            background: transparent;
+            color: var(--accent-pink);
+            border: 1px solid var(--border-medium);
+            box-shadow: none;
+        }
+        .btn-submit.danger:hover {
+            background: rgba(255, 145, 189, 0.14);
+            color: var(--accent-pink);
+            border-color: var(--accent-pink-deep);
+        }
+
+        .btn-copy {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            padding: 7px 14px;
+            border-radius: 50px;
+            border: 1px solid var(--border-soft);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .btn-copy:hover {
+            background: rgba(217, 162, 255, 0.12);
+            border-color: rgba(217, 162, 255, 0.45);
+            color: var(--accent-purple);
+        }
+        .btn-copy:active { transform: scale(0.96); }
+        .btn-copy svg { stroke: currentColor; }
+
+        /* ============ 表格 ============ */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 4px;
+            position: relative;
+            z-index: 1;
+        }
+        th {
+            text-align: left;
+            padding: 6px 10px;
+            color: var(--text-tertiary);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        th:last-child,
+        td:last-child {
+            text-align: right;
+        }
+        td {
+            padding: 10px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            background: var(--table-row-bg);
+        }
+        tr td:first-child { border-radius: 12px 0 0 12px; }
+        tr td:last-child { border-radius: 0 12px 12px 0; }
+
+        .total-amount {
+            color: var(--accent-pink);
+            font-weight: 800;
+            font-size: 1.3rem;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 18px rgba(255, 145, 189, 0.45);
+        }
+
+        /* 合计条 */
+        .total-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--divider);
+        }
+        .total-label {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
+        }
+        .total-count {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            margin-left: auto;
+            margin-right: 2px;
+        }
+
+        /* 汇总行的餐品单元：图标 + 名称 + 占比条 */
+        .food-cell {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .food-cell-icon {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+        .food-cell-body {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+        }
+        .food-cell-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sub-amount {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .count-badge {
+            background: var(--surface-tag);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: inline-block;
+        }
+
+        /* ============ 名字点选格子 ============ */
         .name-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
             gap: 7px;
         }
-        .name-item {
+        .name-btn {
             position: relative;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 1px; min-height: 48px; padding: 7px 4px;
-            border-radius: 13px; border: 1px solid var(--border-soft);
-            background: var(--surface-light); color: var(--text-primary);
-            font-size: 0.95rem; font-weight: 700; font-family: inherit;
-            cursor: pointer; user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-height: 52px;
+            padding: 7px 4px;
+            border-radius: 13px;
+            border: 1px solid var(--border-soft);
+            background: var(--surface-light);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: border-color 0.18s ease, background 0.18s ease,
                         box-shadow 0.18s ease, transform 0.12s ease;
         }
-        .name-item:hover:not(:disabled) { border-color: var(--border-medium); }
-        .name-item:active:not(:disabled) { transform: scale(0.95); }
-        .name-item.active {
+        .name-btn:active { transform: scale(0.95); }
+        .name-btn:hover:not(:disabled) { border-color: var(--border-medium); }
+        .name-btn.active {
             background: rgba(255, 145, 189, 0.14);
             border-color: var(--accent-pink);
-            box-shadow: 0 0 0 1px var(--accent-pink), 0 0 16px rgba(255, 145, 189, 0.25);
+            box-shadow: 0 0 18px rgba(255, 145, 189, 0.25);
         }
-        .name-item.active::after {
-            content: '✓'; position: absolute; top: 3px; right: 5px;
-            font-size: 0.6rem; color: var(--accent-pink);
+        .name-btn.active::after {
+            content: '✓';
+            position: absolute;
+            top: 3px; right: 5px;
+            font-size: 0.6rem;
+            color: var(--accent-pink);
         }
-        /* 他点的餐品，直接显示在名字下面 */
-        .name-item .ni-food {
-            font-size: 0.6rem; font-weight: 500; color: var(--accent-pink);
-            max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        /* 已点过的人：不能只靠文字划线 —— 400px 下小字号划线在深底上几乎看不见。
+           这里用「压暗底色 + 降低对比 + 去掉边框」做整体退让，一眼能和可选的人区分开。 */
+        .name-btn.taken {
+            cursor: not-allowed;
+            background: #ffffff05;
+            border-color: transparent;
+            opacity: 0.5;
         }
-        /* 已经点过的人：置灰不可选，避免重复下单 */
-        .name-item.taken {
-            cursor: not-allowed; opacity: 0.5;
-            background: #ffffff05; border-color: transparent;
-        }
-        .name-item.taken .ni-name {
-            color: var(--text-tertiary); text-decoration: line-through;
+        .name-btn.taken .nm {
+            color: var(--text-tertiary);
+            text-decoration: line-through;
             text-decoration-color: var(--text-tertiary);
+            text-decoration-thickness: 1px;
         }
-        .name-item.taken::before {
-            content: ''; position: absolute; top: 5px; right: 5px;
-            width: 4px; height: 4px; border-radius: 50%;
-            background: var(--accent-pink); box-shadow: 0 0 6px var(--accent-pink-glow);
+        /* 已点的人用一个小圆点标出来，比划线更醒目 */
+        .name-btn.taken::before {
+            content: '';
+            position: absolute;
+            top: 5px; right: 5px;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--accent-pink);
+            box-shadow: 0 0 6px var(--accent-pink-glow);
         }
-        .name-item.taken:active { transform: none; }
+        .name-btn.taken:active { transform: none; }
+        .name-btn .nm { line-height: 1.2; }
+        .name-btn .nf {
+            font-size: 0.55rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .name-btn.taken .nf { color: var(--accent-pink); }
 
-        .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .btn-row .btn { flex: 1 1 auto; min-width: 108px; padding: 11px 14px; font-size: 0.8rem; }
+        /* ============ 随机挑选 ============ */
+        .deck-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        #randomBtn svg { transition: transform 0.3s ease; }
+        #randomBtn.spin svg { animation: rollSpin 0.5s ease; }
+        @keyframes rollSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        /* 被随机选中的那一格抖一下，让人知道系统挑了哪个 */
+        .food-item.rolled {
+            animation: rollPick 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes rollPick {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.07); }
+            100% { transform: scale(1); }
+        }
 
-        /* Toast & 杂项 */
+        /* ============ 被点次数徽标 ============ */
+        .food-count {
+            position: absolute;
+            top: 7px; left: 7px;
+            z-index: 2;
+            padding: 1px 6px;
+            border-radius: 20px;
+            background: rgba(255, 226, 154, 0.16);
+            color: var(--gold);
+            border: 1px solid rgba(255, 226, 154, 0.3);
+            font-size: 0.62rem;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+        .food-count:empty { display: none; }
+        .food-count.pop {
+            animation: countPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes countPop {
+            0% { transform: scale(0.6); opacity: 0.4; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* 汇总占比条：站点 .bar / .bar i 的同款手法，用它替代单纯的数字罗列。
+           纯文字表格在深色底上会显得很"平"，一根发光的短条能立刻拉出层次。 */
+        .share-bar {
+            height: 5px;
+            background: #ffffff0e;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+            min-width: 54px;
+        }
+        .share-bar i {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 5px;
+            background: var(--accent-pink);
+            box-shadow: 0 0 10px rgba(255, 145, 189, 0.5);
+            transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        /* 份数最多的那项用金色标出，和第二名拉开层级 */
+        .share-bar.lead i {
+            background: var(--gold);
+            box-shadow: 0 0 10px rgba(255, 226, 154, 0.5);
+        }
+
+        /* ============ 订单行 ============ */
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--order-row-bg);
+            border-radius: 14px;
+            margin-bottom: 6px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            /* 注意：这里刻意不加入场动画。列表每次轮询都会重建，
+               原来的 slideInLeft 会让整份记录每 15 秒闪一次。 */
+        }
+        .order-row:hover {
+            border-color: var(--border-soft);
+        }
+        .order-row.is-mine {
+            border-color: var(--border-medium);
+            background: var(--food-bg-active);
+        }
+
+        .order-main {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            flex: 1;
+        }
+        .order-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.88rem;
+            min-width: 0;
+        }
+        .order-time {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .order-time svg {
+            stroke: currentColor;
+            flex-shrink: 0;
+        }
+
+        .tag {
+            background: var(--surface-tag);
+            color: var(--text-secondary);
+            padding: 2px 9px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .order-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .order-price {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .btn-delete {
+            background: transparent;
+            color: var(--text-tertiary);
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--border-soft);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        .btn-delete svg { stroke: currentColor; }
+        .btn-delete:hover {
+            background: var(--accent-pink-deep);
+            border-color: var(--accent-pink-deep);
+            color: white;
+        }
+
+        /* ============ Section Header ============ */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+        }
+        .section-icon {
+            width: 26px; height: 26px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            border: 1px solid var(--border-soft);
+            background: var(--surface-light);
+            flex-shrink: 0;
+        }
+
+        /* ============ 点单时段状态 ============ */
+        .schedule-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            background: var(--surface-light);
+            border: 1px solid var(--border-soft);
+            color: var(--text-secondary);
+        }
+        .schedule-banner[hidden] { display: none; }
+        .schedule-banner .sb-icon { font-size: 1.05rem; flex-shrink: 0; }
+        .schedule-banner .sb-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: block;
+        }
+        .schedule-banner .sb-sub { font-size: 0.72rem; color: var(--text-tertiary); }
+        .schedule-banner b { color: var(--accent-pink); font-weight: 700; }
+
+        /* 可点单：低调提示，不抢主按钮的注意力 */
+        .schedule-banner.is-open {
+            border-color: rgba(141, 234, 255, 0.28);
+            background: rgba(141, 234, 255, 0.07);
+        }
+        .schedule-banner.is-open .sb-title { color: var(--accent-mint); }
+
+        /* 已封盘：要明显，让人第一眼就知道今天点不了了 */
+        .schedule-banner.is-closed {
+            border-color: rgba(255, 145, 189, 0.35);
+            background: rgba(255, 145, 189, 0.09);
+        }
+        .schedule-banner.is-closed .sb-title { color: var(--accent-pink); }
+
+        /* 封盘时餐品网格与主按钮一并置灰，但保持可见 —— 让人知道有什么可点 */
+        .food-grid.is-closed .food-item {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        .food-grid.is-closed .food-item.active { opacity: 0.55; }
+
+        /* ============ 封面头图 ============ */
+        .hero {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            aspect-ratio: 16 / 7;
+            display: block;
+            background: #0b0810;
+        }
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 原图是中心构图，这里略向上裁，保住人物头部 */
+            object-position: center 32%;
+            display: block;
+        }
+        /* 底部压一层暗渐变，保证标题与副标题在任何画面上都读得清 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(3, 3, 8, 0.92) 0%,
+                rgba(3, 3, 8, 0.55) 42%,
+                rgba(3, 3, 8, 0.05) 78%,
+                transparent 100%
+            );
+        }
+        .hero-text {
+            position: absolute;
+            left: 16px; right: 16px; bottom: 12px;
+            z-index: 2;
+        }
+        .hero-text .kicker {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: 0.9;
+        }
+        .hero-text .title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-top: 1px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        }
+        .hero-text .sub {
+            font-size: 0.68rem;
+            color: #cfc6d4;
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+
+        /* ============ 人物卡片 ============ */
+        .chars {
+            margin-bottom: 16px;
+        }
+        .chars-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+        .chars-head .kicker {
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: 0.85;
+        }
+        .chars-head .hint {
+            font-size: 0.62rem;
+            color: var(--text-tertiary);
+        }
+        .char-row {
+            display: flex;
+            gap: 9px;
+            overflow-x: auto;
+            /* 手机主要靠横向滑动，隐藏滚动条但保留可滚动 */
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
+            /* 负外边距 + 内边距，让首尾卡片贴边而不被裁掉阴影 */
+            margin: 0 -14px;
+            padding: 2px 14px 6px;
+        }
+        .char-row::-webkit-scrollbar { display: none; }
+
+        .char-card {
+            position: relative;
+            flex: 0 0 132px;
+            aspect-ratio: 3 / 4;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            background: #0b0810;
+            scroll-snap-align: start;
+            transition: border-color 0.22s ease, transform 0.22s ease;
+        }
+        .char-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 裁到画面上部，保住脸部 */
+            object-position: center 22%;
+            display: block;
+        }
+        .char-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(3, 3, 8, 0.9) 0%, transparent 62%);
+            pointer-events: none;
+        }
+        .char-card .name {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            z-index: 2;
+            padding: 8px 9px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .char-card .name i {
+            flex: 0 0 auto;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+            background: currentColor;
+        }
+        /* 四张卡片各给一个站点色系里的辨识色 */
+        .char-card.c-pink .name { color: var(--pink); }
+        .char-card.c-cyan .name { color: var(--cyan); }
+        .char-card.c-gold .name { color: var(--gold); }
+        .char-card.c-purple .name { color: var(--accent-purple); }
+        .char-card.c-pink .name span,
+        .char-card.c-cyan .name span,
+        .char-card.c-gold .name span,
+        .char-card.c-purple .name span {
+            color: #fff;
+        }
+
+        /* ============ 底部 ============ */
+        footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            padding-bottom: 24px;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+            line-height: 1.8;
+        }
+        footer .heart {
+            color: var(--accent-pink-deep);
+            display: inline-block;
+        }
+
+        /* ============ 空状态 ============ */
+        .empty-state {
+            text-align: center;
+            padding: 28px 16px;
+        }
+        .empty-state .empty-icon {
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+            display: block;
+            opacity: 0.4;
+        }
+        .empty-state p {
+            color: var(--text-tertiary);
+            font-size: 0.83rem;
+            font-weight: 500;
+        }
+
+        /* ============ 撤销确认弹窗 ============ */
+        /* 替代原生 confirm：原生弹窗样式无法控制，在深色霓虹界面里非常突兀。 */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal[hidden] { display: none; }
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(3, 3, 8, 0.72);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            animation: modalFade 0.18s ease;
+        }
+        .modal-box {
+            position: relative;
+            width: min(340px, 100%);
+            padding: 24px 22px 20px;
+            border-radius: 20px;
+            background: #14101c;
+            border: 1px solid var(--border-medium);
+            box-shadow: 0 0 0 1px rgba(255, 145, 189, 0.08), 0 24px 70px rgba(0, 0, 0, 0.7),
+                        0 0 40px rgba(255, 145, 189, 0.1);
+            text-align: center;
+            animation: modalIn 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-icon {
+            width: 42px; height: 42px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--accent-pink);
+            background: rgba(255, 145, 189, 0.1);
+            border: 1px solid rgba(255, 145, 189, 0.3);
+            box-shadow: 0 0 20px rgba(255, 145, 189, 0.2);
+        }
+        .modal-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+        .modal-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 7px;
+            line-height: 1.65;
+        }
+        .modal-desc b { color: var(--accent-pink); font-weight: 700; }
+        .modal-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 18px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .modal-cancel {
+            background: var(--surface-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-soft);
+        }
+        .modal-cancel:hover { color: var(--text-primary); border-color: var(--border-medium); }
+        .modal-confirm {
+            background: rgba(255, 145, 189, 0.14);
+            color: var(--accent-pink);
+            border: 1px solid rgba(255, 145, 189, 0.45);
+        }
+        .modal-confirm:hover {
+            background: rgba(255, 145, 189, 0.24);
+            box-shadow: 0 0 22px rgba(255, 145, 189, 0.25);
+        }
+        .modal-btn:active { transform: scale(0.98); }
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.94); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ============ Toast ============ */
         #toast {
-            position: fixed; top: max(env(safe-area-inset-top, 16px), 16px); left: 50%;
+            position: fixed;
+            top: max(env(safe-area-inset-top, 16px), 16px);
+            left: 50%;
             transform: translateX(-50%) translateY(-14px);
-            padding: 11px 20px; border-radius: 50px; font-size: 0.82rem; font-weight: 600;
-            max-width: calc(100vw - 32px); text-align: center;
-            z-index: 1000; opacity: 0; visibility: hidden;
+            padding: 11px 20px;
+            border-radius: 50px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
             transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
-            /* 旧版只设了 color: white，没有背景 —— 白字直接叠在页面上，几乎看不见 */
-            background: var(--toast-bg); color: var(--toast-fg);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            max-width: calc(100vw - 32px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+            background: var(--toast-bg);
+            color: var(--toast-fg);
             border: 1px solid var(--toast-border);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
         }
-        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         #toast.error {
-            background: var(--toast-error-bg); color: var(--toast-error-fg);
+            background: var(--toast-error-bg);
+            color: var(--toast-error-fg);
             border-color: var(--toast-error-border);
         }
 
-        /* 键盘可达性 */
-        :focus-visible { outline: 2px solid var(--accent-purple); outline-offset: 2px; }
+        #toast.hint {
+            background: var(--toast-hint-bg);
+            color: var(--toast-hint-fg);
+            border-color: var(--toast-hint-border);
+        }
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        #toast .toast-icon { flex-shrink: 0; }
 
-        /* 滚动条 */
+        /* ============ 键盘可达性 ============ */
+        :focus-visible {
+            outline: 2px solid var(--accent-purple);
+            outline-offset: 2px;
+        }
+        .food-item:focus-visible {
+            outline-offset: 3px;
+        }
+
+        /* ============ 滚动条 ============ */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
         ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
 
-        /* ============================================================
-           响应式：旧版一个媒体查询都没有，手机上表格会横向挤爆
-           ============================================================ */
-        @media (max-width: 560px) {
-            .container { max-width: 100%; }
-            .card { padding: 16px 14px; border-radius: 16px; }
-            .form-row { grid-template-columns: 1fr; }
-            .form-row .btn { width: 100%; padding: 12px; }
-            .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-            .stat-value { font-size: 1.35rem; }
-            .btn-row .btn { min-width: 0; flex: 1 1 100%; }
-
-            /* 窄屏把报单表格改成卡片式，避免横向滚动 */
-            .stack-table thead { display: none; }
-            .stack-table, .stack-table tbody, .stack-table tr, .stack-table td { display: block; width: 100%; }
-            .stack-table tr {
-                background: var(--table-row-bg); border-radius: 12px;
-                margin-bottom: 6px; padding: 8px 12px;
+        /* ============ 响应式 ============ */
+        /* 手机（主战场）：375px 这类窄屏上状态栏要收窄，避免和人物卡片抢视觉重量 */
+        @media (max-width: 420px) {
+            .status-bar {
+                padding: 6px 11px;
+                font-size: 0.72rem;
             }
-            .stack-table td {
-                background: none; padding: 3px 0; display: flex;
-                justify-content: space-between; gap: 10px;
-            }
-            .stack-table td::before {
-                content: attr(data-label); color: var(--text-tertiary);
-                font-size: 0.72rem; font-weight: 500;
-            }
-            .stack-table td:first-child { border-radius: 0; }
+            .char-card { flex-basis: 118px; }
         }
 
+        @media (max-width: 380px) {
+            .food-grid { gap: 6px; }
+            .food-item { padding: 11px 6px 9px; border-radius: 12px; }
+            .food-icon { font-size: 1.5rem; }
+            .food-name { font-size: 0.8rem; }
+            .card { padding: 18px 14px; border-radius: 18px; }
+            .header h1 { font-size: 1.4rem; letter-spacing: 2px; }
+            .char-card { flex-basis: 104px; }
+        }
+
+        /* 手机端：主按钮吸附在底部，必须避开 iPhone 的 Home 指示条 */
+        @media (max-width: 899px) {
+            .submit-dock {
+                bottom: calc(env(safe-area-inset-bottom, 0px));
+                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            }
+            /* 吸底条浮在菜单之上，滚到底部时最后一排会被压住。
+               这里给菜单区补一段下内边距，让最后一行能真正滚到按钮上方。
+               展开态更高（13 项），留得更多一些。 */
+            .card-order .food-grid { padding-bottom: 34px; }
+            .card-order .food-grid:not(.is-collapsed) { padding-bottom: 26px; }
+        }
+
+        /* 桌面端：单列 480px 会把两侧全浪费掉。
+           这里改成「左边点餐 + 右边数据」双栏，并把字阶和间距同步放大。 */
+        @media (min-width: 900px) {
+            body {
+                padding: max(36px, env(safe-area-inset-top))
+                         max(32px, env(safe-area-inset-right))
+                        max(48px, env(safe-area-inset-bottom))
+                         max(32px, env(safe-area-inset-left));
+            }
+            .container {
+                max-width: 1180px;
+                display: grid;
+                /* 左栏给点餐区多一点宽度，菜单名不会挤成两行 */
+                grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+                grid-template-areas:
+                    "status status"
+                    "hero   hero"
+                    "chars  chars"
+                    "order  summary"
+                    "order  records"
+                    "footer footer";
+                gap: 20px;
+                align-items: start;
+            }
+            .status-bar-wrap { grid-area: status; }
+            .hero { grid-area: hero; aspect-ratio: 21 / 7; }
+            .chars { grid-area: chars; }
+            .card-order { grid-area: order; }
+            .card-summary { grid-area: summary; }
+            .card-records { grid-area: records; }
+            footer { grid-area: footer; margin-top: 4px; }
+
+            /* 桌面空间充裕，四张卡片直接铺满一行，不用横滑 */
+            .char-row {
+                overflow: visible;
+                margin: 0;
+                padding: 0;
+                gap: 14px;
+            }
+            .char-card { flex: 1 1 0; }
+            .chars-head .hint { display: none; }
+            .char-card:hover { border-color: var(--border-medium); transform: translateY(-2px); }
+            .hero-text { left: 26px; bottom: 20px; }
+            .hero-text .title { font-size: 1.5rem; letter-spacing: 5px; }
+            .hero-text .kicker { font-size: 0.68rem; }
+            .hero-text .sub { font-size: 0.78rem; }
+
+            /* 桌面端不需要吸附：点餐卡片本身就在视口里 */
+            .submit-dock {
+                position: static;
+                background: none;
+                padding: 18px 0 0;
+                margin-top: 18px;
+                border-top: 1px solid var(--divider);
+            }
+
+            .card { margin-bottom: 0; padding: 28px 26px; }
+            .header h1 { font-size: 1.8rem; }
+            /* 桌面左栏比手机宽得多，13 个餐品排 2 列会拉成一条条大卡片，改 3 列 */
+            .food-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+            .food-item { padding: 16px 8px 13px; }
+            .food-icon { font-size: 2rem; }
+            .order-row { padding: 14px 16px; }
+        }
+
+        /* 减少动画偏好 */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -476,1479 +1360,1117 @@
 </head>
 <body>
 
-<div id="toast" role="status" aria-live="polite"></div>
-
-<!-- 鉴权遮罩 -->
-<div id="loginOverlay">
-    <div class="card" style="width: 100%; max-width: 340px; margin: 0;">
-        <div class="header" style="margin-bottom: 20px;">
-            <h1>后台<span class="accent">鉴权</span></h1>
+<!-- 撤销确认弹窗：替代原生 confirm（原生弹窗在深色霓虹界面里突兀，且无法定制） -->
+<div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box" role="alertdialog" aria-modal="true"
+         aria-labelledby="modalTitle" aria-describedby="modalDesc">
+        <div class="modal-icon" aria-hidden="true">↩</div>
+        <div class="modal-title" id="modalTitle">撤销订单</div>
+        <div class="modal-desc" id="modalDesc"></div>
+        <div class="modal-actions">
+            <button class="btn modal-btn modal-cancel" id="modalCancel" type="button">再想想</button>
+            <button class="btn modal-btn modal-confirm" id="modalConfirm" type="button">确认撤销</button>
         </div>
-        <input type="password" id="pwdInput" placeholder="输入管理员密码..." style="margin-bottom: 16px;" onkeydown="if(event.key==='Enter') doLogin()">
-        <button class="btn" onclick="doLogin()">进入控制台</button>
     </div>
 </div>
 
-<div class="container" id="adminDashboard">
+<div id="toast" role="status" aria-live="polite"></div>
 
-    <!-- 顶栏状态 -->
-    <div class="header">
-        <h1>后台<span class="accent">控制台</span></h1>
-        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 8px; cursor: pointer;" onclick="logout()">退出登录</div>
-    </div>
-
-    <!-- 数据看板 -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-value" id="statCount">0</div>
-            <div class="stat-label">总份数</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="statMoney">¥0</div>
-            <div class="stat-label">总金额</div>
+<div class="container">
+    <!-- 状态栏 -->
+    <div class="status-bar-wrap">
+        <div class="status-bar">
+            <span id="syncDot" class="sync-dot" aria-hidden="true"></span>
+            <span id="syncText" role="status" aria-live="polite">正在连接…</span>
         </div>
     </div>
 
-    <!-- 商家报单 -->
-    <div class="card">
+    <!-- 封面头图 -->
+    <a class="hero" href="https://yukiom.us.ci" target="_blank" rel="noopener">
+        <img src="img/opt/intro.webp" alt="幻想乡 · 点饭系统封面" width="800" height="800">
+        <div class="hero-text">
+            <div class="kicker">GENSOKYO · DREAM PORTAL</div>
+            <div class="title">幻想乡</div>
+            <div class="sub">yukiom.us.ci</div>
+        </div>
+    </a>
+
+    <!-- 人物卡片 -->
+    <section class="chars" aria-label="幻想乡人物">
+        <div class="chars-head">
+            <span class="kicker">CHARACTERS</span>
+            <span class="hint">左右滑动</span>
+        </div>
+        <div class="char-row">
+            <figure class="char-card c-pink">
+                <img src="img/opt/reimu.webp" alt="博丽灵梦" width="640" height="819" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>博丽灵梦</span></figcaption>
+            </figure>
+            <figure class="char-card c-cyan">
+                <img src="img/opt/cirno.webp" alt="琪露诺" width="640" height="1034" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>琪露诺</span></figcaption>
+            </figure>
+            <figure class="char-card c-gold">
+                <img src="img/opt/marisa.webp" alt="雾雨魔理沙" width="640" height="792" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>雾雨魔理沙</span></figcaption>
+            </figure>
+            <figure class="char-card c-purple">
+                <img src="img/opt/yuyuko.webp" alt="西行寺幽幽子" width="640" height="934" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>西行寺幽幽子</span></figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <!-- 点单时段状态：封盘时在这里说明原因和下次开放时间 -->
+    <div class="schedule-banner" id="scheduleBanner" hidden></div>
+
+    <!-- 点餐卡片 -->
+    <div class="card card-order">
+        <div class="header">
+            <span class="header-emoji" aria-hidden="true">🍱</span>
+            <h1>点饭<span class="accent">系统</span></h1>
+            <div class="subtitle">今天想吃什么呀 ～</div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-label" id="nameLabel">
+                <span class="label-icon" aria-hidden="true">👤</span>
+                你的名字
+            </div>
+            <!-- 原来是一个原生 select。团队点餐场景下手机端展开下拉、滚动、再点确认太重，
+                 改成一眼看全、单击即选的头像格子。 -->
+            <div class="name-grid" id="nameGrid" role="group" aria-labelledby="nameLabel"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="deck-head">
+                <div class="form-label" id="foodLabel">
+                    <span class="label-icon" aria-hidden="true">🍽️</span>
+                    想吃什么呢
+                </div>
+                <div class="deck-actions">
+                    <button class="deck-toggle" id="randomBtn" type="button" title="随机选一个">
+                        <span>随机</span>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"></circle></svg>
+                    </button>
+                    <button class="deck-toggle" id="deckToggle" type="button"
+                            aria-expanded="false" aria-controls="foodGrid"
+                            title="展开/收起菜单">
+                        <span id="deckToggleText">全部 13 项</span>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="food-grid is-collapsed" id="foodGrid" role="group" aria-labelledby="foodLabel"></div>
+        </div>
+
+        <div class="submit-dock">
+            <button class="btn btn-submit" id="submitBtn" type="button">✨ 提交订单</button>
+        </div>
+    </div>
+
+    <!-- 汇总卡片 -->
+    <div class="card card-summary">
         <div class="section-header">
             <div class="section-title">
-                <span class="section-icon purple">👨‍🍳</span>
-                后厨报单
+                <span class="section-icon" aria-hidden="true">📊</span>
+                实时汇总
             </div>
-            <button class="btn-copy" onclick="copyMerchantOrder()">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                复制发给老板
+            <button class="btn-copy" id="copyBtn" type="button">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                复制
             </button>
-        </div>
-        <table class="stack-table">
-            <thead><tr><th>菜品</th><th>数量</th><th>小计</th></tr></thead>
-            <tbody id="merchantList">
-            <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary);">加载中...</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- 代客补单 -->
-    <div class="card">
-        <div class="section-header" style="margin-bottom: 5px;">
-            <div class="section-title">
-                <span class="section-icon mint">✍️</span>
-                帮点一下
-            </div>
-            <button class="deck-toggle" id="manualDeckToggle" type="button"
-                    aria-expanded="false" aria-controls="manualFoodGrid">
-                <span id="manualDeckToggleText">全部 13 项</span>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-            </button>
-        </div>
-
-        <!-- 名字：全部平铺展示，不用下拉。
-             9 个人一屏放得下，一眼看全、单击即选，也顺便看清谁已经点过。 -->
-        <div class="field">
-            <label class="mini-label">名字<span class="picked-hint" id="manualNamePicked"></span></label>
-            <div class="name-grid" id="manualNameGrid" role="group" aria-label="选择名字"></div>
-        </div>
-
-        <!-- 餐品改成可折叠卡片：默认只露 4 个，避免一屏全是选项 -->
-        <div class="field" style="margin-bottom:0;">
-            <label class="mini-label">餐品<span class="picked-hint" id="manualPicked"></span></label>
-            <div class="food-grid is-collapsed" id="manualFoodGrid" role="group" aria-label="选择餐品"></div>
-        </div>
-
-        <button class="btn btn-primary" id="manualSubmitBtn" type="button" style="margin-top:14px;">添加</button>
-    </div>
-
-    <!-- 定时设置 -->
-    <div class="card">
-        <div class="section-header">
-            <div class="section-title">
-                <span class="section-icon mint">⏰</span>
-                定时设置
-            </div>
-            <span id="scheduleStatus" class="status-pill">读取中…</span>
-        </div>
-
-        <label class="switch-row">
-            <input type="checkbox" id="scheduleEnabled">
-            <span>只在以下时间段内允许点单</span>
-        </label>
-
-        <!-- 多时段：一天可设多组，任一段内都可点单 -->
-        <div id="windowList" class="window-list"></div>
-        <button class="btn btn-ghost btn-sm" id="addWindowBtn" type="button" style="margin-top:8px;">+ 添加时间段</button>
-        <p class="tiny-hint">
-            可设多组，例如早饭 <b>06:00–09:00</b> + 午饭 <b>10:00–11:00</b>，任一段内都能点单。
-            支持跨零点（如 22:00–02:00）。起止填相同表示全天开放。
-        </p>
-
-        <div class="field" style="margin-top:12px;">
-            <label class="mini-label" for="closedMessage">封盘时页面上显示</label>
-            <input type="text" id="closedMessage" maxlength="60" placeholder="今天点单已结束">
-        </div>
-
-        <label class="switch-row" style="margin-top:10px;">
-            <input type="checkbox" id="keepHistory" checked>
-            <span>清空时保留历史（用于周统计与对账）</span>
-        </label>
-
-        <label class="switch-row" style="margin-top:2px;">
-            <input type="checkbox" id="autoDailyReset" checked>
-            <span>每天自动清空订单</span>
-        </label>
-
-        <div class="time-row" style="margin-top:2px;">
-            <div>
-                <label class="mini-label" for="resetTime">清空时刻</label>
-                <input type="time" id="resetTime" value="06:00">
-            </div>
-            <div class="time-sep"></div>
-            <div style="flex:2;">
-                <label class="mini-label">下一次清空</label>
-                <div class="readout" id="nextResetAt">—</div>
-            </div>
-        </div>
-        <p class="tiny-hint">
-            到点后由<b>第一个打开页面的人</b>触发清空，因此不需要在 Cloudflare 配定时任务。
-            把「清空时刻」设成 03:00，就等价于每天凌晨 3 点清。
-        </p>
-
-        <div class="btn-row">
-            <button class="btn btn-primary" id="saveScheduleBtn" type="button">保存设置</button>
-            <button class="btn btn-ghost" id="startNewDayBtn" type="button">开始新一天</button>
-            <button class="btn btn-ghost" id="clearNowBtn" type="button">只清空订单</button>
-        </div>
-    </div>
-
-    <!-- 订单明细 -->
-    <div class="card">
-        <div class="section-header">
-            <div class="section-title">
-                <span class="section-icon purple">📋</span>
-                订单明细
-            </div>
-            <button class="btn-copy" onclick="exportCSV()">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                导出表格
-            </button>
-        </div>
-        <div id="detailedList">
-            <div style="text-align: center; padding: 20px; color: var(--text-tertiary);">加载中...</div>
-        </div>
-    </div>
-
-    <!-- 缺勤名单：发群里催人 -->
-    <div class="card">
-        <div class="section-header">
-            <div class="section-title">
-                <span class="section-icon">📣</span>
-                还没点的人
-            </div>
-            <button class="btn-copy" id="copyMissingBtn" type="button">复制催单</button>
-        </div>
-        <div id="missingBox"></div>
-    </div>
-
-    <!-- 周统计：谁点了几次、该给多少钱 -->
-    <div class="card">
-        <div class="section-header">
-            <div class="section-title">
-                <span class="section-icon">📈</span>
-                近期统计
-            </div>
-            <select id="statsDays" style="width:auto;padding:7px 30px 7px 10px;font-size:13px;">
-                <option value="1">今天</option>
-                <option value="7" selected>近 7 天</option>
-                <option value="30">近 30 天</option>
-            </select>
         </div>
         <div class="table-wrap">
-            <table class="stack-table">
-                <thead><tr><th>成员</th><th>次数</th><th class="num">应付</th></tr></thead>
-                <tbody id="statsList"></tbody>
+            <table>
+                <thead>
+                <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
+                </thead>
+                <tbody id="summaryBody">
+                <tr><td colspan="3"><div class="empty-state"><p>加载中…</p></div></td></tr>
+                </tbody>
             </table>
+        </div>
+        <!-- 合计条：站点 .stat 的呈现方式，把总额单独拉出来 -->
+        <div class="total-row">
+            <span class="total-label">合计</span>
+            <span class="total-count" id="totalCount"></span>
+            <span class="total-amount" id="totalPrice">¥0</span>
         </div>
     </div>
 
-    <!-- 危险操作 -->
-    <div class="card" style="border-color: var(--border-soft);">
-        <button class="btn btn-danger" onclick="forceClearAll()">⚠️ 清空所有数据</button>
+    <!-- 订单记录 -->
+    <div class="card card-records">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon" aria-hidden="true">📋</span>
+                点单记录
+            </div>
+        </div>
+        <div id="orderDetailList" role="list" aria-live="polite">
+            <div class="empty-state">
+                <span class="empty-icon" aria-hidden="true">🍱</span>
+                <p>加载中…</p>
+            </div>
+        </div>
     </div>
 
+    <footer>
+        Code with <span class="heart" aria-hidden="true">♥</span> by Yuki<br>
+        © 2026 209点饭系统
+    </footer>
 </div>
 
 <script>
-    /* =========================================================
-       Admin Console v2
-       - State 集中管理
-       - API 请求统一封装
-       - Render 纯渲染
-       - Action 统一处理
-       - 自动刷新可控、避免重复请求
-       ========================================================= */
-
-    const CONFIG = Object.freeze({
+    // ============ 配置 ============
+    const CONFIG = {
         API_URL: 'https://api.yukiom.us.ci/',
         REFRESH_INTERVAL: 15000,
-        NAMES: Object.freeze(['周', '陈', '袁', '范', '祝', '何', '黄', '宋', '朱']),
-        MENU: Object.freeze([
-            { name: '炒饭', price: 6 , icon: '🍛'},
-            { name: '炒粉', price: 7 },
-            { name: '汤粉', price: 5 },
-            { name: '炒河粉', price: 6 },
-            { name: '饭', price: 6 },
-            { name: '面', price: 5 },
-            { name: '面+蛋', price: 6 },
-            { name: '汤粉+蛋', price: 6 },
-            { name: '白饭', price: 2 },
-            { name: '拌面', price: 6 },
-            { name: '拌粉', price: 6 },
-            { name: '水饺', price: 6 },
-            { name: '混沌', price: 6 },
-
-        ])
-    });
-
-    const state = {
-        orders: [],
-        loading: false,
-        initialized: false,
-        refreshTimer: null,
-        requestId: 0,
-        schedule: null,     // 服务端当前的定时状态（含缺勤名单）
-        stats: null,        // 最近 N 天的统计
-        manualFoodIdx: null, // 「帮点一下」里选中的餐品下标
-        manualName: null     // 「帮点一下」里选中的名字
+        NAMES: ['周', '陈', '袁', '范', '祝', '何', '黄', '宋', '朱'],
+        MENU: [
+            { name: '饭', price: 6, icon: '🍛' },
+            { name: '汤粉', price: 5, icon: '🍲' },
+            { name: '炒饭', price: 6, icon: '🍚' },
+            { name: '炒粉', price: 7, icon: '🍜' },
+            { name: '炒河粉', price: 6, icon: '🍝' },
+            { name: '面', price: 5, icon: '🍜' },
+            { name: '面+蛋', price: 6, icon: '🍜' },
+            { name: '汤粉+蛋', price: 6, icon: '🍲' } ,
+            { name: '白饭', price: 2, icon: '🍚' },
+            { name: '拌面', price: 6, icon: '🍜' },
+            { name: '拌粉', price: 6, icon: '🍜' },
+            { name: '水饺', price: 6, icon: '🥟' },
+            { name: '混沌', price: 6, icon: '🍜' },
+        ]
     };
 
-    const $ = (id) => document.getElementById(id);
+    // 折叠态预览几行（手机 2 列 × 2 行 = 4；桌面 3 列 × 2 行 = 6）
+    const PREVIEW_ROWS = 2;
 
-    const storage = {
-        getPassword() {
-            return sessionStorage.getItem('adminPassword') || '';
-        },
-        setPassword(value) {
-            sessionStorage.setItem('adminPassword', value);
-        },
-        clearPassword() {
-            sessionStorage.removeItem('adminPassword');
-        },
-        getDeviceToken() {
-            let token = localStorage.getItem('deviceToken');
-            if (!token) {
-                token = crypto?.randomUUID?.() ||
-                    `${Math.random().toString(36).slice(2)}${Date.now()}`;
-                localStorage.setItem('deviceToken', token);
-            }
-            return token;
-        }
-    };
-
-    const session = {
-        get password() {
-            return storage.getPassword();
-        },
-        login(password) {
-            storage.setPassword(password);
-        },
-        logout() {
-            storage.clearPassword();
-            state.orders = [];
-            stopAutoRefresh();
-            renderAll();
-        },
-        isAuthenticated() {
-            return Boolean(this.password);
-        }
-    };
-
-    const deviceToken = storage.getDeviceToken();
-
-    /* -------------------- Utilities -------------------- */
-
-    function escapeHtml(value) {
-        const div = document.createElement('div');
-        div.textContent = value == null ? '' : String(value);
-        return div.innerHTML;
+    // ============ 设备标识 ============
+    let deviceToken = localStorage.getItem('deviceToken');
+    if (!deviceToken) {
+        deviceToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+        localStorage.setItem('deviceToken', deviceToken);
     }
 
-    function formatMoney(value) {
-        const number = Number(value) || 0;
-        return `¥${number.toFixed(0)}`;
+    // ============ 状态 ============
+    const state = {
+        orders: [],
+        selectedFoodIdx: null,
+        selectedName: null,
+        isSubmitting: false,
+        // 上一次渲染所用的订单指纹，用来判断轮询结果是否真的变了
+        ordersSig: null,
+        // 上一次菜单排列的指纹，避免顺序没变时重建餐品节点
+        deckOrderSig: null,
+        // 名字格子的指纹，避免每次轮询都重建
+        nameGridSig: null,
+        // 是否首次成功拉到数据（首屏不该弹出「谁谁点了什么」）
+        firstLoad: true
+    };
+
+    // ============ 触感反馈 ============
+    // 手机上点选没有物理回馈，加一段极短振动。仅 Android Chrome 支持，
+    // iOS Safari 不支持 vibrate，静默跳过即可。
+    function tapFeedback(ms = 8) {
+        try {
+            if (navigator.vibrate) navigator.vibrate(ms);
+        } catch (_) { /* 用户未授权或浏览器不支持，忽略 */ }
+    }
+
+    // 订单指纹：只要成员或餐品有变化就算变了。
+    // 用来避免每 15 秒轮询都把两张列表整个重建一遍。
+    function ordersSignature(orders) {
+        return orders
+            .map(o => `${o.name}|${o.food}|${o.price}`)
+            .sort()
+            .join(';');
+    }
+
+    // ============ 主题 ============
+    // 配色固定为深色霓虹、对齐幻想乡站点，不提供浅色主题。
+    // 若将来要加主题，注意四张角色立绘与站点一致是暗调的，浅色底会压不住。
+    const THEME = 'dark';
+
+    function applyTheme() {
+        document.documentElement.setAttribute('data-theme', THEME);
+        localStorage.setItem('theme', THEME);
+    }
+
+    // ============ 工具函数 ============
+    // 用 textContent 而不是 innerHTML：msg 里可能带服务端返回的错误文本
+    // type: 'ok'（默认）| 'error' | 'hint'（中性提示）
+    function showToast(msg, type = 'ok') {
+        const toast = document.getElementById('toast');
+        toast.textContent = '';
+
+        const icon = document.createElement('span');
+        icon.className = 'toast-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = type === 'error' ? '⚠️' : type === 'hint' ? '💡' : '✅';
+
+        const text = document.createElement('span');
+        text.textContent = msg;
+
+        toast.append(icon, text);
+        toast.classList.toggle('error', type === 'error');
+        toast.classList.toggle('hint', type === 'hint');
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     function formatTime(timestamp) {
-        if (!timestamp) return '-';
+        if (!timestamp) return '未知';
+        const d = new Date(timestamp);
+        return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+    }
 
-        const date = new Date(timestamp);
-        if (Number.isNaN(date.getTime())) return '-';
+    function escapeHtml(text) {
+        const d = document.createElement('div');
+        d.textContent = text;
+        return d.innerHTML;
+    }
 
-        return date.toLocaleTimeString('zh-CN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
+    // ============ API ============
+    // 返回 { orders, schedule }。
+    // 定时状态由后端放在响应头 X-Rice-Schedule 里 —— 响应体仍是裸数组，
+    // 这样即使后端还没更新（或前端先部署），也只会拿不到 schedule 而不会崩。
+    async function fetchOrders() {
+        try {
+            const res = await fetch(CONFIG.API_URL);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            const orders = await res.json();
+
+            let schedule = null;
+            const raw = res.headers.get('X-Rice-Schedule');
+            if (raw) {
+                try { schedule = JSON.parse(decodeURIComponent(raw)); } catch (_) { /* 头部损坏就当没有 */ }
+            }
+
+            return { orders, schedule };
+        } catch (e) {
+            console.error('Fetch error:', e);
+            return null;
+        }
+    }
+
+    // POST / DELETE 的差异只有 method、body 和兜底错误文案，
+    // 「发请求 + 失败时取出服务端错误信息」这段逻辑原本两边各写了一遍。
+    async function sendOrder(method, body, fallbackMsg) {
+        const res = await fetch(CONFIG.API_URL, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
         });
+        if (res.ok) return;
+        let errMsg = fallbackMsg;
+        try { const e = await res.json(); errMsg = e.error || errMsg; } catch (_) { /* 响应不是 JSON，用兜底文案 */ }
+        throw new Error(errMsg);
     }
 
-    function formatDateTime(timestamp) {
-        if (!timestamp) return '-';
-
-        const date = new Date(timestamp);
-        if (Number.isNaN(date.getTime())) return '-';
-
-        return date.toLocaleString('zh-CN');
+    function submitOrderToServer(data) {
+        return sendOrder('POST', data, '提交失败');
     }
 
-    function normalizeOrders(data) {
-        if (!Array.isArray(data)) return [];
+    function deleteOrderFromServer(name) {
+        return sendOrder('DELETE', { name, token: deviceToken }, '撤销失败');
+    }
 
-        return data
-            .filter(Boolean)
-            .map((order) => ({
-                name: String(order.name ?? ''),
-                food: String(order.food ?? ''),
-                price: Number(order.price) || 0,
-                time: Number(order.time) || 0
+    // ============ 渲染 ============
+    // 折叠态只有前几个位置是「黄金位」。按今天点得最多的排，
+    // 让最可能被点的餐品出现在折叠可见区，而不是永远按菜单固定顺序。
+    //
+    // 结果按「订单内容 + 自己的订单」缓存：这个函数在 resize、折叠切换等
+    // 路径上会被反复调用，每次都重扫订单并排序没必要。
+    let deckOrderCache = { key: null, order: null };
+
+    function deckOrder() {
+        const mine = localStorage.getItem('myOrderName');
+        const key = ordersSignature(state.orders) + '#' + mine;
+        if (deckOrderCache.key === key) return deckOrderCache.order;
+
+        const counts = new Map();
+        state.orders.forEach(o => counts.set(o.food, (counts.get(o.food) || 0) + 1));
+        const myFood = state.orders.find(o => o.name === mine)?.food;
+
+        const order = CONFIG.MENU
+            .map((item, i) => ({
+                i,
+                // 自己点过的那项放最前，方便回头核对
+                mineRank: myFood && item.name === myFood ? 0 : 1,
+                count: counts.get(item.name) || 0
             }))
-            .filter(order => order.name && order.food);
+            .sort((a, b) =>
+                a.mineRank - b.mineRank ||   // 先我自己点的
+                b.count - a.count ||          // 再今天点得多的
+                a.i - b.i                     // 最后保持菜单原序，避免同份数抖动
+            )
+            .map(x => x.i);
+
+        deckOrderCache = { key, order };
+        return order;
     }
 
-    function getMenuItem(foodName) {
-        return CONFIG.MENU.find(item => item.name === foodName) || null;
-    }
+    // 只在顺序真的变了、或首次渲染时才重建节点。
+    // 选餐只切 class 不重建：重建会让 13 个格子的入场动画集体重放，看起来就是「闪一下」。
+    function renderFoodGrid() {
+        const grid = document.getElementById('foodGrid');
+        const order = deckOrder();
+        const sig = order.join(',');
 
-    function getOrderTotal(orders = state.orders) {
-        return orders.reduce((total, order) => total + order.price, 0);
-    }
-
-    function getFoodSummary(orders = state.orders) {
-        const map = new Map();
-
-        for (const order of orders) {
-            const existing = map.get(order.food);
-
-            if (existing) {
-                existing.count += 1;
-            } else {
-                map.set(order.food, {
-                    food: order.food,
-                    count: 1,
-                    price: order.price
-                });
-            }
-        }
-
-        return [...map.values()];
-    }
-
-    function getOrderedNames() {
-        return new Set(state.orders.map(order => order.name));
-    }
-
-    /* -------------------- Toast -------------------- */
-
-    let toastTimer = null;
-
-    function showToast(message, isError = false) {
-        const toast = $('toast');
-        if (!toast) return;
-
-        toast.textContent = `${isError ? '⚠️' : '✅'} ${message}`;
-        toast.style.background = isError
-            ? 'rgba(255, 70, 100, 0.92)'
-            : 'rgba(45, 35, 50, 0.92)';
-
-        toast.classList.add('show');
-
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    /* -------------------- API Layer -------------------- */
-
-    async function apiRequest(path = '', options = {}) {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
-
-        try {
-            const response = await fetch(CONFIG.API_URL + path, {
-                ...options,
-                signal: controller.signal,
-                headers: {
-                    ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-                    ...(options.headers || {})
-                }
-            });
-
-            const contentType = response.headers.get('content-type') || '';
-            const data = contentType.includes('application/json')
-                ? await response.json()
-                : await response.text();
-
-            if (!response.ok) {
-                const error = new Error(
-                    typeof data === 'string'
-                        ? data || `HTTP ${response.status}`
-                        : data?.message || `HTTP ${response.status}`
-                );
-                error.status = response.status;
-                error.data = data;
-                throw error;
-            }
-
-            return data;
-        } finally {
-            clearTimeout(timeout);
-        }
-    }
-
-    const API = {
-        async getOrders() {
-            return normalizeOrders(await apiRequest());
-        },
-
-        async createOrder({ name, food, price }) {
-            return apiRequest('', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name,
-                    food,
-                    price,
-                    time: Date.now(),
-                    token: deviceToken
-                })
-            });
-        },
-
-        async deleteOrder(name) {
-            return apiRequest('', {
-                method: 'DELETE',
-                body: JSON.stringify({
-                    name,
-                    adminPassword: session.password
-                })
-            });
-        },
-
-        async clearOrders() {
-            return apiRequest('', {
-                method: 'DELETE',
-                body: JSON.stringify({
-                    adminPassword: session.password
-                })
-            });
-        },
-
-        /* ---- 定时设置 ---- */
-
-        async getSettings() {
-            const pwd = encodeURIComponent(session.password);
-            return apiRequest(`settings?adminPassword=${pwd}`);
-        },
-
-        async updateSettings(patch) {
-            return apiRequest('settings', {
-                method: 'POST',
-                body: JSON.stringify({ action: 'update', adminPassword: session.password, ...patch })
-            });
-        },
-
-        async clearNowSettings() {
-            return apiRequest('settings', {
-                method: 'POST',
-                body: JSON.stringify({ action: 'clearNow', adminPassword: session.password })
-            });
-        },
-
-        async startNewDay() {
-            return apiRequest('settings', {
-                method: 'POST',
-                body: JSON.stringify({ action: 'startNewDay', adminPassword: session.password })
-            });
-        },
-
-        /** 最近 N 天的统计（每人次数与花费） */
-        async getStats(days = 7) {
-            const pwd = encodeURIComponent(session.password);
-            return apiRequest(`stats?days=${days}&adminPassword=${pwd}`);
-        }
-    };
-
-    /* -------------------- State / Data -------------------- */
-
-    async function fetchData({ silent = false } = {}) {
-        if (state.loading) return;
-
-        const currentRequest = ++state.requestId;
-        state.loading = true;
-
-        if (!silent) {
-            setLoadingState(true);
-        }
-
-        try {
-            const orders = await API.getOrders();
-
-            // 如果期间又发起了更新请求，丢弃旧请求结果。
-            if (currentRequest !== state.requestId) return;
-
-            state.orders = orders;
-            renderAll();
-        } catch (error) {
-            if (!silent) {
-                showToast(
-                    error.name === 'AbortError'
-                        ? '请求超时'
-                        : '无法获取订单数据',
-                    true
-                );
-            }
-            console.error('[Admin] fetchData:', error);
-        } finally {
-            if (currentRequest === state.requestId) {
-                state.loading = false;
-                setLoadingState(false);
-            }
-        }
-    }
-
-    function setLoadingState(isLoading) {
-        // 按钮改成 id 定位（原来是按内联 onclick 选择器找的，那时「添加」用 onclick 绑定）
-        const button = $('manualSubmitBtn');
-        if (!button) return;
-
-        button.disabled = isLoading;
-        button.textContent = isLoading ? '同步中…' : '添加';
-    }
-
-    function startAutoRefresh() {
-        stopAutoRefresh();
-
-        state.refreshTimer = setInterval(() => {
-            if (session.isAuthenticated() && !document.hidden) {
-                fetchData({ silent: true });
-            }
-        }, CONFIG.REFRESH_INTERVAL);
-    }
-
-    function stopAutoRefresh() {
-        if (state.refreshTimer) {
-            clearInterval(state.refreshTimer);
-            state.refreshTimer = null;
-        }
-    }
-
-    /* -------------------- 定时设置 -------------------- */
-
-    /** 当前编辑器里的时间段（[{start,end}]），供保存时读取 */
-    function readWindows() {
-        return [...document.querySelectorAll('#windowList .window-row')].map(row => ({
-            start: row.querySelector('[data-role="start"]').value,
-            end: row.querySelector('[data-role="end"]').value
-        }));
-    }
-
-    /** 画一个时间段输入行 */
-    function renderWindowRow(win, index) {
-        const row = document.createElement('div');
-        row.className = 'window-row';
-        row.innerHTML = `
-            <span class="widx">${index + 1}</span>
-            <input type="time" data-role="start" value="${escapeHtml(win.start || '06:00')}"
-                   aria-label="第 ${index + 1} 个时间段开始时间">
-            <span class="wsep">–</span>
-            <input type="time" data-role="end" value="${escapeHtml(win.end || '10:30')}"
-                   aria-label="第 ${index + 1} 个时间段结束时间">
-            <button class="wdel" type="button" data-role="del"
-                    aria-label="删除第 ${index + 1} 个时间段">✕</button>`;
-        return row;
-    }
-
-    function renderWindowList(windows) {
-        const box = $('windowList');
-        box.innerHTML = '';
-
-        if (!windows.length) {
-            box.innerHTML = '<div class="window-empty">还没有时间段，添加一个才能限制点单时间</div>';
+        if (sig === state.deckOrderSig && grid.children.length) {
+            syncFoodSelection();
             return;
         }
-        windows.forEach((w, i) => box.appendChild(renderWindowRow(w, i)));
-    }
+        state.deckOrderSig = sig;
 
-    function addWindow() {
-        const box = $('windowList');
-        // 空状态占位要先清掉
-        const empty = box.querySelector('.window-empty');
-        if (empty) empty.remove();
-
-        const n = box.querySelectorAll('.window-row').length;
-        // 新增时给一个不重叠的默认值，省得手动改两个框
-        const defaults = [
-            { start: '06:00', end: '09:00' },
-            { start: '10:00', end: '11:00' },
-            { start: '17:00', end: '18:00' }
-        ];
-        box.appendChild(renderWindowRow(defaults[n % defaults.length], n));
-    }
-
-    /** 把服务端状态画到面板上 */
-    function renderSchedule() {
-        const s = state.schedule;
-        if (!s) return;
-
-        $('scheduleEnabled').checked = !!s.enabled;
-        $('autoDailyReset').checked = !!s.autoDailyReset;
-        $('keepHistory').checked = s.keepHistory !== false;
-        $('closedMessage').value = s.message || '';
-
-        // 多时段：服务端没给 windows 时，用单窗口字段兜一个
-        const windows = Array.isArray(s.windows) && s.windows.length
-            ? s.windows
-            : [{ start: s.openTime || '06:00', end: s.closeTime || '10:30' }];
-        renderWindowList(windows);
-
-        // 清空时刻 + 下一次清空的时间点
-        $('resetTime').value = s.resetTime || '06:00';
-        const next = s.nextResetAt ? new Date(s.nextResetAt) : null;
-        $('nextResetAt').textContent = !s.autoDailyReset
-            ? '已关闭自动清空'
-            : (next
-                ? `${next.getMonth() + 1}/${next.getDate()} ${String(next.getHours()).padStart(2, '0')}:${String(next.getMinutes()).padStart(2, '0')}`
-                : '—');
-
-        // 关掉自动清空后，清空时刻没有意义
-        $('resetTime').disabled = !s.autoDailyReset;
-
-        const pill = $('scheduleStatus');
-        if (!s.enabled) {
-            pill.textContent = '未启用时段限制';
-            pill.className = 'status-pill';
-        } else if (s.open) {
-            pill.textContent = '开放中';
-            pill.className = 'status-pill is-open';
-        } else {
-            pill.textContent = '已封盘';
-            pill.className = 'status-pill is-closed';
-        }
-
-        // 未启用时段时，时间段输入没有意义，置灰以示区分
-        document.querySelectorAll('#windowList input, #addWindowBtn').forEach(el => {
-            el.disabled = !s.enabled;
+        grid.innerHTML = '';
+        order.forEach(i => {
+            const item = CONFIG.MENU[i];
+            const div = document.createElement('div');
+            div.className = 'food-item';
+            div.dataset.idx = String(i);
+            div.setAttribute('role', 'button');
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('aria-pressed', 'false');
+            div.innerHTML = `
+                <div class="checkmark" aria-hidden="true">✓</div>
+                <div class="food-count" aria-hidden="true"></div>
+                <span class="food-icon" aria-hidden="true">${item.icon}</span>
+                <span class="food-name">${escapeHtml(item.name)}</span>
+                <span class="food-price">¥${item.price}</span>
+            `;
+            grid.appendChild(div);
         });
 
-        // 缺勤名单随响应头一起回来，和设置同一份数据
-        renderMissing();
+        updateFoodCounts();
+        // 节点是新建的，.is-hidden 标记会丢失，必须重新打一遍
+        applyPreviewCount();
+        syncFoodSelection();
     }
 
-    async function fetchSettings() {
-        try {
-            const data = await API.getSettings();
-            state.schedule = data.state || null;
-            renderSchedule();
+    // 在被点的餐品角上标出「已点 N 次」。
+    // 只在数量变化时才动 DOM，避免每轮轮询都触发徽标动画。
+    function updateFoodCounts() {
+        const counts = new Map();
+        state.orders.forEach(o => counts.set(o.food, (counts.get(o.food) || 0) + 1));
 
-            // 服务端返回的 settings 与 state 合并后回填输入框，
-            // 保证用户看到的是「服务器上真正生效的值」而不是本地改动
-            if (data.settings) {
-                state.schedule = { ...data.settings, ...data.state };
-                renderSchedule();
+        document.querySelectorAll('#foodGrid .food-item').forEach(el => {
+            const item = CONFIG.MENU[Number(el.dataset.idx)];
+            const n = counts.get(item.name) || 0;
+            const badge = el.querySelector('.food-count');
+            if (!badge) return;
+            const next = n > 0 ? `已点 ${n}` : '';
+            if (badge.textContent === next) return;
+            badge.textContent = next;
+            if (n > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                badge.classList.remove('pop');
+                void badge.offsetWidth;
+                badge.classList.add('pop');
             }
-        } catch (error) {
-            if (error?.status === 403 || error?.status === 401) {
-                handleAuthError(error);
-                return;
-            }
-            // 后端还没更新到支持 /settings 时，这里会 404/405 —— 提示一次即可
-            $('scheduleStatus').textContent = '读取失败';
-            $('scheduleStatus').className = 'status-pill is-closed';
-            console.error('[Admin] fetchSettings:', error);
+        });
+    }
+
+    // 原地同步选中态：只动 class 和 aria，不碰节点结构
+    function syncFoodSelection() {
+        const grid = document.getElementById('foodGrid');
+        grid.querySelectorAll('.food-item').forEach(el => {
+            const on = state.selectedFoodIdx === Number(el.dataset.idx);
+            el.classList.toggle('active', on);
+            el.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+    }
+
+    function selectFood(i) {
+        if (localStorage.getItem('myOrderName')) return;
+        // CSS 的 pointer-events 只能拦住鼠标和触摸，键盘 Enter 仍会走到这里
+        if (state.schedule && state.schedule.enabled && !state.schedule.open) return;
+        if (state.selectedFoodIdx === i) return;
+
+        const grid = document.getElementById('foodGrid');
+        state.selectedFoodIdx = i;
+        syncFoodSelection();
+        tapFeedback(8);
+
+        // 只让「这一次刚选中」的那个抖一下，而不是每次重建都集体重放动画
+        const el = grid.querySelector(`.food-item[data-idx="${i}"]`);
+        if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            el.classList.remove('just-picked');
+            void el.offsetWidth; // 强制重排，让动画可以重复触发
+            el.classList.add('just-picked');
+            el.addEventListener('animationend', () => el.classList.remove('just-picked'), { once: true });
         }
     }
 
-    async function saveSchedule() {
-        const btn = $('saveScheduleBtn');
-        const windows = readWindows();
-
-        // 前端先挡一道：空时间段的给出明确提示，而不是让后端报序号
-        if ($('scheduleEnabled').checked && !windows.length) {
-            return showToast('启用时段限制时至少要有一个时间段', 'error');
-        }
-        const badIdx = windows.findIndex(w => !w.start || !w.end);
-        if (badIdx >= 0) return showToast(`第 ${badIdx + 1} 个时间段没填完整`, 'error');
-
-        btn.disabled = true;
-        btn.textContent = '保存中…';
-
+    // ============ 菜单折叠 ============
+    // 折叠态可见数量由实际列数算出（手机 2 列 × 2 行 = 4；桌面 3 列 × 2 行 = 6，
+    // 正好铺满整行不留孤格），然后由 JS 给范围外的餐品打 .is-hidden 标记。
+    // 让 JS 决定「哪些可见」而不是让 CSS 去数数，是为了避免在选择器里用
+    // nth-child(n + var(...)) —— 那写法浏览器能跑，但 VS Code 的 CSS 解析器会报错。
+    function getPreviewCount() {
+        const grid = document.getElementById('foodGrid');
+        let cols = 2;
         try {
-            const res = await API.updateSettings({
-                scheduleEnabled: $('scheduleEnabled').checked,
-                autoDailyReset: $('autoDailyReset').checked,
-                keepHistory: $('keepHistory').checked,
-                windows,
-                // 单窗口字段一并写，保持与旧版后端/前端的兼容
-                openTime: windows[0] ? windows[0].start : '06:00',
-                closeTime: windows[0] ? windows[0].end : '10:30',
-                resetTime: $('resetTime').value,
-                closedMessage: $('closedMessage').value
+            const tpl = getComputedStyle(grid).gridTemplateColumns || '';
+            // 未布局时这里会是 'none'，会被误算成 1 列，所以只认真正的轨道值
+            const tracks = tpl.split(/\s+/).filter(t => /\d/.test(t));
+            if (tracks.length >= 2) cols = tracks.length;
+        } catch (_) { /* 计算样式取不到时退回 2 列 */ }
+        return Math.min(PREVIEW_ROWS * cols, CONFIG.MENU.length);
+    }
+
+    // 把当前可见数量落到 DOM 上，并返回该数量
+    function applyPreviewCount() {
+        const grid = document.getElementById('foodGrid');
+        const n = getPreviewCount();
+        // 按渲染顺序（而不是 data-idx）取前 n 个，与用户的视觉顺序一致
+        Array.prototype.forEach.call(grid.children, (el, i) => {
+            el.classList.toggle('is-hidden', i >= n);
+        });
+        return n;
+    }
+
+    // 折叠态下真正可见的菜单下标集合：排列后的前 N 个。
+    // 传入 count 时复用调用方已经算好的可见数量，避免同一次操作里重复遍历节点。
+    function visibleIndices(count) {
+        const n = (typeof count === 'number') ? count : applyPreviewCount();
+        return new Set(deckOrder().slice(0, n));
+    }
+
+    function updateDeckToggle() {
+        const grid = document.getElementById('foodGrid');
+        const btn = document.getElementById('deckToggle');
+        const txt = document.getElementById('deckToggleText');
+        const collapsed = grid.classList.contains('is-collapsed');
+        // 先把可见数量落到 DOM 上，再用它拼 aria-label（顺序反了会读到上次的值）
+        const preview = applyPreviewCount();
+
+        btn.classList.toggle('is-expanded', !collapsed);
+        btn.setAttribute('aria-expanded', String(!collapsed));
+        btn.setAttribute('aria-label', collapsed
+            ? `展开全部 ${CONFIG.MENU.length} 项菜单`
+            : `收起菜单，只显示前 ${preview} 项`);
+        txt.textContent = collapsed ? `全部 ${CONFIG.MENU.length} 项` : '收起';
+    }
+
+    function setDeckCollapsed(collapsed) {
+        const grid = document.getElementById('foodGrid');
+        // 可见数量只算一次，后面判断选择是否被藏起来直接复用
+        const preview = applyPreviewCount();
+
+        // 要收起、而当前选中的餐品会被藏起来 —— 必须清掉选择。
+        // 否则用户会提交一个自己在界面上根本看不到的餐品。
+        // 注意：可见与否取决于「排列后的位置」，而不是菜单下标 ——
+        // 重排之后两者不是一回事。
+        let cleared = null;
+        if (collapsed && state.selectedFoodIdx !== null && !visibleIndices(preview).has(state.selectedFoodIdx)) {
+            cleared = CONFIG.MENU[state.selectedFoodIdx];
+            state.selectedFoodIdx = null;
+            syncFoodSelection();
+        }
+
+        grid.classList.toggle('is-collapsed', collapsed);
+        updateDeckToggle();
+
+        if (cleared) showToast(`已取消「${cleared.name}」的选择（它被收起了）`, 'hint');
+    }
+
+    function toggleDeck() {
+        const grid = document.getElementById('foodGrid');
+        setDeckCollapsed(!grid.classList.contains('is-collapsed'));
+    }
+
+    // ============ 随机挑选 ============
+    // 治选择困难。只在「当前看得见」的餐品里随机，
+    // 否则可能选中一个收缩在下面、用户根本看不到的项。
+    function randomPickFood() {
+        if (localStorage.getItem('myOrderName')) {
+            return showToast('已经点过餐啦～', 'error');
+        }
+        const pool = [...visibleIndices()];
+        if (pool.length < 2) return;
+
+        // 别连着两次抽到同一项，否则会让人以为按钮坏了
+        let pick = pool[Math.floor(Math.random() * pool.length)];
+        if (pool.length > 1 && pick === state.selectedFoodIdx) {
+            pick = pool[(pool.indexOf(pick) + 1) % pool.length];
+        }
+
+        selectFood(pick);
+
+        const btn = document.getElementById('randomBtn');
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            btn.classList.remove('spin');
+            void btn.offsetWidth;
+            btn.classList.add('spin');
+            const el = document.querySelector(`#foodGrid .food-item[data-idx="${pick}"]`);
+            if (el) {
+                el.classList.remove('rolled');
+                void el.offsetWidth;
+                el.classList.add('rolled');
+            }
+        }
+        tapFeedback(12);
+    }
+
+    // ============ 名字点选 ============
+    // 做成头像格子而不是原生 select：手机端一眼看全、单击即选，
+    // 而且能直接在格子上显示「谁已经点过了、点的什么」。
+    function renderNameGrid() {
+        const grid = document.getElementById('nameGrid');
+        const myName = localStorage.getItem('myOrderName');
+        const byName = new Map(state.orders.map(o => [o.name, o]));
+
+        const sig = CONFIG.NAMES.join('|') + '#' + state.orders.map(o => o.name + o.food).sort().join(',') + '#' + myName;
+        if (sig !== state.nameGridSig || !grid.children.length) {
+            state.nameGridSig = sig;
+            grid.innerHTML = '';
+            CONFIG.NAMES.forEach(name => {
+                const orderInfo = byName.get(name);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'name-btn';
+                btn.dataset.name = name;
+                btn.innerHTML = `<span class="nm">${escapeHtml(name)}</span>
+                                 <span class="nf">${orderInfo ? escapeHtml(orderInfo.food) : ''}</span>`;
+                grid.appendChild(btn);
             });
-            showToast(res.message || '设置已保存');
-            await fetchSettings();
-            await fetchStats();
-        } catch (error) {
-            if (!handleAuthError(error)) showToast(error.message || '保存失败', 'error');
-        } finally {
+        }
+
+        // 状态每轮都可能变（别人点了餐），这部分必须每次都同步
+        grid.querySelectorAll('.name-btn').forEach(btn => {
+            const name = btn.dataset.name;
+            const orderInfo = byName.get(name);
+            // 高亮的是「当前点选的人」（state.selectedName），
+            // 不是「已提交订单的人」（myOrderName）。两者必须分开判断，
+            // 混用会导致点选后格子不亮、点了没有任何反馈。
+            const picked = (state.selectedName === name);
+            const isMineOrder = (myName === name);
+            const isTaken = !!orderInfo && !isMineOrder;
+            btn.classList.toggle('active', picked || isMineOrder);
+            btn.classList.toggle('taken', isTaken);
+            // 刻意不用 disabled：disabled 的按钮不派发 click，
+            // 用户点下去会毫无反馈。改用 aria-disabled 表示语义，
+            // 真正的拦截交给 selectName()，它还能顺带弹一句「换一个名字吧」。
             btn.disabled = false;
-            btn.textContent = '保存设置';
-        }
+            if (isTaken) {
+                // 不可操作时移除 aria-pressed —— aria-disabled 与 aria-pressed
+                // 同时出现会让辅助技术给出矛盾描述
+                btn.removeAttribute('aria-pressed');
+                btn.setAttribute('aria-disabled', 'true');
+                btn.setAttribute('aria-label', `${name}，已点${orderInfo.food}，不可选择`);
+                btn.title = `${name} 已点 ${orderInfo.food}`;
+            } else {
+                btn.removeAttribute('aria-disabled');
+                btn.setAttribute('aria-pressed', picked ? 'true' : 'false');
+                btn.setAttribute('aria-label', picked ? `${name}，已选择` : `选择 ${name}`);
+                btn.removeAttribute('title');
+            }
+        });
+        updateSubmitButton();
     }
 
-    async function startNewDay() {
-        if (!confirm('清空当前订单并记为「今天」？通常用于手动开启新一天的点单。')) return;
-        try {
-            const res = await API.startNewDay();
-            showToast(res.message || '已开始新一天');
-            await fetchData();
-            await fetchSettings();
-            await fetchStats();
-        } catch (error) {
-            if (!handleAuthError(error)) showToast(error.message || '操作失败', 'error');
-        }
-    }
+    function selectName(name) {
+        if (localStorage.getItem('myOrderName')) return;
 
-    async function clearOrdersNow() {
-        if (!confirm('只清空订单，不改变日期记录。确定继续？')) return;
-        try {
-            const res = await API.clearNowSettings();
-            showToast(res.message || '已清空订单');
-            await fetchData();
-            await fetchSettings();
-            await fetchStats();
-        } catch (error) {
-            if (!handleAuthError(error)) showToast(error.message || '操作失败', 'error');
-        }
-    }
-
-    /* -------------------- Render Layer -------------------- */
-
-    function renderStats() {
-        $('statCount').textContent = state.orders.length;
-        $('statMoney').textContent = formatMoney(getOrderTotal());
-    }
-
-    function renderMerchantSummary() {
-        const tbody = $('merchantList');
-        const summary = getFoodSummary();
-
-        if (!summary.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="3" style="text-align:center;color:var(--text-tertiary);">
-                        暂无数据
-                    </td>
-                </tr>`;
+        // 已被人占用的名字：格子是 disabled，事件委托这里再兜一层。
+        // 否则点下去毫无反应，用户会以为界面卡住了。
+        const taken = state.orders.find(o => o.name === name);
+        if (taken) {
+            showToast(`${name} 已经点了 ${taken.food}，换一个名字吧～`, 'hint');
             return;
         }
-
-        // data-label 供窄屏卡片式布局显示行内标签（.stack-table td::before）
-        tbody.innerHTML = summary.map(item => `
-            <tr>
-                <td data-label="菜品">${escapeHtml(item.food)}</td>
-                <td data-label="数量"><span class="count-badge">${item.count}</span></td>
-                <td data-label="小计" style="font-weight:800;color:var(--accent-pink-deep);">
-                    ${formatMoney(item.count * item.price)}
-                </td>
-            </tr>
-        `).join('');
+        if (state.selectedName === name) return;
+        state.selectedName = name;
+        tapFeedback(8);
+        renderNameGrid();
     }
 
-    function renderDetailedList() {
-        const list = $('detailedList');
+    // 主按钮承载两种动作：未点餐 = 提交；已点餐 = 撤销。
+    // 撤销放在主按钮上，是为了避免用户为了改单而去记录列表里找那个小 ×。
+    function updateSubmitButton() {
+        const btn = document.getElementById('submitBtn');
+        const myName = localStorage.getItem('myOrderName');
+        const closed = !!(state.schedule && state.schedule.enabled && !state.schedule.open);
+
+        btn.disabled = false;
+        if (myName) {
+            // 已点过的人仍要能撤销 —— 封盘不该把人锁死在自己的错误里
+            btn.classList.add('danger');
+            btn.textContent = '↩ 撤销我的订单（' + myName + '）';
+            btn.setAttribute('aria-label', `撤销 ${myName} 的订单`);
+        } else if (closed) {
+            btn.classList.remove('danger');
+            btn.disabled = true;
+            btn.textContent = '🌙 ' + (state.schedule.message || '当前不在点单时间内');
+            btn.removeAttribute('aria-label');
+        } else {
+            btn.classList.remove('danger');
+            btn.disabled = state.isSubmitting;
+            btn.textContent = state.isSubmitting ? '⏳ 提交中…' : '✨ 提交订单';
+            btn.removeAttribute('aria-label');
+        }
+    }
+
+    async function handlePrimaryAction() {
+        if (localStorage.getItem('myOrderName')) {
+            await cancelPersonalOrder(localStorage.getItem('myOrderName'));
+        } else {
+            await submitOrder();
+        }
+    }
+
+    function renderSummary() {
+        const body = document.getElementById('summaryBody');
+        let total = 0, totalCount = 0;
+        // 先收集有份数的项，两趟处理：第一趟拿到总数才能算占比条宽度
+        const rows = [];
+        CONFIG.MENU.forEach(m => {
+            const count = state.orders.filter(o => o.food === m.name).length;
+            if (count > 0) {
+                const sub = count * m.price;
+                total += sub;
+                totalCount += count;
+                rows.push({ m, count, sub });
+            }
+        });
+
+        body.innerHTML = '';
+        if (!rows.length) {
+            body.innerHTML = `<tr><td colspan="3">
+                <div class="empty-state">
+                    <span class="empty-icon" aria-hidden="true">🛋️</span>
+                    <p>还没人点餐，快来抢沙发！</p>
+                </div>
+            </td></tr>`;
+        } else {
+            const maxCount = Math.max(...rows.map(r => r.count));
+            rows.forEach(({ m, count, sub }) => {
+                const pct = Math.round(count * 100 / totalCount);
+                const isLead = count === maxCount;
+                body.innerHTML += `<tr>
+                    <td>
+                        <div class="food-cell">
+                            <span class="food-cell-icon" aria-hidden="true">${m.icon}</span>
+                            <span class="food-cell-body">
+                                <span class="food-cell-name">${escapeHtml(m.name)}</span>
+                                <span class="share-bar${isLead ? ' lead' : ''}"><i style="width:${pct}%"></i></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td><span class="count-badge">${count}</span></td>
+                    <td class="sub-amount">¥${sub}</td>
+                </tr>`;
+            });
+        }
+        document.getElementById('totalPrice').textContent = `¥${total}`;
+        document.getElementById('totalCount').textContent = totalCount ? `共 ${totalCount} 份` : '';
+    }
+
+    function renderOrderList() {
+        const list = document.getElementById('orderDetailList');
 
         if (!state.orders.length) {
             list.innerHTML = `
-                <div style="text-align:center;padding:20px;color:var(--text-tertiary);">
-                    暂无数据
+                <div class="empty-state">
+                    <span class="empty-icon">🍱</span>
+                    <p>暂无订单，快来点餐吧～</p>
                 </div>`;
             return;
         }
 
-        const sorted = [...state.orders].sort((a, b) => b.time - a.time);
+        const myName = localStorage.getItem('myOrderName');
 
-        list.innerHTML = sorted.map(order => `
-            <div class="order-row">
+        list.innerHTML = '';
+        const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
+        sorted.forEach(o => {
+            const isMyOrder = (myName === o.name);
+            const row = document.createElement('div');
+            row.className = 'order-row' + (isMyOrder ? ' is-mine' : '');
+            row.setAttribute('role', 'listitem');
+            row.innerHTML = `
                 <div class="order-main">
                     <span class="order-name">
-                        ${escapeHtml(order.name)}
-                        <span class="tag">
-                            ${escapeHtml(order.food)} (${formatMoney(order.price)})
-                        </span>
+                        ${escapeHtml(o.name)}
+                        <span class="tag">${escapeHtml(o.food)}</span>
                     </span>
                     <span class="order-time">
-                        <svg width="11" height="11" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2.5"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        ${formatTime(order.time)}
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        ${formatTime(o.time)}
                     </span>
                 </div>
-
                 <div class="order-right">
-                    <button class="btn-delete"
-                            type="button"
-                            data-action="delete-order"
-                            data-name="${escapeHtml(order.name)}"
-                            aria-label="撤销 ${escapeHtml(order.name)}">
-                        <svg width="13" height="13" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2.5"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
+                    <span class="order-price">¥${o.price || 0}</span>
+                    ${isMyOrder ? `
+                    <button class="btn-delete" type="button" data-name="${escapeHtml(o.name)}" title="撤销" aria-label="撤销 ${escapeHtml(o.name)} 的订单">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
+                    ` : ''}
                 </div>
-            </div>
-        `).join('');
+            `;
+            list.appendChild(row);
+        });
     }
 
-    /* -------------------- 帮点一下：名字平铺 -------------------- */
+    function refreshUI() {
+        renderSummary();
+        renderOrderList();
+    }
 
-    /**
-     * 渲染名字格子。9 个人全部平铺，不做折叠。
-     * 只在名单或「谁已点」变化时重建；选中态每轮单独同步。
-     */
-    function renderNameChips() {
-        const grid = $('manualNameGrid');
-        const ordered = getOrderedNames();
-        const sig = CONFIG.NAMES.join('|') + '#' + [...ordered].sort().join(',');
+    function updateSyncStatus(ok) {
+        const dot = document.getElementById('syncDot');
+        const txt = document.getElementById('syncText');
+        if (ok) {
+            dot.className = 'sync-dot active';
+            const now = new Date();
+            txt.textContent = `同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
+        } else {
+            dot.className = 'sync-dot error';
+            txt.textContent = '离线 (╥_╥)';
+        }
+    }
 
-        if (grid.dataset.sig !== sig || !grid.children.length) {
-            grid.dataset.sig = sig;
-            grid.innerHTML = '';
-            CONFIG.NAMES.forEach(name => {
-                const el = document.createElement('button');
-                el.type = 'button';
-                el.className = 'name-item';
-                el.dataset.name = name;
-                el.innerHTML = `<span class="ni-name">${escapeHtml(name)}</span>
-                                <span class="ni-food"></span>`;
-                grid.appendChild(el);
-            });
+    // ============ 点单时段 ============
+    // 后端在响应头里给出 open / openTime / closeTime / nextChangeAt。
+    // 前端只负责显示与拦截提示，真正的拒绝在后端（避免只靠前端被绕过）。
+    function applySchedule(schedule) {
+        if (!schedule) return;
+
+        // 多窗口用「窗口数组」比对，只比首尾两个字段会漏掉中间窗口的改动
+        const sig = (s) => s ? `${s.open}|${(s.windows || []).map(w => w.start + '-' + w.end).join(',')}` : '';
+        const changed = sig(state.schedule) !== sig(schedule);
+        state.schedule = schedule;
+
+        const banner = document.getElementById('scheduleBanner');
+        const grid = document.getElementById('foodGrid');
+
+        if (!schedule.enabled) {
+            // 没启用时段限制：不显示横幅，免得占地方，也不置灰菜单
+            banner.hidden = true;
+            grid.classList.remove('is-closed');
+        } else {
+            banner.hidden = false;
+            banner.classList.toggle('is-open', schedule.open);
+            banner.classList.toggle('is-closed', !schedule.open);
+            grid.classList.toggle('is-closed', !schedule.open);
+
+            const windows = windowsText(schedule);
+            // 还没点的人：直接写在横幅里，省得再单开一块
+            const miss = schedule.missingCount > 0
+                ? `　·　还有 <b>${schedule.missingCount}</b> 人没点`
+                : '';
+
+            if (schedule.open) {
+                banner.innerHTML =
+                    `<span class="sb-icon" aria-hidden="true">🕐</span>
+                     <span><span class="sb-title">可以点单</span>
+                     <span class="sb-sub">时段 <b>${escapeHtml(windows)}</b>` +
+                     `${schedule.nextChangeAt ? '，' + untilText(schedule.nextChangeAt) + '截止' : ''}${miss}</span></span>`;
+            } else {
+                banner.innerHTML =
+                    `<span class="sb-icon" aria-hidden="true">🌙</span>
+                     <span><span class="sb-title">${escapeHtml(schedule.message || '当前不在点单时间内')}</span>
+                     <span class="sb-sub">点单时段 <b>${escapeHtml(windows)}</b>` +
+                     `${schedule.nextChangeAt ? '，' + untilText(schedule.nextChangeAt) + '开放' : ''}${miss}</span></span>`;
+            }
+
+            // 封盘时已选中的餐品要清掉，否则按钮会以“已选好”的样子出现却点不动
+            if (!schedule.open && state.selectedFoodIdx !== null) {
+                state.selectedFoodIdx = null;
+                syncFoodSelection();
+            }
         }
 
-        syncNameChipState();
+        // 统一收尾：按钮状态只在这里更新一次
+        updateSubmitButton();
+        if (changed) tapFeedback(6);
     }
 
-    function syncNameChipState() {
-        const ordered = new Map(state.orders.map(o => [o.name, o]));
+    /** 把多组时段拼成「06:00-09:00、10:00-11:00」，太多就省略 */
+    function windowsText(schedule) {
+        const list = Array.isArray(schedule.windows) && schedule.windows.length
+            ? schedule.windows.map(w => `${w.start}-${w.end}`)
+            : [`${schedule.openTime}-${schedule.closeTime}`];
 
-        $('manualNameGrid').querySelectorAll('.name-item').forEach(el => {
-            const name = el.dataset.name;
-            const order = ordered.get(name);
-            const on = state.manualName === name;
-            const taken = !!order;
-
-            el.classList.toggle('active', on && !taken);
-            el.classList.toggle('taken', taken);
-            // 已点过的人不可选，避免重复下单（后端也会拒）
-            el.disabled = taken;
-            el.setAttribute('aria-pressed', (on && !taken) ? 'true' : 'false');
-            el.setAttribute('aria-label', taken
-                ? `${name}，已点${order.food}，不可选择`
-                : (on ? `${name}，已选择` : `选择 ${name}`));
-
-            const food = el.querySelector('.ni-food');
-            const next = taken ? order.food : '';
-            if (food && food.textContent !== next) food.textContent = next;
-        });
-
-        $('manualNamePicked').textContent = state.manualName ? `已选：${state.manualName}` : '';
+        if (list.length <= 3) return list.join('、');
+        return `${list.slice(0, 3).join('、')} 等 ${list.length} 段`;
     }
 
-    function selectManualName(name) {
-        // 再点一次取消，和餐品卡片一致
-        state.manualName = (state.manualName === name) ? null : name;
-        syncNameChipState();
+    /** 把时间戳说成「约 2 小时 15 分后」这种 */
+    function untilText(ts) {
+        const ms = Math.max(0, ts - Date.now());
+        const mins = Math.round(ms / 60000);
+        if (mins < 1) return '马上';
+        if (mins < 60) return `约 ${mins} 分钟后`;
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        return m ? `约 ${h} 小时 ${m} 分钟后` : `约 ${h} 小时后`;
     }
 
-    /* -------------------- 帮点一下：可折叠餐品卡片 -------------------- */
-
-    /** 折叠态露出几个（2 列 × 2 行） */
-    const MANUAL_PREVIEW = 4;
-
-    /**
-     * 渲染餐品卡片。
-     * 只在首次或餐品集合变化时建节点；「已点 N 次」角标每轮单独同步，
-     * 这样轮询刷新不会把整片卡片重建一遍。
-     */
-    function renderFoodCards() {
-        const grid = $('manualFoodGrid');
-        const sig = CONFIG.MENU.map(m => m.name).join('|');
-
-        if (grid.dataset.sig !== sig || !grid.children.length) {
-            grid.dataset.sig = sig;
-            grid.innerHTML = '';
-            CONFIG.MENU.forEach((item, i) => {
-                const el = document.createElement('button');
-                el.type = 'button';
-                el.className = 'food-item';
-                el.dataset.idx = String(i);
-                el.setAttribute('aria-pressed', 'false');
-                el.innerHTML = `
-                    <span class="fi-count" aria-hidden="true"></span>
-                    <span class="fi-icon" aria-hidden="true">${item.icon || '🍚'}</span>
-                    <span class="fi-name">${escapeHtml(item.name)}</span>
-                    <span class="fi-price">${formatMoney(item.price)}</span>`;
-                grid.appendChild(el);
-            });
-        }
-
-        syncFoodCardState();
-    }
-
-    /** 同步选中态与「已点 N 次」角标 */
-    function syncFoodCardState() {
-        const counts = new Map();
-        state.orders.forEach(o => counts.set(o.food, (counts.get(o.food) || 0) + 1));
-
-        $('manualFoodGrid').querySelectorAll('.food-item').forEach(el => {
-            const item = CONFIG.MENU[Number(el.dataset.idx)];
-            if (!item) return;
-
-            const on = state.manualFoodIdx === Number(el.dataset.idx);
-            el.classList.toggle('active', on);
-            el.setAttribute('aria-pressed', on ? 'true' : 'false');
-
-            const n = counts.get(item.name) || 0;
-            const badge = el.querySelector('.fi-count');
-            const next = n > 0 ? `已点 ${n}` : '';
-            if (badge && badge.textContent !== next) badge.textContent = next;
-        });
-
-        // 已选中的餐品显示在标签旁边，收起后也能确认选了什么
-        const picked = state.manualFoodIdx === null ? null : CONFIG.MENU[state.manualFoodIdx];
-        $('manualPicked').textContent = picked ? `已选：${picked.name}` : '';
-    }
-
-    /** 折叠态给范围外的卡片打标记（与点饭页同一套做法） */
-    function applyDeckCollapsed() {
-        const grid = $('manualFoodGrid');
-        const collapsed = grid.classList.contains('is-collapsed');
-
-        grid.querySelectorAll('.food-item').forEach((el, i) => {
-            el.classList.toggle('is-hidden', collapsed && i >= MANUAL_PREVIEW);
-        });
-
-        const btn = $('manualDeckToggle');
-        btn.classList.toggle('is-expanded', !collapsed);
-        btn.setAttribute('aria-expanded', String(!collapsed));
-        $('manualDeckToggleText').textContent = collapsed
-            ? `全部 ${CONFIG.MENU.length} 项`
-            : '收起';
-    }
-
-    function toggleManualDeck() {
-        const grid = $('manualFoodGrid');
-        grid.classList.toggle('is-collapsed');
-        applyDeckCollapsed();
-    }
-
-    function selectManualFood(idx) {
-        state.manualFoodIdx = (state.manualFoodIdx === idx) ? null : idx;
-        syncFoodCardState();
-    }
-
-    function renderManualForm() {
-        renderNameChips();
-        renderFoodCards();
-        applyDeckCollapsed();
-    }
-
-    function renderAll() {
-        renderStats();
-        renderMerchantSummary();
-        renderDetailedList();
-        renderManualForm();
-    }
-
-    /* -------------------- Theme -------------------- */
-
-    /*
-     * 配色已固定为深色霓虹，与点饭页一致，不再提供浅色主题。
-     * 原来这里有一套 initTheme / applyTheme / toggleTheme 加右上角按钮，
-     * 但两套令牌已经改成同值 —— 按下去只有图标在 🌙/☀️ 之间翻，页面毫无变化，
-     * 对不熟悉的人就是「按钮坏了」。整组连同按钮一起移除。
-     */
-    function applyTheme() {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    }
-
-    /* -------------------- Auth -------------------- */
-
-    function renderAuth() {
-        const authenticated = session.isAuthenticated();
-
-        $('loginOverlay').style.display = authenticated ? 'none' : 'flex';
-        $('adminDashboard').style.display = authenticated ? 'block' : 'none';
-    }
-
-    async function doLogin() {
-        const input = $('pwdInput');
-        const password = input.value.trim();
-
-        if (!password) {
-            showToast('请输入密码', true);
-            input.focus();
-            return;
-        }
-
-        /*
-         * 这里刻意不在前端比对密码。
-         * 旧版写死了 if (password !== '123')，任何人查看源码即可得知密码，
-         * 而且改掉 sessionStorage 就能绕过 —— 前端校验不是安全边界。
-         * 现在只把密码存下来，由后端在每个请求上验证；错了会在 fetchData 里
-         * 收到 403，由 handleAuthError 退回登录页。
-         */
-        session.login(password);
-        input.value = '';
-
-        renderAuth();
-        await initApplication();
-        await fetchData();
-        await fetchSettings();
-        await fetchStats();
-    }
-
-    function logout() {
-        session.logout();
-        renderAuth();
-        $('pwdInput').value = '';
-    }
-
-    function handleAuthError(error) {
-        if (error?.status === 401 || error?.status === 403) {
-            logout();
-            showToast('管理员密码无效，请重新登录', true);
+    // ============ 核心逻辑 ============
+    // 返回 true 表示本机锁定状态发生了变化（需要重排菜单）
+    function checkDeviceLock() {
+        const myName = localStorage.getItem('myOrderName');
+        // 自己的订单在服务端不存在了（被清空或换了一天），解除本机锁定
+        if (myName && !state.orders.some(o => o.name === myName)) {
+            localStorage.removeItem('myOrderName');
+            state.selectedFoodIdx = null;
+            state.selectedName = null;
+            syncFoodSelection();
             return true;
         }
         return false;
     }
 
-    /* -------------------- 统计与缺勤名单 -------------------- */
+    async function fetchData() {
+        const result = await fetchOrders();
 
-    async function fetchStats() {
-        const days = Number($('statsDays').value) || 7;
-        try {
-            state.stats = await API.getStats(days);
-            renderStatsTable();
-        } catch (error) {
-            if (error?.status === 403 || error?.status === 401) {
-                handleAuthError(error);
-                return;
-            }
-            // 后端未升级时 /stats 会 404，不该刷一屏报错
-            $('statsList').innerHTML =
-                '<tr><td colspan="3"><div class="empty-state"><p>无法获取统计</p></div></td></tr>';
-            console.error('[Admin] fetchStats:', error);
-        }
-    }
-
-    function renderStatsTable() {
-        const body = $('statsList');
-        const s = state.stats;
-
-        if (!s || !s.people || !s.people.length) {
-            body.innerHTML = `<tr><td colspan="3"><div class="empty-state">
-                <span class="empty-icon">📈</span><p>这段时间还没有记录</p>
-            </div></td></tr>`;
+        if (result === null) {
+            // 取数失败：只更新连接状态，保留上一次的数据继续展示
+            updateSyncStatus(false);
             return;
         }
 
-        const rows = s.people.map(p => `
-            <tr>
-                <td data-label="成员">${escapeHtml(p.name)}</td>
-                <td data-label="次数">×${p.count}</td>
-                <td class="num" data-label="应付" style="color:var(--accent-pink);font-weight:800;">
-                    ${formatMoney(p.money)}
-                </td>
-            </tr>`).join('');
+        const data = result.orders;
+        applySchedule(result.schedule);
 
-        const foot = `
-            <tr>
-                <td data-label="成员" style="font-weight:800;">合计</td>
-                <td data-label="次数" style="font-weight:800;">×${s.totalCount}</td>
-                <td class="num" data-label="应付" style="font-weight:800;color:var(--accent-pink);">
-                    ${formatMoney(s.totalMoney)}
-                </td>
-            </tr>`;
+        state.orders = data;
+        const unlocked = checkDeviceLock();
 
-        body.innerHTML = rows + foot;
-    }
-
-    function renderMissing() {
-        const box = $('missingBox');
-        // 缺勤名单随响应头一起回来，和订单同步更新
-        const missing = (state.schedule && state.schedule.missing) || [];
-
-        if (!missing.length) {
-            box.innerHTML = '<div class="miss-none">🎉 所有人都点过了</div>';
-            return;
+        // 只有订单内容真的变了才重建两张列表：轮询每 15 秒一次，
+        // 无条件重建会让正在读记录的会员看到列表整体闪一下。
+        const sig = ordersSignature(state.orders);
+        if (sig !== state.ordersSig) {
+            const isFirst = state.firstLoad;
+            const prevNames = new Set((state.ordersPrev || []).map(o => o.name));
+            state.ordersSig = sig;
+            refreshUI();
+            // 菜单顺序和「已点 N 次」都跟着新数据走
+            renderFoodGrid();
+            // 首屏不弹通知，只有后续轮询发现新订单才提示
+            if (!isFirst) notifyNewOrders(prevNames, state.orders);
+            state.ordersPrev = [...state.orders];
+        } else if (unlocked) {
+            // 内容没变但本机解锁了，只需要把锁定的餐品恢复
+            updateSubmitButton();
         }
-        box.innerHTML = '<div class="miss-list">' +
-            missing.map(n => `<span class="miss-chip">${escapeHtml(n)}</span>`).join('') +
-            '</div>';
+
+        renderNameGrid();
+        updateSyncStatus(true);
+        state.firstLoad = false;
     }
 
-    async function copyMissing() {
-        const missing = (state.schedule && state.schedule.missing) || [];
-        if (!missing.length) return showToast('所有人都点过了', 'hint');
-
-        const text = `🍚 还没点饭的：${missing.join('、')}（共 ${missing.length} 人）`;
-        try {
-            await copyText(text);
-            showToast('已复制，发群里就行');
-        } catch {
-            showToast('复制失败，请手动选择', 'error');
+    // 轮询发现别人新点了餐，弹一条提示。
+    // 这是「实时」感受的来源：数据变了如果只是静默重排，用户察觉不到有人刚点单。
+    function notifyNewOrders(prevNames, orders) {
+        const fresh = orders.filter(o => !prevNames.has(o.name));
+        if (!fresh.length) return;
+        if (fresh.length === 1) {
+            showToast(`${fresh[0].name} 点了 ${fresh[0].food}`);
+        } else {
+            showToast(`新增 ${fresh.length} 份订单：${fresh.map(o => `${o.name}·${o.food}`).join('、')}`);
         }
     }
 
-    /* -------------------- Actions -------------------- */
-
-    async function submitManualOrder() {
-        const name = state.manualName;
-        // 餐品改为卡片后，选中项记在 state.manualFoodIdx 上
-        const food = state.manualFoodIdx === null ? null : CONFIG.MENU[state.manualFoodIdx];
-
-        if (!name) return showToast('请先选名字', true);
-        if (!food) return showToast('请先点一个餐品', true);
-
-        // 前端先拦截重复下单，减少无意义请求。
-        if (getOrderedNames().has(name)) {
-            showToast(`${name} 已经点过了`, true);
-            renderManualForm();
-            return;
+    async function submitOrder() {
+        if (state.isSubmitting) return;
+        // 封盘时先拦住，省得白跑一次请求（后端同样会拒）
+        if (state.schedule && state.schedule.enabled && !state.schedule.open) {
+            return showToast(state.schedule.message || '当前不在点单时间内', 'error');
         }
+        if (localStorage.getItem('myOrderName')) {
+            return showToast('已经点过餐啦～', 'error');
+        }
+        const name = state.selectedName;
+        if (!name) return showToast('先选名字哦 (｡•́︿•̀｡)', 'error');
+        if (state.selectedFoodIdx === null) return showToast('还没选餐品呢～', 'error');
+
+        const food = CONFIG.MENU[state.selectedFoodIdx];
+        state.isSubmitting = true;
+        updateSubmitButton();
 
         try {
-            setLoadingState(true);
-
-            await API.createOrder({
-                name,
-                food: food.name,
-                price: food.price
+            await submitOrderToServer({
+                name, food: food.name, price: food.price, time: Date.now(), token: deviceToken
             });
-
-            // 重置表单：名字与餐品都清空选中
-            state.manualName = null;
-            state.manualFoodIdx = null;
-            syncNameChipState();
-            syncFoodCardState();
-
-            showToast(`已添加 ${name} 的 ${food.name}`);
-            await fetchData({ silent: true });
-            await fetchStats();
-        } catch (error) {
-            console.error('[Admin] submitManualOrder:', error);
-
-            if (!handleAuthError(error)) {
-                showToast(error.message || '添加失败，请稍后重试', true);
-            }
+            showToast(`点餐成功！${food.icon} ${food.name}`);
+            localStorage.setItem('myOrderName', name);
+            await fetchData();
+        } catch (e) {
+            showToast(e.message || '提交失败了 (╥_╥)', 'error');
         } finally {
-            setLoadingState(false);
+            state.isSubmitting = false;
+            updateSubmitButton();
         }
     }
 
-    async function forceDeleteOrder(name) {
+    // ============ 确认弹窗 ============
+    // 替代原生 confirm：样式可定制、不打断整页观感，且能把焦点管理做对。
+    let modalResolve = null;
+
+    function closeModal(result) {
+        const modal = document.getElementById('modal');
+        if (modal.hidden) return;
+        modal.hidden = true;
+        document.documentElement.style.removeProperty('overflow');
+        const resolve = modalResolve;
+        modalResolve = null;
+        if (resolve) resolve(result);
+    }
+
+    function askConfirm(descHtml, confirmText = '确认撤销') {
+        const modal = document.getElementById('modal');
+        document.getElementById('modalDesc').innerHTML = descHtml;
+        document.getElementById('modalConfirm').textContent = confirmText;
+        modal.hidden = false;
+        // 锁定背景滚动，避免弹窗开着时页面还在滚
+        document.documentElement.style.overflow = 'hidden';
+        // 焦点给「再想想」而不是「确认」：误触回车时不会直接执行破坏性操作
+        requestAnimationFrame(() => document.getElementById('modalCancel').focus());
+
+        return new Promise(resolve => { modalResolve = resolve; });
+    }
+
+    function initModal() {
+        const modal = document.getElementById('modal');
+        document.getElementById('modalCancel').addEventListener('click', () => closeModal(false));
+        document.getElementById('modalConfirm').addEventListener('click', () => closeModal(true));
+        // 点遮罩关闭
+        modal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(false));
+        // Esc 关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.hidden) closeModal(false);
+        });
+    }
+
+    async function cancelPersonalOrder(name) {
         if (!name) return;
-        if (!confirm(`撤销 ${name} 的订单？`)) return;
-
-        try {
-            await API.deleteOrder(name);
-
-            // 立即更新本地 UI，再向服务器同步。
-            state.orders = state.orders.filter(order => order.name !== name);
-            renderAll();
-
-            showToast(`已撤销 ${name}`);
-            await fetchData({ silent: true });
-        } catch (error) {
-            console.error('[Admin] forceDeleteOrder:', error);
-
-            if (!handleAuthError(error)) {
-                showToast('撤销失败，请稍后重试', true);
-            }
-        }
-    }
-
-    async function forceClearAll() {
-        if (!state.orders.length) {
-            showToast('当前没有订单', true);
-            return;
-        }
-
-        if (!confirm(`确认清空全部 ${state.orders.length} 份订单？此操作不可恢复。`)) {
-            return;
-        }
-
-        try {
-            await API.clearOrders();
-
-            state.orders = [];
-            renderAll();
-
-            showToast('已清空全部数据');
-            await fetchData({ silent: true });
-        } catch (error) {
-            console.error('[Admin] forceClearAll:', error);
-
-            if (!handleAuthError(error)) {
-                showToast('清空失败，请稍后重试', true);
-            }
-        }
-    }
-
-    /* -------------------- Export / Clipboard -------------------- */
-
-    function buildMerchantText() {
-        const summary = getFoodSummary();
-
-        if (!summary.length) return '';
-
-        const count = state.orders.length;
-        const total = getOrderTotal();
-
-        const lines = summary.map(item =>
-            `${item.food} × ${item.count}份`
+        const ok = await askConfirm(
+            `确定撤销 <b>${escapeHtml(name)}</b> 的订单吗？<br>撤销后需要重新点餐。`
         );
-
-        return [
-            '老板，今日单：',
-            '',
-            ...lines,
-            '',
-            `共计: ${count}份，总价: ${formatMoney(total)}`
-        ].join('\n');
-    }
-
-    async function copyText(text) {
-        if (!text) {
-            showToast('暂无数据', true);
-            return;
-        }
-
+        if (!ok) return;
         try {
-            if (navigator.clipboard && window.isSecureContext) {
-                await navigator.clipboard.writeText(text);
-            } else {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.cssText = 'position:fixed;left:-9999px;';
-                document.body.appendChild(textarea);
-                textarea.select();
-
-                const success = document.execCommand('copy');
-                textarea.remove();
-
-                if (!success) throw new Error('clipboard fallback failed');
+            await deleteOrderFromServer(name);
+            showToast(`已撤销 ${name} 的订单 ♪`);
+            // 撤销后回到「还没点」的状态，而不是把界面锁死
+            if (localStorage.getItem('myOrderName') === name) {
+                localStorage.removeItem('myOrderName');
+                state.selectedFoodIdx = null;
+                state.selectedName = null;
+                syncFoodSelection();
+                renderNameGrid();
             }
-
-            showToast('复制成功');
-        } catch (error) {
-            console.error('[Admin] copy:', error);
-            showToast('复制失败，请手动复制', true);
+            await fetchData();
+        } catch (e) {
+            showToast(e.message || '撤销失败了～', 'error');
         }
     }
 
-    function copyMerchantOrder() {
-        copyText(buildMerchantText());
-    }
+    function copySummaryText() {
+        if (!state.orders.length) return showToast('还没有数据哦～', 'error');
 
-    function csvCell(value) {
-        return `"${String(value ?? '').replace(/"/g, '""')}"`;
-    }
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 
-    function exportCSV() {
-        if (!state.orders.length) {
-            showToast('暂无数据', true);
-            return;
+        let text = `📋 今日点饭汇总 (${timeStr})\n═══════════════════\n`;
+        let totalAll = 0, totalCount = 0;
+
+        CONFIG.MENU.forEach(m => {
+            const count = state.orders.filter(o => o.food === m.name).length;
+            if (count > 0) {
+                const sub = count * m.price;
+                totalAll += sub; totalCount += count;
+                text += `${m.icon} ${m.name} × ${count}份 = ¥${sub}\n`;
+            }
+        });
+
+        text += `───────────────────\n💰 总金额: ¥${totalAll}（共${totalCount}份）\n\n👤 详细：\n`;
+        const sorted = [...state.orders].sort((a, b) => (b.time || 0) - (a.time || 0));
+        sorted.forEach(o => text += `  ${o.name} → ${o.food}\n`);
+
+        const doFallback = () => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;left:-9999px;';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); showToast('复制成功 ♡'); }
+            catch(_) { showToast('复制失败...', 'error'); }
+            ta.remove();
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('复制成功！(◕‿◕✿)'))
+                .catch(doFallback);
+        } else {
+            doFallback();
         }
-
-        const rows = [
-            ['姓名', '餐品', '价格', '下单时间'],
-            ...[...state.orders]
-                .sort((a, b) => b.time - a.time)
-                .map(order => [
-                    order.name,
-                    order.food,
-                    `¥${order.price}`,
-                    formatDateTime(order.time)
-                ])
-        ];
-
-        const csv = '\uFEFF' + rows
-            .map(row => row.map(csvCell).join(','))
-            .join('\r\n');
-
-        const blob = new Blob([csv], {
-            type: 'text/csv;charset=utf-8;'
-        });
-
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-
-        link.href = url;
-        link.download =
-            `点餐明细_${new Date().getMonth() + 1}月${new Date().getDate()}日.csv`;
-
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-        showToast('CSV 导出成功');
     }
 
-    /* -------------------- Events -------------------- */
-
-    function bindEvents() {
-        // 保留原有 onclick API，同时增加事件委托，避免给每一行创建大量 handler。
-        $('detailedList').addEventListener('click', (event) => {
-            const button = event.target.closest('[data-action="delete-order"]');
-            if (!button) return;
-
-            forceDeleteOrder(button.dataset.name);
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && session.isAuthenticated()) {
-                fetchData({ silent: true });
-            }
-        });
-
-        window.addEventListener('online', () => {
-            if (session.isAuthenticated()) {
-                showToast('网络已恢复，正在同步');
-                fetchData({ silent: true });
-            }
-        });
-
-        window.addEventListener('offline', () => {
-            showToast('网络连接已断开', true);
-        });
-
-        // 定时设置
-        $('saveScheduleBtn').addEventListener('click', saveSchedule);
-        $('startNewDayBtn').addEventListener('click', startNewDay);
-        $('clearNowBtn').addEventListener('click', clearOrdersNow);
-        $('addWindowBtn').addEventListener('click', addWindow);
-
-        // 帮点一下：名字与餐品都用事件委托，节点重建后不必重新绑定
-        $('manualNameGrid').addEventListener('click', (e) => {
-            const chip = e.target.closest('.name-item');
-            if (chip && !chip.disabled) selectManualName(chip.dataset.name);
-        });
-        $('manualNameGrid').addEventListener('keydown', (e) => {
-            if (e.key !== 'Enter' && e.key !== ' ') return;
-            const chip = e.target.closest('.name-item');
-            if (!chip || chip.disabled) return;
-            e.preventDefault();
-            selectManualName(chip.dataset.name);
-        });
-
-        $('manualFoodGrid').addEventListener('click', (e) => {
-            const card = e.target.closest('.food-item');
-            if (card) selectManualFood(Number(card.dataset.idx));
-        });
-        $('manualFoodGrid').addEventListener('keydown', (e) => {
-            if (e.key !== 'Enter' && e.key !== ' ') return;
-            const card = e.target.closest('.food-item');
-            if (!card) return;
-            e.preventDefault();
-            selectManualFood(Number(card.dataset.idx));
-        });
-        $('manualDeckToggle').addEventListener('click', toggleManualDeck);
-        $('manualSubmitBtn').addEventListener('click', submitManualOrder);
-
-        // 时间段行的删除按钮：事件委托，行是动态生成的
-        $('windowList').addEventListener('click', (e) => {
-            const del = e.target.closest('[data-role="del"]');
-            if (!del) return;
-            const rows = document.querySelectorAll('#windowList .window-row');
-            // 只留一个时不建议删空，但允许 —— 保存时会提示至少要有一个
-            del.closest('.window-row').remove();
-            if (!document.querySelector('#windowList .window-row')) {
-                $('windowList').innerHTML =
-                    '<div class="window-empty">还没有时间段，添加一个才能限制点单时间</div>';
-            }
-            // 重新编号，避免删掉中间一个后序号断档
-            document.querySelectorAll('#windowList .window-row').forEach((row, i) => {
-                row.querySelector('.widx').textContent = String(i + 1);
-            });
-        });
-
-        // 统计：切换天数
-        $('statsDays').addEventListener('change', fetchStats);
-        $('copyMissingBtn').addEventListener('click', copyMissing);
-
-        // 勾选框变化时立即让对应输入框的可用状态跟上
-        $('scheduleEnabled').addEventListener('change', (e) => {
-            document.querySelectorAll('#windowList input, #addWindowBtn').forEach(el => {
-                el.disabled = !e.target.checked;
-            });
-        });
-        $('autoDailyReset').addEventListener('change', (e) => {
-            $('resetTime').disabled = !e.target.checked;
-            if (!e.target.checked) $('nextResetAt').textContent = '已关闭自动清空';
-        });
-    }
-
-    /* -------------------- Boot -------------------- */
-
-    async function initApplication() {
-        if (state.initialized) {
-            startAutoRefresh();
-            return;
-        }
-
-        state.initialized = true;
-        bindEvents();
-        renderAll();
-        startAutoRefresh();
-    }
-
-    async function boot() {
+    // ============ 初始化 ============
+    async function init() {
         applyTheme();
+        renderFoodGrid();
+        initModal();
 
-        /*
-         * 旧版把管理密码写死为 '123' 并存在 sessionStorage 里。
-         * 那个键（以及旧的明文密码）不能再被当成已登录凭证使用 —— 清掉，
-         * 让所有人重新用服务端校验过的密码登录。
-         */
-        if (session.password === '123') {
-            session.logout();
-        }
+        document.getElementById('submitBtn').addEventListener('click', handlePrimaryAction);
+        document.getElementById('copyBtn').addEventListener('click', copySummaryText);
+        document.getElementById('deckToggle').addEventListener('click', () => {
+            tapFeedback(6);
+            toggleDeck();
+        });
+        document.getElementById('randomBtn').addEventListener('click', randomPickFood);
 
-        renderAuth();
+        // 名字点选：事件委托，单击即选
+        document.getElementById('nameGrid').addEventListener('click', (e) => {
+            const btn = e.target.closest('.name-btn');
+            if (btn && !btn.disabled) selectName(btn.dataset.name);
+        });
 
-        if (!session.isAuthenticated()) {
-            $('pwdInput')?.focus();
-            return;
-        }
+        // 菜单默认折叠：初始只展示前 PREVIEW_ROWS 行
+        setDeckCollapsed(true);
 
-        await initApplication();
+        // 跨断点改列数时，可见数量会从 4 变成 6，必须重新同步给 CSS
+        window.addEventListener('resize', () => {
+            applyPreviewCount();
+            // 列数变少时，原本可见的项可能被挤到预览范围外，同步一下选择状态
+            if (state.selectedFoodIdx !== null
+                && document.getElementById('foodGrid').classList.contains('is-collapsed')
+                && !visibleIndices().has(state.selectedFoodIdx)) {
+                setDeckCollapsed(true);
+            }
+        });
+
+        // 餐品选择用事件委托 + 键盘支持：
+        // 事件委托让格子重建后不必重新绑定，键盘支持让 Enter/Space 也能选。
+        const grid = document.getElementById('foodGrid');
+        grid.addEventListener('click', (e) => {
+            const item = e.target.closest('.food-item');
+            if (item) selectFood(Number(item.dataset.idx));
+        });
+        grid.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const item = e.target.closest('.food-item');
+            if (!item) return;
+            e.preventDefault();
+            selectFood(Number(item.dataset.idx));
+        });
+
+        document.getElementById('orderDetailList').addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn-delete');
+            if (btn) cancelPersonalOrder(btn.dataset.name);
+        });
+
         await fetchData();
-        await fetchSettings();
-        await fetchStats();
+        setInterval(fetchData, CONFIG.REFRESH_INTERVAL);
     }
 
-    boot();
-
+    document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
