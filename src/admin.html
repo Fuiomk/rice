@@ -7,76 +7,109 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         /* ============ 完全复用主站主题与变量 ============ */
-        :root, [data-theme="light"] {
-            --bg-primary: #FFF5F8; --bg-secondary: #FFF0F5;
-            --bg-mesh-1: rgba(255, 182, 193, 0.25); --bg-mesh-2: rgba(200, 170, 255, 0.2);
-            --bg-mesh-3: rgba(150, 230, 210, 0.15); --bg-mesh-4: rgba(255, 210, 150, 0.12);
-            --card-bg: rgba(255, 255, 255, 0.65); --card-border: rgba(255, 200, 220, 0.5);
-            --card-shadow: 0 8px 40px rgba(255, 150, 180, 0.1), 0 2px 8px rgba(0,0,0,0.02);
-            --card-shadow-hover: 0 16px 56px rgba(255, 150, 180, 0.18), 0 4px 12px rgba(0,0,0,0.03);
-            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.8);
-            --text-primary: #3D2C3E; --text-secondary: #8B7A8E; --text-tertiary: #B8A5BB;
-            --accent-pink: #FF7EB3; --accent-pink-deep: #FF5C8D; --accent-pink-glow: rgba(255, 126, 179, 0.25);
-            --accent-purple: #B088F9; --accent-purple-deep: #9B6BEE; --accent-purple-glow: rgba(176, 136, 249, 0.2);
-            --accent-mint: #6FD4B5;
-            --surface-light: rgba(255, 255, 255, 0.7); --surface-medium: rgba(255, 240, 245, 0.6);
-            --surface-tag: linear-gradient(135deg, rgba(255,126,179,0.1), rgba(176,136,249,0.1));
-            --border-soft: rgba(255, 200, 220, 0.4);
-            --gradient-primary: linear-gradient(135deg, #FF5C8D 0%, #FF7EB3 40%, #B088F9 100%);
-            --gradient-badge: linear-gradient(135deg, rgba(255,126,179,0.12), rgba(176,136,249,0.12));
-            --input-bg: rgba(255, 255, 255, 0.8);
-            --table-row-bg: rgba(255, 245, 248, 0.5);
-            --order-row-bg: rgba(255, 255, 255, 0.5); --order-row-hover: rgba(255, 255, 255, 0.9);
-            --divider: rgba(255, 200, 220, 0.3);
-            --danger-bg: rgba(255, 92, 141, 0.08);
-            --deco-opacity: 0.5; --noise-opacity: 0.015;
-        }
+        /* ============================================================
+           配色与点饭页 (main (2).html) 保持一致：近黑底 + 粉/青/金三色霓虹。
+           令牌同名同值，改一处两边同步。
+           注意：原本这里是浅粉可爱风，与点饭页是两套视觉，这里统一掉。
+           ============================================================ */
+        :root, [data-theme="light"], [data-theme="dark"] {
+            --bg-glow-1: #25142c;
+            --bg-glow-2: #0b0711;
 
-        [data-theme="dark"] {
-            --bg-primary: #1A1118; --bg-secondary: #1E1420;
-            --bg-mesh-1: rgba(255, 92, 141, 0.08); --bg-mesh-2: rgba(155, 107, 238, 0.08);
-            --bg-mesh-3: rgba(77, 201, 164, 0.05); --bg-mesh-4: rgba(255, 176, 136, 0.05);
-            --card-bg: rgba(35, 25, 38, 0.7); --card-border: rgba(255, 126, 179, 0.12);
-            --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0,0,0,0.15);
-            --card-shadow-hover: 0 16px 56px rgba(255, 92, 141, 0.1), 0 4px 12px rgba(0,0,0,0.2);
-            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.05);
-            --text-primary: #F0E4F2; --text-secondary: #A892AB; --text-tertiary: #6B5A6E;
-            --accent-pink: #FF8FBF; --accent-pink-deep: #FF5C8D; --accent-pink-glow: rgba(255, 92, 141, 0.2);
-            --accent-purple: #C4A0FF; --accent-purple-deep: #A87CFF; --accent-purple-glow: rgba(168, 124, 255, 0.15);
-            --accent-mint: #7FE0C3;
-            --surface-light: rgba(40, 30, 45, 0.6); --surface-medium: rgba(50, 35, 55, 0.5);
-            --surface-tag: linear-gradient(135deg, rgba(255,92,141,0.12), rgba(168,124,255,0.12));
-            --border-soft: rgba(255, 126, 179, 0.1);
-            --gradient-primary: linear-gradient(135deg, #FF3D7F 0%, #FF5C8D 40%, #A87CFF 100%);
-            --gradient-badge: linear-gradient(135deg, rgba(255,92,141,0.15), rgba(168,124,255,0.15));
-            --input-bg: rgba(40, 30, 45, 0.6);
-            --table-row-bg: rgba(40, 30, 45, 0.4);
-            --order-row-bg: rgba(40, 30, 45, 0.4); --order-row-hover: rgba(50, 38, 55, 0.8);
-            --divider: rgba(255, 126, 179, 0.08);
-            --danger-bg: rgba(255, 92, 141, 0.15);
-            --deco-opacity: 0.25; --noise-opacity: 0.025;
+            --pink: #ff91bd;
+            --cyan: #8deaff;
+            --gold: #ffe29a;
+
+            --tri-gradient: linear-gradient(90deg, #ff91bd, #d9a2ff, #ffdf9a);
+
+            --card-bg: #0b0810;
+            --card-border: #ffffff10;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.65);
+            --card-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+            --text-primary: #eee;
+            --text-secondary: #9d96a4;
+            --text-tertiary: #8f8792;
+
+            --accent-pink: #ff91bd;
+            --accent-pink-deep: #ff91bd;
+            --accent-pink-glow: rgba(255, 145, 189, 0.22);
+            --accent-purple: #d9a2ff;
+            --accent-purple-deep: #d9a2ff;
+            --accent-purple-glow: rgba(217, 162, 255, 0.18);
+            --accent-mint: #8deaff;
+
+            --surface-light: #ffffff08;
+            --surface-medium: #ffffff0d;
+            --surface-tag: #ffffff0a;
+
+            --border-soft: #ffffff10;
+            --border-medium: #ff91bd55;
+
+            --gradient-primary: var(--tri-gradient);
+            --gradient-badge: rgba(255, 145, 189, 0.12);
+
+            --input-bg: #ffffff08;
+            --table-row-bg: #ffffff05;
+            --order-row-bg: #ffffff05;
+            --order-row-hover: #ffffff0a;
+
+            --divider: #ffffff0d;
+            --danger-bg: rgba(255, 145, 189, 0.1);
+
+            --scrollbar-track: transparent;
+            --scrollbar-thumb: #ffffff1f;
+
+            --toast-bg: #14101c;
+            --toast-fg: #ffffff;
+            --toast-border: #ffffff18;
+            --toast-error-bg: #2a0f1c;
+            --toast-error-fg: #ffb8cf;
+            --toast-error-border: rgba(255, 184, 207, 0.25);
+
+            color-scheme: dark;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        * { font-family: 'Noto Sans SC', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body {
-            background-color: var(--bg-primary); color: var(--text-primary);
-            min-height: 100vh; overflow-x: hidden; padding: 20px 16px;
-            transition: background-color 0.5s ease, color 0.4s ease; position: relative;
-        }
-        body::before {
-            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-            background: radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
-            radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
-            radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
-            radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
-        }
-        body::after {
-            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; mix-blend-mode: overlay; opacity: var(--noise-opacity);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        * { font-family: 'Noto Sans SC', 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
-        .container { max-width: 480px; margin: 0 auto; position: relative; z-index: 1; display: none; }
+        body {
+            /* 夜空辉光，与点饭页同一写法 */
+            background: radial-gradient(circle at 50% 15%, var(--bg-glow-1) 0, var(--bg-glow-2) 42%, #030308 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            padding: max(18px, env(safe-area-inset-top))
+                     max(14px, env(safe-area-inset-right))
+                     max(28px, env(safe-area-inset-bottom))
+                     max(14px, env(safe-area-inset-left));
+            position: relative;
+        }
+
+        /* 极淡网格纹理：大面积近黑底会显得"死"，叠一层 2.5% 白网格有纵深又不抢内容 */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 38px 38px;
+            -webkit-mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
+            mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
+        }
+
+        .container { max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; display: none; }
 
         /* 登录页 */
         #loginOverlay {
@@ -113,14 +146,23 @@
         [data-theme="dark"] select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF8FBF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); }
 
         .btn {
-            border: none; padding: 16px; border-radius: 20px; font-weight: 700; cursor: pointer;
-            font-size: 1rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
-            background: var(--gradient-primary); color: white; box-shadow: 0 8px 28px var(--accent-pink-glow);
-            transition: all 0.3s;
+            border: none; padding: 14px; border-radius: 16px; font-weight: 700; cursor: pointer;
+            font-size: 0.9rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
+            letter-spacing: 1px; font-family: inherit;
+            /* 与点饭页主按钮一致：半透明粉底 + 描边 + 大范围柔光，而不是实心渐变块 */
+            background: rgba(255, 145, 189, 0.1); color: #fff;
+            border: 1px solid rgba(255, 145, 189, 0.4);
+            box-shadow: 0 0 30px rgba(255, 145, 189, 0.12);
+            transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, transform 0.12s ease;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 40px var(--accent-pink-glow); }
+        .btn:hover:not(:disabled) { background: rgba(255, 145, 189, 0.17); box-shadow: 0 0 30px rgba(255, 145, 189, 0.25); }
         .btn:active { transform: scale(0.98); }
-        .btn-danger { background: var(--accent-pink-deep); }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+        .btn-danger {
+            background: transparent; color: var(--accent-pink);
+            border: 1px solid var(--border-medium); box-shadow: none;
+        }
+        .btn-danger:hover:not(:disabled) { background: rgba(255, 145, 189, 0.14); }
 
         .btn-copy {
             background: var(--gradient-badge); color: var(--text-primary); font-size: 0.78rem; padding: 8px 16px;
@@ -182,27 +224,111 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 10px; }
         .form-row .btn { padding: 0 20px; border-radius: 18px; }
 
+        /* ============ 定时设置 ============ */
+        .status-pill {
+            font-size: 0.72rem; font-weight: 700; padding: 3px 11px; border-radius: 50px;
+            border: 1px solid var(--border-soft); background: var(--surface-light); color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .status-pill.is-open { color: #4DC9A4; border-color: rgba(77,201,164,0.4); background: rgba(77,201,164,0.1); }
+        .status-pill.is-closed { color: var(--accent-pink-deep); border-color: rgba(255,92,141,0.4); background: rgba(255,92,141,0.1); }
+
+        .switch-row {
+            display: flex; align-items: center; gap: 9px;
+            font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+            padding: 9px 0; cursor: pointer;
+        }
+        .switch-row input[type="checkbox"] {
+            width: 18px; height: 18px; accent-color: var(--accent-pink-deep); cursor: pointer; flex-shrink: 0;
+        }
+
+        .time-row {
+            display: flex; align-items: flex-end; gap: 10px; margin-top: 4px;
+        }
+        .time-row > div { flex: 1; }
+        .time-row input[type="time"] {
+            width: 100%; padding: 11px 12px; border-radius: 14px; border: 1.5px solid var(--border-soft);
+            background: var(--input-bg); color: var(--text-primary); font-size: 16px; font-weight: 600;
+            font-family: inherit; outline: none;
+        }
+        .time-row input[type="time"]:focus { border-color: var(--accent-pink); box-shadow: 0 0 0 3px var(--accent-pink-glow); }
+        .time-sep { flex: 0 0 auto; padding-bottom: 12px; color: var(--text-tertiary); font-weight: 700; }
+
+        .mini-label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+        .tiny-hint { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 7px; line-height: 1.6; }
+
+        .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .btn-row .btn { flex: 1 1 auto; min-width: 108px; padding: 11px 14px; font-size: 0.8rem; }
+
         /* Toast & 杂项 */
         #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-30px) scale(0.85);
-            color: white; padding: 12px 24px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
-            z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s; backdrop-filter: blur(12px);
+            position: fixed; top: max(env(safe-area-inset-top, 16px), 16px); left: 50%;
+            transform: translateX(-50%) translateY(-14px);
+            padding: 11px 20px; border-radius: 50px; font-size: 0.82rem; font-weight: 600;
+            max-width: calc(100vw - 32px); text-align: center;
+            z-index: 1000; opacity: 0; visibility: hidden;
+            transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+            /* 旧版只设了 color: white，没有背景 —— 白字直接叠在页面上，几乎看不见 */
+            background: var(--toast-bg); color: var(--toast-fg);
+            border: 1px solid var(--toast-border);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
         }
-        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(16px) scale(1); }
+        #toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        #toast.error {
+            background: var(--toast-error-bg); color: var(--toast-error-fg);
+            border-color: var(--toast-error-border);
+        }
 
-        .theme-toggle {
-            position: fixed; top: max(16px, env(safe-area-inset-top)); right: 16px; z-index: 100;
-            width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border-soft);
-            background: var(--card-bg); backdrop-filter: blur(16px); cursor: pointer; display: flex;
-            align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; color: var(--text-primary);
+        /* 键盘可达性 */
+        :focus-visible { outline: 2px solid var(--accent-purple); outline-offset: 2px; }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+
+        /* ============================================================
+           响应式：旧版一个媒体查询都没有，手机上表格会横向挤爆
+           ============================================================ */
+        @media (max-width: 560px) {
+            .container { max-width: 100%; }
+            .card { padding: 16px 14px; border-radius: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+            .form-row .btn { width: 100%; padding: 12px; }
+            .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .stat-value { font-size: 1.35rem; }
+            .btn-row .btn { min-width: 0; flex: 1 1 100%; }
+
+            /* 窄屏把报单表格改成卡片式，避免横向滚动 */
+            .stack-table thead { display: none; }
+            .stack-table, .stack-table tbody, .stack-table tr, .stack-table td { display: block; width: 100%; }
+            .stack-table tr {
+                background: var(--table-row-bg); border-radius: 12px;
+                margin-bottom: 6px; padding: 8px 12px;
+            }
+            .stack-table td {
+                background: none; padding: 3px 0; display: flex;
+                justify-content: space-between; gap: 10px;
+            }
+            .stack-table td::before {
+                content: attr(data-label); color: var(--text-tertiary);
+                font-size: 0.72rem; font-weight: 500;
+            }
+            .stack-table td:first-child { border-radius: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <!-- 鉴权遮罩 -->
 <div id="loginOverlay">
@@ -247,7 +373,7 @@
                 复制发给老板
             </button>
         </div>
-        <table>
+        <table class="stack-table">
             <thead><tr><th>菜品</th><th>数量</th><th>小计</th></tr></thead>
             <tbody id="merchantList">
             <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary);">加载中...</td></tr>
@@ -267,6 +393,51 @@
             <select id="manualName"><option value="">名字...</option></select>
             <select id="manualFood"><option value="">餐品...</option></select>
             <button class="btn" style="box-shadow: none;" onclick="submitManualOrder()">添加</button>
+        </div>
+    </div>
+
+    <!-- 定时设置 -->
+    <div class="card">
+        <div class="section-header">
+            <div class="section-title">
+                <span class="section-icon mint">⏰</span>
+                定时设置
+            </div>
+            <span id="scheduleStatus" class="status-pill">读取中…</span>
+        </div>
+
+        <label class="switch-row">
+            <input type="checkbox" id="scheduleEnabled">
+            <span>只在以下时间段内允许点单</span>
+        </label>
+
+        <div class="time-row">
+            <div>
+                <label class="mini-label" for="openTime">开始</label>
+                <input type="time" id="openTime" value="06:00">
+            </div>
+            <div class="time-sep">–</div>
+            <div>
+                <label class="mini-label" for="closeTime">结束</label>
+                <input type="time" id="closeTime" value="10:30">
+            </div>
+        </div>
+        <p class="tiny-hint">支持跨零点，例如 22:00 – 02:00。起止相同表示全天开放。</p>
+
+        <div class="field" style="margin-top:12px;">
+            <label class="mini-label" for="closedMessage">封盘时页面上显示</label>
+            <input type="text" id="closedMessage" maxlength="60" placeholder="今天点单已结束">
+        </div>
+
+        <label class="switch-row" style="margin-top:10px;">
+            <input type="checkbox" id="autoDailyReset" checked>
+            <span>每天首次打开时自动清空昨天的订单</span>
+        </label>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" id="saveScheduleBtn" type="button">保存设置</button>
+            <button class="btn btn-ghost" id="startNewDayBtn" type="button">开始新一天</button>
+            <button class="btn btn-ghost" id="clearNowBtn" type="button">只清空订单</button>
         </div>
     </div>
 
@@ -322,7 +493,7 @@
             { name: '拌粉', price: 6 },
             { name: '水饺', price: 6 },
             { name: '混沌', price: 6 },
-            
+
         ])
     });
 
@@ -331,7 +502,8 @@
         loading: false,
         initialized: false,
         refreshTimer: null,
-        requestId: 0
+        requestId: 0,
+        schedule: null      // 服务端当前的定时状态
     };
 
     const $ = (id) => document.getElementById(id);
@@ -345,12 +517,6 @@
         },
         clearPassword() {
             sessionStorage.removeItem('adminPassword');
-        },
-        getTheme() {
-            return localStorage.getItem('theme');
-        },
-        setTheme(theme) {
-            localStorage.setItem('theme', theme);
         },
         getDeviceToken() {
             let token = localStorage.getItem('deviceToken');
@@ -558,6 +724,34 @@
                     adminPassword: session.password
                 })
             });
+        },
+
+        /* ---- 定时设置 ---- */
+
+        async getSettings() {
+            const pwd = encodeURIComponent(session.password);
+            return apiRequest(`settings?adminPassword=${pwd}`);
+        },
+
+        async updateSettings(patch) {
+            return apiRequest('settings', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'update', adminPassword: session.password, ...patch })
+            });
+        },
+
+        async clearNowSettings() {
+            return apiRequest('settings', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'clearNow', adminPassword: session.password })
+            });
+        },
+
+        async startNewDay() {
+            return apiRequest('settings', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'startNewDay', adminPassword: session.password })
+            });
         }
     };
 
@@ -625,6 +819,106 @@
         }
     }
 
+    /* -------------------- 定时设置 -------------------- */
+
+    /** 把服务端状态画到面板上 */
+    function renderSchedule() {
+        const s = state.schedule;
+        if (!s) return;
+
+        $('scheduleEnabled').checked = !!s.enabled;
+        $('autoDailyReset').checked = !!s.autoDailyReset;
+        $('openTime').value = s.openTime || '06:00';
+        $('closeTime').value = s.closeTime || '10:30';
+        $('closedMessage').value = s.message || '';
+
+        const pill = $('scheduleStatus');
+        if (!s.enabled) {
+            pill.textContent = '未启用时段限制';
+            pill.className = 'status-pill';
+        } else if (s.open) {
+            pill.textContent = '开放中';
+            pill.className = 'status-pill is-open';
+        } else {
+            pill.textContent = '已封盘';
+            pill.className = 'status-pill is-closed';
+        }
+
+        // 未启用时段时，时间输入没有意义，置灰以示区分
+        ['openTime', 'closeTime'].forEach(id => { $(id).disabled = !s.enabled; });
+    }
+
+    async function fetchSettings() {
+        try {
+            const data = await API.getSettings();
+            state.schedule = data.state || null;
+            renderSchedule();
+
+            // 服务端返回的 settings 与 state 合并后回填输入框，
+            // 保证用户看到的是「服务器上真正生效的值」而不是本地改动
+            if (data.settings) {
+                state.schedule = { ...data.settings, ...data.state };
+                renderSchedule();
+            }
+        } catch (error) {
+            if (error?.status === 403 || error?.status === 401) {
+                handleAuthError(error);
+                return;
+            }
+            // 后端还没更新到支持 /settings 时，这里会 404/405 —— 提示一次即可
+            $('scheduleStatus').textContent = '读取失败';
+            $('scheduleStatus').className = 'status-pill is-closed';
+            console.error('[Admin] fetchSettings:', error);
+        }
+    }
+
+    async function saveSchedule() {
+        const btn = $('saveScheduleBtn');
+        btn.disabled = true;
+        btn.textContent = '保存中…';
+
+        try {
+            const res = await API.updateSettings({
+                scheduleEnabled: $('scheduleEnabled').checked,
+                autoDailyReset: $('autoDailyReset').checked,
+                openTime: $('openTime').value,
+                closeTime: $('closeTime').value,
+                closedMessage: $('closedMessage').value
+            });
+            showToast(res.message || '设置已保存');
+            await fetchSettings();
+        } catch (error) {
+            if (!handleAuthError(error)) showToast(error.message || '保存失败', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '保存设置';
+        }
+    }
+
+    async function startNewDay() {
+        if (!confirm('清空当前订单并记为「今天」？通常用于手动开启新一天的点单。')) return;
+        try {
+            const res = await API.startNewDay();
+            showToast(res.message || '已开始新一天');
+            await fetchData();
+            await fetchSettings();
+        } catch (error) {
+            if (!handleAuthError(error)) showToast(error.message || '操作失败', 'error');
+        }
+    }
+
+    async function clearOrdersNow() {
+        if (!confirm('只清空订单，不改变日期记录。确定继续？')) return;
+        try {
+            const res = await API.clearNowSettings();
+            showToast(res.message || '已清空订单');
+            await fetchData();
+            await fetchSettings();
+        } catch (error) {
+            if (!handleAuthError(error)) showToast(error.message || '操作失败', 'error');
+        }
+    }
+
     /* -------------------- Render Layer -------------------- */
 
     function renderStats() {
@@ -646,11 +940,12 @@
             return;
         }
 
+        // data-label 供窄屏卡片式布局显示行内标签（.stack-table td::before）
         tbody.innerHTML = summary.map(item => `
             <tr>
-                <td>${escapeHtml(item.food)}</td>
-                <td><span class="count-badge">${item.count}</span></td>
-                <td style="font-weight:800;color:var(--accent-pink-deep);">
+                <td data-label="菜品">${escapeHtml(item.food)}</td>
+                <td data-label="数量"><span class="count-badge">${item.count}</span></td>
+                <td data-label="小计" style="font-weight:800;color:var(--accent-pink-deep);">
                     ${formatMoney(item.count * item.price)}
                 </td>
             </tr>
@@ -753,23 +1048,14 @@
 
     /* -------------------- Theme -------------------- */
 
-    function initTheme() {
-        const saved = storage.getTheme();
-        const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-        applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-    }
-
-    function applyTheme(theme) {
-        const normalized = theme === 'dark' ? 'dark' : 'light';
-
-        document.documentElement.setAttribute('data-theme', normalized);
-        $('themeBtn').textContent = normalized === 'dark' ? '☀️' : '🌙';
-        storage.setTheme(normalized);
-    }
-
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
+    /*
+     * 配色已固定为深色霓虹，与点饭页一致，不再提供浅色主题。
+     * 原来这里有一套 initTheme / applyTheme / toggleTheme 加右上角按钮，
+     * 但两套令牌已经改成同值 —— 按下去只有图标在 🌙/☀️ 之间翻，页面毫无变化，
+     * 对不熟悉的人就是「按钮坏了」。整组连同按钮一起移除。
+     */
+    function applyTheme() {
+        document.documentElement.setAttribute('data-theme', 'dark');
     }
 
     /* -------------------- Auth -------------------- */
@@ -791,21 +1077,20 @@
             return;
         }
 
-        // 管理员密码固定为 123。
-        // 密码错误时绝对不能进入后台，也不能写入 sessionStorage。
-        if (password !== '123') {
-            input.value = '';
-            input.focus();
-            showToast('密码错误，无法进入后台', true);
-            return;
-        }
-
+        /*
+         * 这里刻意不在前端比对密码。
+         * 旧版写死了 if (password !== '123')，任何人查看源码即可得知密码，
+         * 而且改掉 sessionStorage 就能绕过 —— 前端校验不是安全边界。
+         * 现在只把密码存下来，由后端在每个请求上验证；错了会在 fetchData 里
+         * 收到 403，由 handleAuthError 退回登录页。
+         */
         session.login(password);
         input.value = '';
 
         renderAuth();
         await initApplication();
         await fetchData();
+        await fetchSettings();
     }
 
     function logout() {
@@ -1045,6 +1330,15 @@
         window.addEventListener('offline', () => {
             showToast('网络连接已断开', true);
         });
+
+        // 定时设置
+        $('saveScheduleBtn').addEventListener('click', saveSchedule);
+        $('startNewDayBtn').addEventListener('click', startNewDay);
+        $('clearNowBtn').addEventListener('click', clearOrdersNow);
+        // 勾选框变化时立即让时间输入框的可用状态跟上
+        $('scheduleEnabled').addEventListener('change', (e) => {
+            ['openTime', 'closeTime'].forEach(id => { $(id).disabled = !e.target.checked; });
+        });
     }
 
     /* -------------------- Boot -------------------- */
@@ -1062,10 +1356,14 @@
     }
 
     async function boot() {
-        initTheme();
+        applyTheme();
 
-        // 防止旧版本留下的任意密码 sessionStorage 绕过固定密码校验。
-        if (session.password !== '123') {
+        /*
+         * 旧版把管理密码写死为 '123' 并存在 sessionStorage 里。
+         * 那个键（以及旧的明文密码）不能再被当成已登录凭证使用 —— 清掉，
+         * 让所有人重新用服务端校验过的密码登录。
+         */
+        if (session.password === '123') {
             session.logout();
         }
 
@@ -1078,6 +1376,7 @@
 
         await initApplication();
         await fetchData();
+        await fetchSettings();
     }
 
     boot();
