@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>205点饭系统 - 后台</title>
+    <title>209点饭系统 - 后台</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-
+        /* ============ 完全复用主站主题与变量 ============ */
+        /* ============================================================
+           配色与点饭页 (main (2).html) 保持一致：近黑底 + 粉/青/金三色霓虹。
+           令牌同名同值，改一处两边同步。
+           注意：原本这里是浅粉可爱风，与点饭页是两套视觉，这里统一掉。
+           ============================================================ */
         :root, [data-theme="light"], [data-theme="dark"] {
             --bg-glow-1: #25142c;
             --bg-glow-2: #0b0711;
@@ -303,6 +308,109 @@
         }
         .miss-none { font-size: 0.82rem; color: var(--text-secondary); padding: 6px 0; }
 
+        /* ============ 帮点一下：可折叠餐品卡片 ============ */
+        /* 与点饭页的菜单 deck 同一套交互：默认只露前若干个，点按钮展开全部 */
+        .deck-toggle {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: var(--surface-light); color: var(--text-secondary);
+            border: 1px solid var(--border-soft); border-radius: 50px;
+            padding: 5px 11px; font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; font-family: inherit; flex-shrink: 0;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .deck-toggle:hover { border-color: var(--border-medium); color: var(--accent-pink); }
+        .deck-toggle:active { transform: scale(0.96); }
+        .deck-toggle svg { stroke: currentColor; transition: transform 0.22s ease; flex-shrink: 0; }
+        .deck-toggle.is-expanded svg { transform: rotate(180deg); }
+
+        .food-grid {
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+        }
+        .food-item {
+            position: relative; display: flex; flex-direction: column;
+            align-items: center; gap: 2px; text-align: center;
+            padding: 12px 8px 10px; border-radius: 14px;
+            border: 1px solid var(--border-soft); background: var(--surface-light);
+            cursor: pointer; user-select: none; font-family: inherit;
+            transition: border-color 0.18s ease, background 0.18s ease,
+                        box-shadow 0.18s ease, transform 0.12s ease;
+        }
+        .food-item:hover { border-color: var(--border-medium); }
+        .food-item:active { transform: scale(0.97); }
+        .food-item.active {
+            border-color: var(--accent-pink);
+            background: rgba(255, 145, 189, 0.12);
+            box-shadow: 0 0 0 1px var(--accent-pink), 0 0 18px rgba(255, 145, 189, 0.25);
+        }
+        .food-item .fi-icon { font-size: 1.5rem; line-height: 1.15; }
+        .food-item .fi-name { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); }
+        .food-item .fi-price { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); }
+        .food-item.active .fi-price { color: var(--accent-pink); }
+        /* 被点次数角标 */
+        .food-item .fi-count {
+            position: absolute; top: 5px; left: 5px;
+            padding: 1px 5px; border-radius: 20px; font-size: 0.58rem; font-weight: 700;
+            background: rgba(255, 226, 154, 0.16); color: var(--gold);
+            border: 1px solid rgba(255, 226, 154, 0.3);
+        }
+        .food-item .fi-count:empty { display: none; }
+        /* 折叠态隐藏：必须带 .is-collapsed 限定。
+           少了它标记会永久生效，展开后卡片也回不来。 */
+        .food-grid.is-collapsed .food-item.is-hidden { display: none; }
+        .food-grid.is-closed .food-item { opacity: 0.45; pointer-events: none; }
+
+        .picked-hint { font-weight: 500; color: var(--accent-pink); margin-left: 6px; }
+
+        /* ============ 帮点一下：名字平铺 ============ */
+        /* 9 个人一屏放得下，不需要折叠；一眼看全比下拉快 */
+        .name-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 7px;
+        }
+        .name-item {
+            position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 1px; min-height: 48px; padding: 7px 4px;
+            border-radius: 13px; border: 1px solid var(--border-soft);
+            background: var(--surface-light); color: var(--text-primary);
+            font-size: 0.95rem; font-weight: 700; font-family: inherit;
+            cursor: pointer; user-select: none;
+            transition: border-color 0.18s ease, background 0.18s ease,
+                        box-shadow 0.18s ease, transform 0.12s ease;
+        }
+        .name-item:hover:not(:disabled) { border-color: var(--border-medium); }
+        .name-item:active:not(:disabled) { transform: scale(0.95); }
+        .name-item.active {
+            background: rgba(255, 145, 189, 0.14);
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 0 1px var(--accent-pink), 0 0 16px rgba(255, 145, 189, 0.25);
+        }
+        .name-item.active::after {
+            content: '✓'; position: absolute; top: 3px; right: 5px;
+            font-size: 0.6rem; color: var(--accent-pink);
+        }
+        /* 他点的餐品，直接显示在名字下面 */
+        .name-item .ni-food {
+            font-size: 0.6rem; font-weight: 500; color: var(--accent-pink);
+            max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        /* 已经点过的人：置灰不可选，避免重复下单 */
+        .name-item.taken {
+            cursor: not-allowed; opacity: 0.5;
+            background: #ffffff05; border-color: transparent;
+        }
+        .name-item.taken .ni-name {
+            color: var(--text-tertiary); text-decoration: line-through;
+            text-decoration-color: var(--text-tertiary);
+        }
+        .name-item.taken::before {
+            content: ''; position: absolute; top: 5px; right: 5px;
+            width: 4px; height: 4px; border-radius: 50%;
+            background: var(--accent-pink); box-shadow: 0 0 6px var(--accent-pink-glow);
+        }
+        .name-item.taken:active { transform: none; }
+
         .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
         .btn-row .btn { flex: 1 1 auto; min-width: 108px; padding: 11px 14px; font-size: 0.8rem; }
 
@@ -434,12 +542,30 @@
                 <span class="section-icon mint">✍️</span>
                 帮点一下
             </div>
+            <button class="deck-toggle" id="manualDeckToggle" type="button"
+                    aria-expanded="false" aria-controls="manualFoodGrid">
+                <span id="manualDeckToggleText">全部 13 项</span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
         </div>
-        <div class="form-row">
-            <select id="manualName"><option value="">名字...</option></select>
-            <select id="manualFood"><option value="">餐品...</option></select>
-            <button class="btn" style="box-shadow: none;" onclick="submitManualOrder()">添加</button>
+
+        <!-- 名字：全部平铺展示，不用下拉。
+             9 个人一屏放得下，一眼看全、单击即选，也顺便看清谁已经点过。 -->
+        <div class="field">
+            <label class="mini-label">名字<span class="picked-hint" id="manualNamePicked"></span></label>
+            <div class="name-grid" id="manualNameGrid" role="group" aria-label="选择名字"></div>
         </div>
+
+        <!-- 餐品改成可折叠卡片：默认只露 4 个，避免一屏全是选项 -->
+        <div class="field" style="margin-bottom:0;">
+            <label class="mini-label">餐品<span class="picked-hint" id="manualPicked"></span></label>
+            <div class="food-grid is-collapsed" id="manualFoodGrid" role="group" aria-label="选择餐品"></div>
+        </div>
+
+        <button class="btn btn-primary" id="manualSubmitBtn" type="button" style="margin-top:14px;">添加</button>
     </div>
 
     <!-- 定时设置 -->
@@ -599,7 +725,9 @@
         refreshTimer: null,
         requestId: 0,
         schedule: null,     // 服务端当前的定时状态（含缺勤名单）
-        stats: null         // 最近 N 天的统计
+        stats: null,        // 最近 N 天的统计
+        manualFoodIdx: null, // 「帮点一下」里选中的餐品下标
+        manualName: null     // 「帮点一下」里选中的名字
     };
 
     const $ = (id) => document.getElementById(id);
@@ -896,11 +1024,11 @@
     }
 
     function setLoadingState(isLoading) {
-        const button = document.querySelector('[onclick="submitManualOrder()"]');
+        // 按钮改成 id 定位（原来是按内联 onclick 选择器找的，那时「添加」用 onclick 绑定）
+        const button = $('manualSubmitBtn');
         if (!button) return;
 
         button.disabled = isLoading;
-        button.style.opacity = isLoading ? '0.65' : '';
         button.textContent = isLoading ? '同步中…' : '添加';
     }
 
@@ -1194,40 +1322,157 @@
         `).join('');
     }
 
+    /* -------------------- 帮点一下：名字平铺 -------------------- */
+
+    /**
+     * 渲染名字格子。9 个人全部平铺，不做折叠。
+     * 只在名单或「谁已点」变化时重建；选中态每轮单独同步。
+     */
+    function renderNameChips() {
+        const grid = $('manualNameGrid');
+        const ordered = getOrderedNames();
+        const sig = CONFIG.NAMES.join('|') + '#' + [...ordered].sort().join(',');
+
+        if (grid.dataset.sig !== sig || !grid.children.length) {
+            grid.dataset.sig = sig;
+            grid.innerHTML = '';
+            CONFIG.NAMES.forEach(name => {
+                const el = document.createElement('button');
+                el.type = 'button';
+                el.className = 'name-item';
+                el.dataset.name = name;
+                el.innerHTML = `<span class="ni-name">${escapeHtml(name)}</span>
+                                <span class="ni-food"></span>`;
+                grid.appendChild(el);
+            });
+        }
+
+        syncNameChipState();
+    }
+
+    function syncNameChipState() {
+        const ordered = new Map(state.orders.map(o => [o.name, o]));
+
+        $('manualNameGrid').querySelectorAll('.name-item').forEach(el => {
+            const name = el.dataset.name;
+            const order = ordered.get(name);
+            const on = state.manualName === name;
+            const taken = !!order;
+
+            el.classList.toggle('active', on && !taken);
+            el.classList.toggle('taken', taken);
+            // 已点过的人不可选，避免重复下单（后端也会拒）
+            el.disabled = taken;
+            el.setAttribute('aria-pressed', (on && !taken) ? 'true' : 'false');
+            el.setAttribute('aria-label', taken
+                ? `${name}，已点${order.food}，不可选择`
+                : (on ? `${name}，已选择` : `选择 ${name}`));
+
+            const food = el.querySelector('.ni-food');
+            const next = taken ? order.food : '';
+            if (food && food.textContent !== next) food.textContent = next;
+        });
+
+        $('manualNamePicked').textContent = state.manualName ? `已选：${state.manualName}` : '';
+    }
+
+    function selectManualName(name) {
+        // 再点一次取消，和餐品卡片一致
+        state.manualName = (state.manualName === name) ? null : name;
+        syncNameChipState();
+    }
+
+    /* -------------------- 帮点一下：可折叠餐品卡片 -------------------- */
+
+    /** 折叠态露出几个（2 列 × 2 行） */
+    const MANUAL_PREVIEW = 4;
+
+    /**
+     * 渲染餐品卡片。
+     * 只在首次或餐品集合变化时建节点；「已点 N 次」角标每轮单独同步，
+     * 这样轮询刷新不会把整片卡片重建一遍。
+     */
+    function renderFoodCards() {
+        const grid = $('manualFoodGrid');
+        const sig = CONFIG.MENU.map(m => m.name).join('|');
+
+        if (grid.dataset.sig !== sig || !grid.children.length) {
+            grid.dataset.sig = sig;
+            grid.innerHTML = '';
+            CONFIG.MENU.forEach((item, i) => {
+                const el = document.createElement('button');
+                el.type = 'button';
+                el.className = 'food-item';
+                el.dataset.idx = String(i);
+                el.setAttribute('aria-pressed', 'false');
+                el.innerHTML = `
+                    <span class="fi-count" aria-hidden="true"></span>
+                    <span class="fi-icon" aria-hidden="true">${item.icon || '🍚'}</span>
+                    <span class="fi-name">${escapeHtml(item.name)}</span>
+                    <span class="fi-price">${formatMoney(item.price)}</span>`;
+                grid.appendChild(el);
+            });
+        }
+
+        syncFoodCardState();
+    }
+
+    /** 同步选中态与「已点 N 次」角标 */
+    function syncFoodCardState() {
+        const counts = new Map();
+        state.orders.forEach(o => counts.set(o.food, (counts.get(o.food) || 0) + 1));
+
+        $('manualFoodGrid').querySelectorAll('.food-item').forEach(el => {
+            const item = CONFIG.MENU[Number(el.dataset.idx)];
+            if (!item) return;
+
+            const on = state.manualFoodIdx === Number(el.dataset.idx);
+            el.classList.toggle('active', on);
+            el.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+            const n = counts.get(item.name) || 0;
+            const badge = el.querySelector('.fi-count');
+            const next = n > 0 ? `已点 ${n}` : '';
+            if (badge && badge.textContent !== next) badge.textContent = next;
+        });
+
+        // 已选中的餐品显示在标签旁边，收起后也能确认选了什么
+        const picked = state.manualFoodIdx === null ? null : CONFIG.MENU[state.manualFoodIdx];
+        $('manualPicked').textContent = picked ? `已选：${picked.name}` : '';
+    }
+
+    /** 折叠态给范围外的卡片打标记（与点饭页同一套做法） */
+    function applyDeckCollapsed() {
+        const grid = $('manualFoodGrid');
+        const collapsed = grid.classList.contains('is-collapsed');
+
+        grid.querySelectorAll('.food-item').forEach((el, i) => {
+            el.classList.toggle('is-hidden', collapsed && i >= MANUAL_PREVIEW);
+        });
+
+        const btn = $('manualDeckToggle');
+        btn.classList.toggle('is-expanded', !collapsed);
+        btn.setAttribute('aria-expanded', String(!collapsed));
+        $('manualDeckToggleText').textContent = collapsed
+            ? `全部 ${CONFIG.MENU.length} 项`
+            : '收起';
+    }
+
+    function toggleManualDeck() {
+        const grid = $('manualFoodGrid');
+        grid.classList.toggle('is-collapsed');
+        applyDeckCollapsed();
+    }
+
+    function selectManualFood(idx) {
+        state.manualFoodIdx = (state.manualFoodIdx === idx) ? null : idx;
+        syncFoodCardState();
+    }
+
     function renderManualForm() {
-        const nameSelect = $('manualName');
-        const foodSelect = $('manualFood');
-        const currentName = nameSelect.value;
-        const currentFood = foodSelect.value;
-        const orderedNames = getOrderedNames();
-
-        nameSelect.innerHTML = [
-            '<option value="">名字...</option>',
-            ...CONFIG.NAMES.map(name => {
-                const ordered = orderedNames.has(name);
-                return `
-                    <option value="${escapeHtml(name)}" ${ordered ? 'disabled' : ''}>
-                        ${escapeHtml(name)}${ordered ? ' (已点)' : ''}
-                    </option>`;
-            })
-        ].join('');
-
-        foodSelect.innerHTML = [
-            '<option value="">餐品...</option>',
-            ...CONFIG.MENU.map(item => `
-                <option value="${escapeHtml(item.name)}">
-                    ${escapeHtml(item.name)} (${formatMoney(item.price)})
-                </option>
-            `)
-        ].join('');
-
-        if (currentName && !orderedNames.has(currentName)) {
-            nameSelect.value = currentName;
-        }
-
-        if (currentFood && getMenuItem(currentFood)) {
-            foodSelect.value = currentFood;
-        }
+        renderNameChips();
+        renderFoodCards();
+        applyDeckCollapsed();
     }
 
     function renderAll() {
@@ -1381,14 +1626,12 @@
     /* -------------------- Actions -------------------- */
 
     async function submitManualOrder() {
-        const name = $('manualName').value;
-        const foodName = $('manualFood').value;
-        const food = getMenuItem(foodName);
+        const name = state.manualName;
+        // 餐品改为卡片后，选中项记在 state.manualFoodIdx 上
+        const food = state.manualFoodIdx === null ? null : CONFIG.MENU[state.manualFoodIdx];
 
-        if (!name || !food) {
-            showToast('请选好名字和餐品', true);
-            return;
-        }
+        if (!name) return showToast('请先选名字', true);
+        if (!food) return showToast('请先点一个餐品', true);
 
         // 前端先拦截重复下单，减少无意义请求。
         if (getOrderedNames().has(name)) {
@@ -1406,16 +1649,20 @@
                 price: food.price
             });
 
-            $('manualName').value = '';
-            $('manualFood').value = '';
+            // 重置表单：名字与餐品都清空选中
+            state.manualName = null;
+            state.manualFoodIdx = null;
+            syncNameChipState();
+            syncFoodCardState();
 
-            showToast(`已添加 ${name} 的订单`);
+            showToast(`已添加 ${name} 的 ${food.name}`);
             await fetchData({ silent: true });
+            await fetchStats();
         } catch (error) {
             console.error('[Admin] submitManualOrder:', error);
 
             if (!handleAuthError(error)) {
-                showToast('添加失败，请稍后重试', true);
+                showToast(error.message || '添加失败，请稍后重试', true);
             }
         } finally {
             setLoadingState(false);
@@ -1606,6 +1853,33 @@
         $('startNewDayBtn').addEventListener('click', startNewDay);
         $('clearNowBtn').addEventListener('click', clearOrdersNow);
         $('addWindowBtn').addEventListener('click', addWindow);
+
+        // 帮点一下：名字与餐品都用事件委托，节点重建后不必重新绑定
+        $('manualNameGrid').addEventListener('click', (e) => {
+            const chip = e.target.closest('.name-item');
+            if (chip && !chip.disabled) selectManualName(chip.dataset.name);
+        });
+        $('manualNameGrid').addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const chip = e.target.closest('.name-item');
+            if (!chip || chip.disabled) return;
+            e.preventDefault();
+            selectManualName(chip.dataset.name);
+        });
+
+        $('manualFoodGrid').addEventListener('click', (e) => {
+            const card = e.target.closest('.food-item');
+            if (card) selectManualFood(Number(card.dataset.idx));
+        });
+        $('manualFoodGrid').addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const card = e.target.closest('.food-item');
+            if (!card) return;
+            e.preventDefault();
+            selectManualFood(Number(card.dataset.idx));
+        });
+        $('manualDeckToggle').addEventListener('click', toggleManualDeck);
+        $('manualSubmitBtn').addEventListener('click', submitManualOrder);
 
         // 时间段行的删除按钮：事件委托，行是动态生成的
         $('windowList').addEventListener('click', (e) => {
