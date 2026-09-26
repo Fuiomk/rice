@@ -2,135 +2,74 @@
 <html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>209点饭系统 ♡</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
-        /* ============ 主题变量 ============ */
-        :root, [data-theme="light"] {
-            --bg-primary: #FFF5F8;
-            --bg-secondary: #FFF0F5;
-            --bg-mesh-1: rgba(255, 182, 193, 0.25);
-            --bg-mesh-2: rgba(200, 170, 255, 0.2);
-            --bg-mesh-3: rgba(150, 230, 210, 0.15);
-            --bg-mesh-4: rgba(255, 210, 150, 0.12);
+        :root {
+            --bg-glow-1: #25142c;
+            --bg-glow-2: #0b0711;
 
-            --card-bg: rgba(255, 255, 255, 0.65);
-            --card-border: rgba(255, 200, 220, 0.5);
-            --card-shadow: 0 8px 40px rgba(255, 150, 180, 0.1), 0 2px 8px rgba(0,0,0,0.02);
-            --card-shadow-hover: 0 16px 56px rgba(255, 150, 180, 0.18), 0 4px 12px rgba(0,0,0,0.03);
-            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.8);
+            --pink: #ff91bd;
+            --cyan: #8deaff;
+            --gold: #ffe29a;
 
-            --text-primary: #3D2C3E;
-            --text-secondary: #8B7A8E;
-            --text-tertiary: #B8A5BB;
+            --tri-gradient: linear-gradient(90deg, #ff91bd, #d9a2ff, #ffdf9a);
 
-            --accent-pink: #FF7EB3;
-            --accent-pink-deep: #FF5C8D;
-            --accent-pink-glow: rgba(255, 126, 179, 0.25);
-            --accent-purple: #B088F9;
-            --accent-purple-deep: #9B6BEE;
-            --accent-purple-glow: rgba(176, 136, 249, 0.2);
-            --accent-mint: #6FD4B5;
-            --accent-mint-deep: #4DC9A4;
-            --accent-peach: #FFB088;
-            --accent-yellow: #FFD93D;
-            --accent-sky: #7EC8E3;
+            --card-bg: #0b0810;
+            --card-border: #ffffff10;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.65);
 
-            --surface-light: rgba(255, 255, 255, 0.7);
-            --surface-medium: rgba(255, 240, 245, 0.6);
-            --surface-tag: linear-gradient(135deg, rgba(255,126,179,0.1), rgba(176,136,249,0.1));
 
-            --border-soft: rgba(255, 200, 220, 0.4);
-            --border-medium: rgba(255, 180, 210, 0.6);
+            --text-primary: #eee;
+            --text-secondary: #9d96a4;
 
-            --gradient-primary: linear-gradient(135deg, #FF5C8D 0%, #FF7EB3 40%, #B088F9 100%);
-            --gradient-success: linear-gradient(135deg, #4DC9A4 0%, #6FD4B5 100%);
-            --gradient-tag: linear-gradient(135deg, #FFF0F5 0%, #F0E8FF 100%);
-            --gradient-badge: linear-gradient(135deg, rgba(255,126,179,0.12), rgba(176,136,249,0.12));
+            --text-tertiary: #8f8792;
 
-            --status-bg: rgba(255, 255, 255, 0.75);
-            --status-border: rgba(255, 200, 220, 0.5);
+            --accent-pink: #ff91bd;
+            --accent-pink-deep: #ff91bd;
+            --accent-pink-glow: rgba(255, 145, 189, 0.22);
+            --accent-purple: #d9a2ff;
+            --accent-mint: #8deaff;
 
-            --food-bg: rgba(255, 255, 255, 0.6);
-            --food-bg-active: linear-gradient(145deg, #FFF0F5 0%, #FFE8F0 50%, #F0E8FF 100%);
-            --food-border: rgba(255, 210, 225, 0.6);
-            --food-shadow-active: 0 8px 32px rgba(255, 126, 179, 0.18), 0 2px 8px rgba(176, 136, 249, 0.1);
+            --surface-light: #ffffff08;
+            --surface-medium: #ffffff0d;
+            --surface-tag: #ffffff0a;
 
-            --input-bg: rgba(255, 255, 255, 0.8);
-            --table-row-bg: rgba(255, 245, 248, 0.5);
-            --order-row-bg: rgba(255, 255, 255, 0.5);
-            --order-row-hover: rgba(255, 255, 255, 0.9);
+            --border-soft: #ffffff10;
+            --border-medium: #ff91bd55;
 
-            --divider: rgba(255, 200, 220, 0.3);
-            --scrollbar-track: rgba(255, 230, 240, 0.3);
-            --scrollbar-thumb: rgba(255, 180, 210, 0.5);
+            --status-bg: #0b0810;
+            --status-border: #ffffff10;
 
-            --deco-opacity: 0.5;
-            --noise-opacity: 0.015;
+            --food-bg: #ffffff05;
+            --food-bg-active: rgba(255, 145, 189, 0.1);
+            --food-border: #ffffff12;
+            --food-shadow-active: 0 0 0 1px var(--accent-pink-deep), 0 0 22px rgba(255, 145, 189, 0.28);
+
+            --table-row-bg: #ffffff05;
+            --order-row-bg: #ffffff05;
+
+            --divider: #ffffff0d;
+            --scrollbar-track: transparent;
+            --scrollbar-thumb: #ffffff1f;
+
+            --toast-bg: #14101c;
+            --toast-fg: #ffffff;
+            --toast-border: #ffffff18;
+            --toast-error-bg: #2a0f1c;
+            --toast-error-fg: #ffb8cf;
+            --toast-error-border: rgba(255, 184, 207, 0.25);
+            --toast-hint-bg: #1a1426;
+            --toast-hint-fg: #d9c7ff;
+            --toast-hint-border: rgba(217, 199, 255, 0.22);
         }
 
-        [data-theme="dark"] {
-            --bg-primary: #1A1118;
-            --bg-secondary: #1E1420;
-            --bg-mesh-1: rgba(255, 92, 141, 0.08);
-            --bg-mesh-2: rgba(155, 107, 238, 0.08);
-            --bg-mesh-3: rgba(77, 201, 164, 0.05);
-            --bg-mesh-4: rgba(255, 176, 136, 0.05);
 
-            --card-bg: rgba(35, 25, 38, 0.7);
-            --card-border: rgba(255, 126, 179, 0.12);
-            --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0,0,0,0.15);
-            --card-shadow-hover: 0 16px 56px rgba(255, 92, 141, 0.1), 0 4px 12px rgba(0,0,0,0.2);
-            --card-inner-glow: inset 0 1px 0 rgba(255,255,255,0.05);
-
-            --text-primary: #F0E4F2;
-            --text-secondary: #A892AB;
-            --text-tertiary: #6B5A6E;
-
-            --accent-pink: #FF8FBF;
-            --accent-pink-deep: #FF5C8D;
-            --accent-pink-glow: rgba(255, 92, 141, 0.2);
-            --accent-purple: #C4A0FF;
-            --accent-purple-deep: #A87CFF;
-            --accent-purple-glow: rgba(168, 124, 255, 0.15);
-            --accent-mint: #7FE0C3;
-            --accent-mint-deep: #5DD4AA;
-            --accent-peach: #FFC0A0;
-            --accent-yellow: #FFE066;
-            --accent-sky: #90D4F0;
-
-            --surface-light: rgba(40, 30, 45, 0.6);
-            --surface-medium: rgba(50, 35, 55, 0.5);
-            --surface-tag: linear-gradient(135deg, rgba(255,92,141,0.12), rgba(168,124,255,0.12));
-
-            --border-soft: rgba(255, 126, 179, 0.1);
-            --border-medium: rgba(255, 126, 179, 0.18);
-
-            --gradient-primary: linear-gradient(135deg, #FF3D7F 0%, #FF5C8D 40%, #A87CFF 100%);
-            --gradient-success: linear-gradient(135deg, #3DB88E 0%, #5DD4AA 100%);
-            --gradient-tag: linear-gradient(135deg, rgba(50,35,55,0.8) 0%, rgba(40,30,50,0.8) 100%);
-            --gradient-badge: linear-gradient(135deg, rgba(255,92,141,0.15), rgba(168,124,255,0.15));
-
-            --status-bg: rgba(35, 25, 38, 0.8);
-            --status-border: rgba(255, 126, 179, 0.12);
-
-            --food-bg: rgba(40, 30, 45, 0.5);
-            --food-bg-active: linear-gradient(145deg, rgba(60,35,55,0.8) 0%, rgba(50,30,60,0.8) 50%, rgba(40,25,55,0.8) 100%);
-            --food-border: rgba(255, 126, 179, 0.15);
-            --food-shadow-active: 0 8px 32px rgba(255, 92, 141, 0.15), 0 0 0 1px rgba(255,126,179,0.2);
-
-            --input-bg: rgba(40, 30, 45, 0.6);
-            --table-row-bg: rgba(40, 30, 45, 0.4);
-            --order-row-bg: rgba(40, 30, 45, 0.4);
-            --order-row-hover: rgba(50, 38, 55, 0.8);
-
-            --divider: rgba(255, 126, 179, 0.08);
-            --scrollbar-track: rgba(30, 20, 32, 0.5);
-            --scrollbar-thumb: rgba(255, 126, 179, 0.2);
-
-            --deco-opacity: 0.25;
-            --noise-opacity: 0.025;
+        [data-theme="light"] {
+            color-scheme: dark;
         }
 
         /* ============ 基础重置 ============ */
@@ -139,16 +78,21 @@
         }
 
         * {
-            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            font-family: 'Noto Sans SC', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         html {
             scroll-behavior: smooth;
+            /* 横屏时 iOS 会擅自放大文字 */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         body {
-            background-color: var(--bg-primary);
+            /* 夜空辉光，取自站点 #app 的背景写法 */
+            background: radial-gradient(circle at 50% 15%, var(--bg-glow-1) 0, var(--bg-glow-2) 42%, #030308 100%);
+            background-attachment: fixed;
             color: var(--text-primary);
             line-height: 1.7;
             -webkit-font-smoothing: antialiased;
@@ -156,99 +100,30 @@
             min-height: 100vh;
             min-height: 100dvh;
             overflow-x: hidden;
-            padding: max(20px, env(safe-area-inset-top)) 16px env(safe-area-inset-bottom);
-            transition: background-color 0.5s ease, color 0.4s ease;
+            /* 手机为主：左右留白，并用 max() 兼顾刘海屏横屏时的侧边安全区 */
+            padding: max(18px, env(safe-area-inset-top))
+                     max(14px, env(safe-area-inset-right))
+                     max(18px, env(safe-area-inset-bottom))
+                     max(14px, env(safe-area-inset-left));
             position: relative;
         }
 
-        /* ============ 背景层 ============ */
+        /* 极淡的网格纹理：大面积近黑背景会显得"死"，
+           叠一层 2.5% 白网格就有了纵深，又不至于抢内容。
+           固定定位，滚动时网格不跟着动。 */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background:
-                    radial-gradient(ellipse 600px 500px at 15% 20%, var(--bg-mesh-1), transparent),
-                    radial-gradient(ellipse 500px 600px at 85% 75%, var(--bg-mesh-2), transparent),
-                    radial-gradient(ellipse 400px 400px at 50% 50%, var(--bg-mesh-3), transparent),
-                    radial-gradient(ellipse 500px 300px at 80% 15%, var(--bg-mesh-4), transparent);
             pointer-events: none;
             z-index: 0;
-            transition: background 0.5s ease;
-        }
-
-        /* 噪点纹理 */
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: var(--noise-opacity);
-            pointer-events: none;
-            z-index: 0;
-            mix-blend-mode: overlay;
-        }
-
-        /* ============ 浮动装饰 ============ */
-        .floating-deco {
-            position: fixed;
-            pointer-events: none;
-            z-index: 0;
-            opacity: var(--deco-opacity);
-            font-size: 1.4rem;
-            transition: opacity 0.5s ease;
-        }
-
-        .floating-deco:nth-child(1) {
-            top: 6%; left: 4%;
-            animation: floatA 8s ease-in-out infinite;
-            font-size: 1.6rem;
-        }
-        .floating-deco:nth-child(2) {
-            top: 14%; right: 6%;
-            animation: floatB 10s ease-in-out infinite 1s;
-            font-size: 1.2rem;
-        }
-        .floating-deco:nth-child(3) {
-            top: 40%; left: 2%;
-            animation: floatA 12s ease-in-out infinite 2s;
-            font-size: 1.5rem;
-        }
-        .floating-deco:nth-child(4) {
-            top: 65%; right: 4%;
-            animation: floatB 9s ease-in-out infinite 0.5s;
-        }
-        .floating-deco:nth-child(5) {
-            top: 82%; left: 8%;
-            animation: floatA 11s ease-in-out infinite 3s;
-            font-size: 1.1rem;
-        }
-        .floating-deco:nth-child(6) {
-            top: 30%; right: 2%;
-            animation: floatB 7s ease-in-out infinite 1.5s;
-            font-size: 1rem;
-        }
-        .floating-deco:nth-child(7) {
-            top: 55%; left: 6%;
-            animation: floatA 9s ease-in-out infinite 2.5s;
-            font-size: 0.9rem;
-        }
-        .floating-deco:nth-child(8) {
-            top: 90%; right: 10%;
-            animation: floatB 13s ease-in-out infinite 0.8s;
-            font-size: 1.3rem;
-        }
-
-        @keyframes floatA {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(6px, -14px) rotate(4deg); }
-            50% { transform: translate(-4px, -6px) rotate(-2deg); }
-            75% { transform: translate(8px, 8px) rotate(3deg); }
-        }
-
-        @keyframes floatB {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-8px, -10px) rotate(-5deg); }
-            66% { transform: translate(5px, 12px) rotate(3deg); }
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 38px 38px;
+            /* 顶部亮、向下淡出，免得整屏格子太机械 */
+            -webkit-mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
+            mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 0%, transparent 78%);
         }
 
         /* ============ 动画 ============ */
@@ -257,49 +132,11 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-16px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.85); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-            60% { transform: scale(1.15) rotate(10deg); opacity: 1; }
-            80% { transform: scale(0.95) rotate(-5deg); }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
         @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg) scale(1.2); }
-            20% { transform: rotate(-8deg) scale(1.2); }
-            40% { transform: rotate(6deg) scale(1.2); }
-            60% { transform: rotate(-4deg) scale(1.2); }
-            80% { transform: rotate(2deg) scale(1.2); }
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 0 0 var(--glow-color, rgba(127, 219, 202, 0.4)); }
-            50% { box-shadow: 0 0 0 8px transparent; }
-        }
-
-        @keyframes bounce-soft {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.3) rotate(15deg); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0%, 100% { transform: rotate(0deg) scale(1.12); }
+            25% { transform: rotate(-6deg) scale(1.12); }
+            55% { transform: rotate(4deg) scale(1.12); }
+            75% { transform: rotate(-2deg) scale(1.12); }
         }
 
         /* ============ 布局 ============ */
@@ -308,469 +145,606 @@
             margin: 0 auto;
             position: relative;
             z-index: 1;
-            animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        /* ============ 主题切换按钮 ============ */
-        .theme-toggle {
-            position: fixed;
-            top: max(16px, env(safe-area-inset-top));
-            right: 16px;
-            z-index: 100;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            border: 1.5px solid var(--border-soft);
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: var(--card-shadow);
-            color: var(--text-primary);
-        }
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: var(--card-shadow-hover);
-        }
-        .theme-toggle:active {
-            transform: scale(0.9);
+            animation: fadeInUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* ============ 状态栏 ============ */
         .status-bar {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.78rem;
+            gap: 7px;
+            font-size: 0.75rem;
             font-weight: 500;
-            margin-bottom: 22px;
-            padding: 8px 20px;
+            margin-bottom: 16px;
+            padding: 7px 14px;
             border-radius: 50px;
             background: var(--status-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--status-border);
             box-shadow: var(--card-shadow);
             color: var(--text-secondary);
-            position: relative;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: all 0.4s ease;
-            box-shadow: var(--card-inner-glow), var(--card-shadow);
+            transition: border-color 0.3s ease;
+        }
+        .status-bar-wrap {
+            display: flex;
+            justify-content: center;
         }
 
         .sync-dot {
-            width: 8px; height: 8px;
+            width: 7px; height: 7px;
             border-radius: 50%;
             background: var(--text-tertiary);
-            transition: all 0.4s;
+            transition: background 0.3s ease;
             flex-shrink: 0;
         }
         .sync-dot.active {
             background: var(--accent-mint);
-            --glow-color: var(--accent-pink-glow);
-            animation: pulse-glow 2.5s infinite;
-            box-shadow: 0 0 10px rgba(111, 212, 181, 0.4);
         }
         .sync-dot.error {
             background: var(--accent-pink-deep);
-            box-shadow: 0 0 10px var(--accent-pink-glow);
         }
 
         /* ============ 卡片 ============ */
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(24px) saturate(1.2);
-            -webkit-backdrop-filter: blur(24px) saturate(1.2);
-            border-radius: 28px;
-            padding: 28px 22px;
-            box-shadow: var(--card-inner-glow), var(--card-shadow);
-            margin-bottom: 20px;
+            border-radius: 22px;
+            padding: 24px 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 16px;
             border: 1px solid var(--card-border);
             position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: box-shadow 0.25s ease;
         }
         .card:hover {
-            box-shadow: var(--card-inner-glow), var(--card-shadow-hover);
-            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
         }
 
-        /* 卡片顶部渐变条 */
+        /* 卡片顶部渐变条：换成站点 boss 血条的霓虹细线 */
         .card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-            opacity: 0.6;
-            border-radius: 28px 28px 0 0;
+            top: 0; left: 22px; right: 22px;
+            height: 1px;
+            background: var(--tri-gradient);
+            opacity: 0.55;
+            box-shadow: 0 0 14px rgba(255, 120, 174, 0.35);
         }
 
         /* ============ 头部 ============ */
         .header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
             position: relative;
         }
         .header-emoji {
-            font-size: 2.8rem;
+            font-size: 2.3rem;
             display: block;
-            margin-bottom: 6px;
-            animation: bounce-soft 3s ease-in-out infinite;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+            margin-bottom: 4px;
+            /* 深底上给 emoji 一点辉光，否则发闷 */
+            filter: drop-shadow(0 0 16px rgba(255, 143, 189, 0.45));
         }
         .header h1 {
-            font-size: 1.85rem;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
+            font-size: 1.6rem;
+            font-weight: 800;
+            /* 站点标题的标志性宽字距 */
+            letter-spacing: 3px;
+            line-height: 1.25;
             color: var(--text-primary);
         }
         .header h1 .accent {
-            background: var(--gradient-primary);
+            background: var(--tri-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .header .subtitle {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: var(--text-secondary);
             margin-top: 8px;
             font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-        .header .deco-sparkle {
-            position: absolute;
-            animation: sparkle 2.5s ease-in-out infinite;
-            font-size: 1rem;
-            opacity: 0.6;
-        }
-        .header .deco-sparkle:nth-child(1) {
-            top: -2px; right: 18%;
-            animation-delay: 0s;
-        }
-        .header .deco-sparkle:nth-child(2) {
-            top: 10px; left: 15%;
-            animation-delay: 0.8s;
-            font-size: 0.75rem;
-        }
-        .header .deco-sparkle:nth-child(3) {
-            bottom: 0; right: 28%;
-            animation-delay: 1.5s;
-            font-size: 0.85rem;
+            letter-spacing: 2px;
         }
 
         /* ============ 表单 ============ */
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 18px;
             position: relative;
             z-index: 1;
+        }
+        /* 标签行：左边文案，右边折叠按钮 */
+        .deck-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 9px;
+        }
+        .deck-head .form-label {
+            margin-bottom: 0;
         }
         .form-label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: var(--text-primary);
-            margin-bottom: 10px;
+            margin-bottom: 9px;
         }
         .label-icon {
-            width: 26px; height: 26px;
-            border-radius: 9px;
+            width: 22px; height: 22px;
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             flex-shrink: 0;
-        }
-        .label-icon.pink { background: linear-gradient(135deg, rgba(255,126,179,0.15), rgba(255,126,179,0.08)); }
-        .label-icon.purple { background: linear-gradient(135deg, rgba(176,136,249,0.15), rgba(176,136,249,0.08)); }
-        [data-theme="dark"] .label-icon.pink { background: linear-gradient(135deg, rgba(255,92,141,0.2), rgba(255,92,141,0.08)); }
-        [data-theme="dark"] .label-icon.purple { background: linear-gradient(135deg, rgba(168,124,255,0.2), rgba(168,124,255,0.08)); }
-
-        select {
-            width: 100%;
-            padding: 14px 44px 14px 18px;
-            border-radius: 18px;
-            border: 1.5px solid var(--border-soft);
-            font-size: 0.95rem;
-            outline: none;
-            background-color: var(--input-bg);
-            appearance: none;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-weight: 500;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF7EB3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            background-size: 16px;
-        }
-        select:focus {
-            border-color: var(--accent-pink);
-            box-shadow: 0 0 0 4px var(--accent-pink-glow);
-        }
-        select:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-            background-color: var(--surface-medium);
-        }
-        [data-theme="dark"] select {
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF8FBF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background: var(--surface-light);
+            border: 1px solid var(--border-soft);
         }
 
-        /* ============ 餐品网格 ============ */
+
         .food-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            transition: all 0.3s ease;
+            gap: 8px;
             position: relative;
             z-index: 1;
         }
-        .food-grid.locked {
-            opacity: 0.4;
-            pointer-events: none;
-            filter: grayscale(40%) blur(0.5px);
-        }
 
         .food-item {
-            border: 1.5px solid var(--food-border);
-            border-radius: 20px;
-            padding: 18px 10px 14px;
+            border: 1px solid var(--food-border);
+            border-radius: 14px;
+            padding: 14px 10px 11px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease,
+                        background 0.18s ease, transform 0.12s ease;
             background: var(--food-bg);
             position: relative;
-            overflow: hidden;
-        }
-        .food-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.15), transparent 60%);
-            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            user-select: none;
+            -webkit-user-select: none;
         }
         .food-item:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-pink);
-            box-shadow: 0 8px 24px var(--accent-pink-glow);
+            border-color: var(--border-medium);
         }
         .food-item:active {
-            transform: scale(0.94);
+            transform: scale(0.97);
         }
         .food-item.active {
             border-color: var(--accent-pink-deep);
             background: var(--food-bg-active);
             box-shadow: var(--food-shadow-active);
-            transform: translateY(-4px);
         }
 
         .food-icon {
-            font-size: 2.2rem;
+            font-size: 1.75rem;
+            line-height: 1.15;
             display: block;
-            margin-bottom: 6px;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            z-index: 1;
-            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.06));
         }
-        .food-item:hover .food-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-        .food-item.active .food-icon {
-            animation: wiggle 0.6s ease forwards;
+        /* 只在「刚被选中」时抖一下，不再每次重建都重放动画 */
+        .food-item.just-picked .food-icon {
+            animation: wiggle 0.45s ease;
         }
 
         .food-name {
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: 600;
+            font-size: 0.85rem;
             color: var(--text-primary);
             display: block;
-            position: relative;
-            z-index: 1;
         }
         .food-price {
-            font-size: 0.78rem;
-            color: var(--accent-pink-deep);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
             display: inline-block;
-            margin-top: 5px;
-            font-weight: 800;
+            font-weight: 600;
             background: var(--surface-light);
-            padding: 2px 12px;
+            padding: 1px 9px;
             border-radius: 20px;
-            border: 1px solid var(--border-soft);
-            position: relative;
-            z-index: 1;
-            transition: all 0.3s;
+            transition: background 0.2s ease, color 0.2s ease;
         }
         .food-item.active .food-price {
-            background: var(--gradient-primary);
+            background: var(--accent-pink-deep);
             color: white;
-            border-color: transparent;
         }
 
         .checkmark {
             position: absolute;
-            top: 8px; right: 8px;
-            width: 22px; height: 22px;
+            top: 7px; right: 7px;
+            width: 18px; height: 18px;
             border-radius: 50%;
-            background: var(--gradient-primary);
-            color: white;
-            font-size: 11px;
+            background: var(--accent-pink-deep);
+            color: #fff;
+            font-size: 10px;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transform: scale(0) rotate(-180deg);
-            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 2px 10px var(--accent-pink-glow);
+            transform: scale(0.5);
+            transition: opacity 0.16s ease, transform 0.16s ease;
             z-index: 2;
+            box-shadow: 0 0 12px var(--accent-pink-glow);
         }
         .food-item.active .checkmark {
             opacity: 1;
-            transform: scale(1) rotate(0deg);
+            transform: scale(1);
+        }
+
+
+        .food-grid.is-collapsed .food-item.is-hidden {
+            display: none;
+        }
+
+        .deck-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-soft);
+            border-radius: 50px;
+            padding: 5px 11px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .deck-toggle:hover {
+            border-color: var(--border-medium);
+            color: var(--accent-pink-deep);
+        }
+        .deck-toggle:active { transform: scale(0.96); }
+        .deck-toggle svg {
+            stroke: currentColor;
+            transition: transform 0.22s ease;
+            flex-shrink: 0;
+        }
+        .deck-toggle.is-expanded svg {
+            transform: rotate(180deg);
         }
 
         /* ============ 按钮 ============ */
         .btn {
             border: none;
-            padding: 16px;
-            border-radius: 20px;
+            border-radius: 14px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
+            font-size: 0.95rem;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
             outline: none;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 0.3px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
+            transition: background 0.2s ease, box-shadow 0.2s ease,
+                        transform 0.12s ease, opacity 0.2s ease;
         }
 
-        .btn-submit {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 8px 28px var(--accent-pink-glow);
+        /* -------- 提交区：吸附在视口底部，选完餐不用滚回去找按钮 -------- */
+        .submit-dock {
+            position: sticky;
+            bottom: 0;
+            z-index: 5;
+
+            margin-top: 16px;
+            padding: 16px 0 6px;
+            /* 覆盖下方滚过的餐品，顶部做一层柔和渐隐而不是硬切断 */
+            background: linear-gradient(
+                to bottom,
+                transparent 0,
+                var(--card-bg) 18px,
+                var(--card-bg) 100%
+            );
         }
-        .btn-submit::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            background-size: 200% 100%;
-            animation: shimmer 3s ease-in-out infinite;
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+
+            background: rgba(255, 145, 189, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 145, 189, 0.4);
+            box-shadow: 0 0 30px rgba(255, 145, 189, 0.12);
+            letter-spacing: 2px;
         }
         .btn-submit:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 40px var(--accent-pink-glow);
+            background: rgba(255, 145, 189, 0.17);
+            box-shadow: 0 0 30px rgba(255, 145, 189, 0.25);
+            transform: translateY(-1px);
         }
         .btn-submit:active:not(:disabled) {
-            transform: translateY(1px) scale(0.98);
+            transform: translateY(0) scale(0.99);
         }
         .btn-submit:disabled {
             background: var(--surface-medium);
             box-shadow: none;
+            border-color: var(--border-soft);
             cursor: not-allowed;
             color: var(--text-tertiary);
         }
-        .btn-submit:disabled::before {
-            display: none;
+        .btn-submit.danger {
+            background: transparent;
+            color: var(--accent-pink);
+            border: 1px solid var(--border-medium);
+            box-shadow: none;
         }
-        .btn-submit.locked {
-            background: var(--gradient-success);
-            box-shadow: 0 8px 24px rgba(77, 201, 164, 0.25);
+        .btn-submit.danger:hover {
+            background: rgba(255, 145, 189, 0.14);
+            color: var(--accent-pink);
+            border-color: var(--accent-pink-deep);
         }
 
         .btn-copy {
-            background: var(--gradient-badge);
+            background: var(--surface-light);
             color: var(--text-primary);
-            font-size: 0.78rem;
-            padding: 8px 16px;
+            font-size: 0.75rem;
+            padding: 7px 14px;
             border-radius: 50px;
             border: 1px solid var(--border-soft);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
             gap: 5px;
             white-space: nowrap;
         }
         .btn-copy:hover {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 6px 18px var(--accent-purple-glow);
-            border-color: var(--accent-purple);
+            background: rgba(217, 162, 255, 0.12);
+            border-color: rgba(217, 162, 255, 0.45);
+            color: var(--accent-purple);
         }
-        .btn-copy:active { transform: scale(0.94); }
-        .btn-copy svg { stroke: var(--accent-purple); }
+        .btn-copy:active { transform: scale(0.96); }
+        .btn-copy svg { stroke: currentColor; }
 
         /* ============ 表格 ============ */
         .table-wrap {
             overflow-x: auto;
-            margin: 0 -4px;
-            padding: 0 4px;
         }
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 6px;
-            margin-top: 10px;
+            border-spacing: 0 4px;
             position: relative;
             z-index: 1;
         }
         th {
             text-align: left;
-            padding: 8px 12px;
+            padding: 6px 10px;
             color: var(--text-tertiary);
             font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        th:last-child,
+        td:last-child {
+            text-align: right;
         }
         td {
-            padding: 12px;
-            font-size: 0.88rem;
+            padding: 10px;
+            font-size: 0.86rem;
             font-weight: 600;
             background: var(--table-row-bg);
-            transition: background 0.3s;
         }
-        tr td:first-child { border-radius: 14px 0 0 14px; }
-        tr td:last-child { border-radius: 0 14px 14px 0; }
-        tr:hover td {
-            background: var(--order-row-hover);
-        }
+        tr td:first-child { border-radius: 12px 0 0 12px; }
+        tr td:last-child { border-radius: 0 12px 12px 0; }
 
         .total-amount {
-            color: var(--accent-pink-deep);
-            font-weight: 900;
-            font-size: 1.5rem;
+            color: var(--accent-pink);
+            font-weight: 800;
+            font-size: 1.3rem;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 18px rgba(255, 145, 189, 0.45);
+        }
+
+        /* 合计条 */
+        .total-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--divider);
+        }
+        .total-label {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
+        }
+        .total-count {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            margin-left: auto;
+            margin-right: 2px;
+        }
+
+        /* 汇总行的餐品单元：图标 + 名称 + 占比条 */
+        .food-cell {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .food-cell-icon {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+        .food-cell-body {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+        }
+        .food-cell-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sub-amount {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
         }
 
         .count-badge {
-            background: var(--gradient-badge);
-            padding: 3px 12px;
+            background: var(--surface-tag);
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: var(--accent-pink-deep);
+            color: var(--text-primary);
             display: inline-block;
+        }
+
+        /* ============ 名字点选格子 ============ */
+        .name-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+            gap: 7px;
+        }
+        .name-btn {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-height: 52px;
+            padding: 7px 4px;
+            border-radius: 13px;
             border: 1px solid var(--border-soft);
+            background: var(--surface-light);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.18s ease, background 0.18s ease,
+                        box-shadow 0.18s ease, transform 0.12s ease;
+        }
+        .name-btn:active { transform: scale(0.95); }
+        .name-btn:hover:not(:disabled) { border-color: var(--border-medium); }
+        .name-btn.active {
+            background: rgba(255, 145, 189, 0.14);
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 18px rgba(255, 145, 189, 0.25);
+        }
+        .name-btn.active::after {
+            content: '✓';
+            position: absolute;
+            top: 3px; right: 5px;
+            font-size: 0.6rem;
+            color: var(--accent-pink);
+        }
+        /* 已点过的人：不能只靠文字划线 —— 400px 下小字号划线在深底上几乎看不见。
+           这里用「压暗底色 + 降低对比 + 去掉边框」做整体退让，一眼能和可选的人区分开。 */
+        .name-btn.taken {
+            cursor: not-allowed;
+            background: #ffffff05;
+            border-color: transparent;
+            opacity: 0.5;
+        }
+        .name-btn.taken .nm {
+            color: var(--text-tertiary);
+            text-decoration: line-through;
+            text-decoration-color: var(--text-tertiary);
+            text-decoration-thickness: 1px;
+        }
+        /* 已点的人用一个小圆点标出来，比划线更醒目 */
+        .name-btn.taken::before {
+            content: '';
+            position: absolute;
+            top: 5px; right: 5px;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--accent-pink);
+            box-shadow: 0 0 6px var(--accent-pink-glow);
+        }
+        .name-btn.taken:active { transform: none; }
+        .name-btn .nm { line-height: 1.2; }
+        .name-btn .nf {
+            font-size: 0.55rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .name-btn.taken .nf { color: var(--accent-pink); }
+
+        /* ============ 随机挑选 ============ */
+        .deck-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        #randomBtn svg { transition: transform 0.3s ease; }
+        #randomBtn.spin svg { animation: rollSpin 0.5s ease; }
+        @keyframes rollSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        /* 被随机选中的那一格抖一下，让人知道系统挑了哪个 */
+        .food-item.rolled {
+            animation: rollPick 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes rollPick {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.07); }
+            100% { transform: scale(1); }
+        }
+
+        /* ============ 被点次数徽标 ============ */
+        .food-count {
+            position: absolute;
+            top: 7px; left: 7px;
+            z-index: 2;
+            padding: 1px 6px;
+            border-radius: 20px;
+            background: rgba(255, 226, 154, 0.16);
+            color: var(--gold);
+            border: 1px solid rgba(255, 226, 154, 0.3);
+            font-size: 0.62rem;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+        .food-count:empty { display: none; }
+        .food-count.pop {
+            animation: countPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes countPop {
+            0% { transform: scale(0.6); opacity: 0.4; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* 汇总占比条：站点 .bar / .bar i 的同款手法，用它替代单纯的数字罗列。
+           纯文字表格在深色底上会显得很"平"，一根发光的短条能立刻拉出层次。 */
+        .share-bar {
+            height: 5px;
+            background: #ffffff0e;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+            min-width: 54px;
+        }
+        .share-bar i {
+            display: block;
+            height: 100%;
+            width: 0;
+            border-radius: 5px;
+            background: var(--accent-pink);
+            box-shadow: 0 0 10px rgba(255, 145, 189, 0.5);
+            transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        /* 份数最多的那项用金色标出，和第二名拉开层级 */
+        .share-bar.lead i {
+            background: var(--gold);
+            box-shadow: 0 0 10px rgba(255, 226, 154, 0.5);
         }
 
         /* ============ 订单行 ============ */
@@ -778,106 +752,102 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 16px;
+            gap: 10px;
+            padding: 12px 14px;
             background: var(--order-row-bg);
-            border-radius: 18px;
-            margin-bottom: 8px;
-            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 14px;
+            margin-bottom: 6px;
             border: 1px solid transparent;
-            animation: slideInLeft 0.4s ease backwards;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            /* 注意：这里刻意不加入场动画。列表每次轮询都会重建，
+               原来的 slideInLeft 会让整份记录每 15 秒闪一次。 */
         }
-        .order-row:nth-child(1) { animation-delay: 0s; }
-        .order-row:nth-child(2) { animation-delay: 0.04s; }
-        .order-row:nth-child(3) { animation-delay: 0.08s; }
-        .order-row:nth-child(4) { animation-delay: 0.12s; }
-        .order-row:nth-child(5) { animation-delay: 0.16s; }
-        .order-row:nth-child(6) { animation-delay: 0.2s; }
-        .order-row:nth-child(7) { animation-delay: 0.24s; }
-        .order-row:nth-child(8) { animation-delay: 0.28s; }
-        .order-row:nth-child(9) { animation-delay: 0.32s; }
-
         .order-row:hover {
-            background: var(--order-row-hover);
             border-color: var(--border-soft);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-            transform: translateX(3px);
+        }
+        .order-row.is-mine {
+            border-color: var(--border-medium);
+            background: var(--food-bg-active);
         }
 
         .order-main {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
             min-width: 0;
             flex: 1;
         }
         .order-name {
-            font-weight: 700;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.92rem;
+            gap: 7px;
+            font-size: 0.88rem;
+            min-width: 0;
         }
         .order-time {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-tertiary);
             display: flex;
             align-items: center;
             gap: 4px;
         }
         .order-time svg {
-            stroke: var(--text-tertiary);
+            stroke: currentColor;
             flex-shrink: 0;
         }
 
         .tag {
             background: var(--surface-tag);
-            color: var(--accent-pink-deep);
-            padding: 3px 10px;
-            border-radius: 10px;
+            color: var(--text-secondary);
+            padding: 2px 9px;
+            border-radius: 8px;
             font-size: 0.72rem;
-            font-weight: 700;
+            font-weight: 600;
             white-space: nowrap;
-            border: 1px solid var(--border-soft);
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .order-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             flex-shrink: 0;
         }
         .order-price {
-            font-weight: 800;
-            color: var(--accent-pink-deep);
-            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-variant-numeric: tabular-nums;
         }
         .btn-delete {
-            background: rgba(255, 92, 141, 0.08);
-            color: var(--accent-pink-deep);
-            width: 32px; height: 32px;
-            border-radius: 11px;
-            border: 1px solid rgba(255, 92, 141, 0.15);
+            background: transparent;
+            color: var(--text-tertiary);
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--border-soft);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
-        .btn-delete svg { stroke: var(--accent-pink-deep); transition: stroke 0.3s; }
+        .btn-delete svg { stroke: currentColor; }
         .btn-delete:hover {
             background: var(--accent-pink-deep);
             border-color: var(--accent-pink-deep);
-            transform: rotate(90deg) scale(1.1);
-            box-shadow: 0 4px 16px var(--accent-pink-glow);
+            color: white;
         }
-        .btn-delete:hover svg { stroke: white; }
 
         /* ============ Section Header ============ */
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 14px;
             position: relative;
             z-index: 1;
         }
@@ -886,44 +856,222 @@
             align-items: center;
             gap: 8px;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: var(--text-primary);
         }
         .section-icon {
-            width: 30px; height: 30px;
-            border-radius: 10px;
+            width: 26px; height: 26px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             border: 1px solid var(--border-soft);
-        }
-        .section-icon.purple {
-            background: linear-gradient(135deg, rgba(176,136,249,0.12), rgba(176,136,249,0.05));
-        }
-        .section-icon.mint {
-            background: linear-gradient(135deg, rgba(111,212,181,0.12), rgba(111,212,181,0.05));
-        }
-        [data-theme="dark"] .section-icon.purple {
-            background: linear-gradient(135deg, rgba(168,124,255,0.18), rgba(168,124,255,0.06));
-        }
-        [data-theme="dark"] .section-icon.mint {
-            background: linear-gradient(135deg, rgba(93,212,170,0.18), rgba(93,212,170,0.06));
+            background: var(--surface-light);
+            flex-shrink: 0;
         }
 
-        /* ============ 分割线 ============ */
-        .divider {
-            border: none;
-            height: 1px;
-            background: var(--divider);
-            margin: 18px 0;
+        /* ============ 点单时段状态 ============ */
+        .schedule-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            background: var(--surface-light);
+            border: 1px solid var(--border-soft);
+            color: var(--text-secondary);
+        }
+        .schedule-banner[hidden] { display: none; }
+        .schedule-banner .sb-icon { font-size: 1.05rem; flex-shrink: 0; }
+        .schedule-banner .sb-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: block;
+        }
+        .schedule-banner .sb-sub { font-size: 0.72rem; color: var(--text-tertiary); }
+        .schedule-banner b { color: var(--accent-pink); font-weight: 700; }
+
+        /* 可点单：低调提示，不抢主按钮的注意力 */
+        .schedule-banner.is-open {
+            border-color: rgba(141, 234, 255, 0.28);
+            background: rgba(141, 234, 255, 0.07);
+        }
+        .schedule-banner.is-open .sb-title { color: var(--accent-mint); }
+
+        /* 已封盘：要明显，让人第一眼就知道今天点不了了 */
+        .schedule-banner.is-closed {
+            border-color: rgba(255, 145, 189, 0.35);
+            background: rgba(255, 145, 189, 0.09);
+        }
+        .schedule-banner.is-closed .sb-title { color: var(--accent-pink); }
+
+        /* 封盘时餐品网格与主按钮一并置灰，但保持可见 —— 让人知道有什么可点 */
+        .food-grid.is-closed .food-item {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        .food-grid.is-closed .food-item.active { opacity: 0.55; }
+
+        /* ============ 封面头图 ============ */
+        .hero {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+            aspect-ratio: 16 / 7;
+            display: block;
+            background: #0b0810;
+        }
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 原图是中心构图，这里略向上裁，保住人物头部 */
+            object-position: center 32%;
+            display: block;
+        }
+        /* 底部压一层暗渐变，保证标题与副标题在任何画面上都读得清 */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(3, 3, 8, 0.92) 0%,
+                rgba(3, 3, 8, 0.55) 42%,
+                rgba(3, 3, 8, 0.05) 78%,
+                transparent 100%
+            );
+        }
+        .hero-text {
+            position: absolute;
+            left: 16px; right: 16px; bottom: 12px;
+            z-index: 2;
+        }
+        .hero-text .kicker {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: 0.9;
+        }
+        .hero-text .title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #fff;
+            margin-top: 1px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        }
+        .hero-text .sub {
+            font-size: 0.68rem;
+            color: #cfc6d4;
+            letter-spacing: 1.5px;
+            margin-top: 2px;
+        }
+
+        /* ============ 人物卡片 ============ */
+        .chars {
+            margin-bottom: 16px;
+        }
+        .chars-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+        .chars-head .kicker {
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            color: var(--gold);
+            opacity: 0.85;
+        }
+        .chars-head .hint {
+            font-size: 0.62rem;
+            color: var(--text-tertiary);
+        }
+        .char-row {
+            display: flex;
+            gap: 9px;
+            overflow-x: auto;
+            /* 手机主要靠横向滑动，隐藏滚动条但保留可滚动 */
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
+            /* 负外边距 + 内边距，让首尾卡片贴边而不被裁掉阴影 */
+            margin: 0 -14px;
+            padding: 2px 14px 6px;
+        }
+        .char-row::-webkit-scrollbar { display: none; }
+
+        .char-card {
+            position: relative;
+            flex: 0 0 132px;
+            aspect-ratio: 3 / 4;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            background: #0b0810;
+            scroll-snap-align: start;
+            transition: border-color 0.22s ease, transform 0.22s ease;
+        }
+        .char-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 裁到画面上部，保住脸部 */
+            object-position: center 22%;
+            display: block;
+        }
+        .char-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(3, 3, 8, 0.9) 0%, transparent 62%);
+            pointer-events: none;
+        }
+        .char-card .name {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            z-index: 2;
+            padding: 8px 9px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .char-card .name i {
+            flex: 0 0 auto;
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+            background: currentColor;
+        }
+        /* 四张卡片各给一个站点色系里的辨识色 */
+        .char-card.c-pink .name { color: var(--pink); }
+        .char-card.c-cyan .name { color: var(--cyan); }
+        .char-card.c-gold .name { color: var(--gold); }
+        .char-card.c-purple .name { color: var(--accent-purple); }
+        .char-card.c-pink .name span,
+        .char-card.c-cyan .name span,
+        .char-card.c-gold .name span,
+        .char-card.c-purple .name span {
+            color: #fff;
         }
 
         /* ============ 底部 ============ */
         footer {
             text-align: center;
-            margin-top: 32px;
-            font-size: 0.78rem;
+            margin-top: 24px;
+            font-size: 0.75rem;
             color: var(--text-tertiary);
             padding-bottom: 24px;
             font-weight: 400;
@@ -934,68 +1082,270 @@
         footer .heart {
             color: var(--accent-pink-deep);
             display: inline-block;
-            animation: bounce-soft 2s ease-in-out infinite;
         }
 
         /* ============ 空状态 ============ */
         .empty-state {
             text-align: center;
-            padding: 36px 16px;
+            padding: 28px 16px;
         }
         .empty-state .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
+            font-size: 2.4rem;
+            margin-bottom: 8px;
             display: block;
-            animation: bounce-soft 4s ease-in-out infinite;
-            opacity: 0.35;
-            filter: grayscale(0.3);
+            opacity: 0.4;
         }
         .empty-state p {
             color: var(--text-tertiary);
-            font-size: 0.85rem;
+            font-size: 0.83rem;
             font-weight: 500;
+        }
+
+        /* ============ 撤销确认弹窗 ============ */
+        /* 替代原生 confirm：原生弹窗样式无法控制，在深色霓虹界面里非常突兀。 */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal[hidden] { display: none; }
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(3, 3, 8, 0.72);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            animation: modalFade 0.18s ease;
+        }
+        .modal-box {
+            position: relative;
+            width: min(340px, 100%);
+            padding: 24px 22px 20px;
+            border-radius: 20px;
+            background: #14101c;
+            border: 1px solid var(--border-medium);
+            box-shadow: 0 0 0 1px rgba(255, 145, 189, 0.08), 0 24px 70px rgba(0, 0, 0, 0.7),
+                        0 0 40px rgba(255, 145, 189, 0.1);
+            text-align: center;
+            animation: modalIn 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-icon {
+            width: 42px; height: 42px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--accent-pink);
+            background: rgba(255, 145, 189, 0.1);
+            border: 1px solid rgba(255, 145, 189, 0.3);
+            box-shadow: 0 0 20px rgba(255, 145, 189, 0.2);
+        }
+        .modal-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+        .modal-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 7px;
+            line-height: 1.65;
+        }
+        .modal-desc b { color: var(--accent-pink); font-weight: 700; }
+        .modal-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 18px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .modal-cancel {
+            background: var(--surface-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-soft);
+        }
+        .modal-cancel:hover { color: var(--text-primary); border-color: var(--border-medium); }
+        .modal-confirm {
+            background: rgba(255, 145, 189, 0.14);
+            color: var(--accent-pink);
+            border: 1px solid rgba(255, 145, 189, 0.45);
+        }
+        .modal-confirm:hover {
+            background: rgba(255, 145, 189, 0.24);
+            box-shadow: 0 0 22px rgba(255, 145, 189, 0.25);
+        }
+        .modal-btn:active { transform: scale(0.98); }
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.94); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* ============ Toast ============ */
         #toast {
             position: fixed;
-            top: max(env(safe-area-inset-top, 20px), 20px);
+            top: max(env(safe-area-inset-top, 16px), 16px);
             left: 50%;
-            transform: translateX(-50%) translateY(-30px) scale(0.85);
-            color: white;
-            padding: 12px 24px;
+            transform: translateX(-50%) translateY(-14px);
+            padding: 11px 20px;
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.83rem;
             font-weight: 600;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.1);
+            gap: 7px;
+            max-width: calc(100vw - 32px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+            background: var(--toast-bg);
+            color: var(--toast-fg);
+            border: 1px solid var(--toast-border);
+        }
+        #toast.error {
+            background: var(--toast-error-bg);
+            color: var(--toast-error-fg);
+            border-color: var(--toast-error-border);
+        }
+
+        #toast.hint {
+            background: var(--toast-hint-bg);
+            color: var(--toast-hint-fg);
+            border-color: var(--toast-hint-border);
         }
         #toast.show {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%) translateY(16px) scale(1);
+            transform: translateX(-50%) translateY(0);
+        }
+        #toast .toast-icon { flex-shrink: 0; }
+
+        /* ============ 键盘可达性 ============ */
+        :focus-visible {
+            outline: 2px solid var(--accent-purple);
+            outline-offset: 2px;
+        }
+        .food-item:focus-visible {
+            outline-offset: 3px;
         }
 
         /* ============ 滚动条 ============ */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
         ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
 
         /* ============ 响应式 ============ */
+        /* 手机（主战场）：375px 这类窄屏上状态栏要收窄，避免和人物卡片抢视觉重量 */
+        @media (max-width: 420px) {
+            .status-bar {
+                padding: 6px 11px;
+                font-size: 0.72rem;
+            }
+            .char-card { flex-basis: 118px; }
+        }
+
         @media (max-width: 380px) {
-            .food-grid { gap: 10px; }
-            .card { padding: 22px 16px; border-radius: 24px; }
-            .header h1 { font-size: 1.6rem; }
+            .food-grid { gap: 6px; }
+            .food-item { padding: 11px 6px 9px; border-radius: 12px; }
+            .food-icon { font-size: 1.5rem; }
+            .food-name { font-size: 0.8rem; }
+            .card { padding: 18px 14px; border-radius: 18px; }
+            .header h1 { font-size: 1.4rem; letter-spacing: 2px; }
+            .char-card { flex-basis: 104px; }
+        }
+
+        /* 手机端：主按钮吸附在底部，必须避开 iPhone 的 Home 指示条 */
+        @media (max-width: 899px) {
+            .submit-dock {
+                bottom: calc(env(safe-area-inset-bottom, 0px));
+                padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+            }
+            /* 吸底条浮在菜单之上，滚到底部时最后一排会被压住。
+               这里给菜单区补一段下内边距，让最后一行能真正滚到按钮上方。
+               展开态更高（13 项），留得更多一些。 */
+            .card-order .food-grid { padding-bottom: 34px; }
+            .card-order .food-grid:not(.is-collapsed) { padding-bottom: 26px; }
+        }
+
+        /* 桌面端：单列 480px 会把两侧全浪费掉。
+           这里改成「左边点餐 + 右边数据」双栏，并把字阶和间距同步放大。 */
+        @media (min-width: 900px) {
+            body {
+                padding: max(36px, env(safe-area-inset-top))
+                         max(32px, env(safe-area-inset-right))
+                        max(48px, env(safe-area-inset-bottom))
+                         max(32px, env(safe-area-inset-left));
+            }
+            .container {
+                max-width: 1180px;
+                display: grid;
+                /* 左栏给点餐区多一点宽度，菜单名不会挤成两行 */
+                grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+                grid-template-areas:
+                    "status status"
+                    "hero   hero"
+                    "chars  chars"
+                    "order  summary"
+                    "order  records"
+                    "footer footer";
+                gap: 20px;
+                align-items: start;
+            }
+            .status-bar-wrap { grid-area: status; }
+            .hero { grid-area: hero; aspect-ratio: 21 / 7; }
+            .chars { grid-area: chars; }
+            .card-order { grid-area: order; }
+            .card-summary { grid-area: summary; }
+            .card-records { grid-area: records; }
+            footer { grid-area: footer; margin-top: 4px; }
+
+            /* 桌面空间充裕，四张卡片直接铺满一行，不用横滑 */
+            .char-row {
+                overflow: visible;
+                margin: 0;
+                padding: 0;
+                gap: 14px;
+            }
+            .char-card { flex: 1 1 0; }
+            .chars-head .hint { display: none; }
+            .char-card:hover { border-color: var(--border-medium); transform: translateY(-2px); }
+            .hero-text { left: 26px; bottom: 20px; }
+            .hero-text .title { font-size: 1.5rem; letter-spacing: 5px; }
+            .hero-text .kicker { font-size: 0.68rem; }
+            .hero-text .sub { font-size: 0.78rem; }
+
+            /* 桌面端不需要吸附：点餐卡片本身就在视口里 */
+            .submit-dock {
+                position: static;
+                background: none;
+                padding: 18px 0 0;
+                margin-top: 18px;
+                border-top: 1px solid var(--divider);
+            }
+
+            .card { margin-bottom: 0; padding: 28px 26px; }
+            .header h1 { font-size: 1.8rem; }
+            /* 桌面左栏比手机宽得多，13 个餐品排 2 列会拉成一条条大卡片，改 3 列 */
+            .food-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+            .food-item { padding: 16px 8px 13px; }
             .food-icon { font-size: 2rem; }
+            .order-row { padding: 14px 16px; }
         }
 
         /* 减少动画偏好 */
@@ -1010,69 +1360,125 @@
 </head>
 <body>
 
-<!-- 浮动装饰 -->
-<div class="floating-deco">🌸</div>
-<div class="floating-deco">✨</div>
-<div class="floating-deco">🍰</div>
-<div class="floating-deco">💫</div>
-<div class="floating-deco">🧁</div>
-<div class="floating-deco">⭐</div>
-<div class="floating-deco">🎀</div>
-<div class="floating-deco">🌙</div>
+<!-- 撤销确认弹窗：替代原生 confirm（原生弹窗在深色霓虹界面里突兀，且无法定制） -->
+<div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-box" role="alertdialog" aria-modal="true"
+         aria-labelledby="modalTitle" aria-describedby="modalDesc">
+        <div class="modal-icon" aria-hidden="true">↩</div>
+        <div class="modal-title" id="modalTitle">撤销订单</div>
+        <div class="modal-desc" id="modalDesc"></div>
+        <div class="modal-actions">
+            <button class="btn modal-btn modal-cancel" id="modalCancel" type="button">再想想</button>
+            <button class="btn modal-btn modal-confirm" id="modalConfirm" type="button">确认撤销</button>
+        </div>
+    </div>
+</div>
 
-<!-- 主题切换 -->
-<button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
-
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <div class="container">
     <!-- 状态栏 -->
-    <div class="status-bar">
-        <span id="syncDot" class="sync-dot"></span>
-        <span id="syncText">正在连接...</span>
+    <div class="status-bar-wrap">
+        <div class="status-bar">
+            <span id="syncDot" class="sync-dot" aria-hidden="true"></span>
+            <span id="syncText" role="status" aria-live="polite">正在连接…</span>
+        </div>
     </div>
 
+    <!-- 封面头图 -->
+    <a class="hero" href="https://yukiom.us.ci" target="_blank" rel="noopener">
+        <img src="img/opt/intro.webp" alt="幻想乡 · 点饭系统封面" width="800" height="800">
+        <div class="hero-text">
+            <div class="kicker">GENSOKYO · DREAM PORTAL</div>
+            <div class="title">幻想乡</div>
+            <div class="sub">yukiom.us.ci</div>
+        </div>
+    </a>
+
+    <!-- 人物卡片 -->
+    <section class="chars" aria-label="幻想乡人物">
+        <div class="chars-head">
+            <span class="kicker">CHARACTERS</span>
+            <span class="hint">左右滑动</span>
+        </div>
+        <div class="char-row">
+            <figure class="char-card c-pink">
+                <img src="img/opt/reimu.webp" alt="博丽灵梦" width="640" height="819" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>博丽灵梦</span></figcaption>
+            </figure>
+            <figure class="char-card c-cyan">
+                <img src="img/opt/cirno.webp" alt="琪露诺" width="640" height="1034" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>琪露诺</span></figcaption>
+            </figure>
+            <figure class="char-card c-gold">
+                <img src="img/opt/marisa.webp" alt="雾雨魔理沙" width="640" height="792" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>雾雨魔理沙</span></figcaption>
+            </figure>
+            <figure class="char-card c-purple">
+                <img src="img/opt/yuyuko.webp" alt="西行寺幽幽子" width="640" height="934" loading="lazy" decoding="async">
+                <figcaption class="name"><i aria-hidden="true"></i><span>西行寺幽幽子</span></figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <!-- 点单时段状态：封盘时在这里说明原因和下次开放时间 -->
+    <div class="schedule-banner" id="scheduleBanner" hidden></div>
+
     <!-- 点餐卡片 -->
-    <div class="card">
+    <div class="card card-order">
         <div class="header">
-            <span class="deco-sparkle">✦</span>
-            <span class="deco-sparkle">⟡</span>
-            <span class="deco-sparkle">✧</span>
-            <span class="header-emoji">🍱</span>
+            <span class="header-emoji" aria-hidden="true">🍱</span>
             <h1>点饭<span class="accent">系统</span></h1>
-            <div class="subtitle">今天想吃什么呀 ～ ♪(´▽｀)</div>
+            <div class="subtitle">今天想吃什么呀 ～</div>
         </div>
 
         <div class="form-group">
-            <div class="form-label">
-                <span class="label-icon pink">👤</span>
+            <div class="form-label" id="nameLabel">
+                <span class="label-icon" aria-hidden="true">👤</span>
                 你的名字
             </div>
-            <select id="studentSelect">
-                <option value="">加载中...</option>
-            </select>
+            <!-- 原来是一个原生 select。团队点餐场景下手机端展开下拉、滚动、再点确认太重，
+                 改成一眼看全、单击即选的头像格子。 -->
+            <div class="name-grid" id="nameGrid" role="group" aria-labelledby="nameLabel"></div>
         </div>
 
         <div class="form-group">
-            <div class="form-label">
-                <span class="label-icon purple">🍽️</span>
-                想吃什么呢
+            <div class="deck-head">
+                <div class="form-label" id="foodLabel">
+                    <span class="label-icon" aria-hidden="true">🍽️</span>
+                    想吃什么呢
+                </div>
+                <div class="deck-actions">
+                    <button class="deck-toggle" id="randomBtn" type="button" title="随机选一个">
+                        <span>随机</span>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"></circle></svg>
+                    </button>
+                    <button class="deck-toggle" id="deckToggle" type="button"
+                            aria-expanded="false" aria-controls="foodGrid"
+                            title="展开/收起菜单">
+                        <span id="deckToggleText">全部 13 项</span>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                </div>
             </div>
-            <div class="food-grid" id="foodGrid"></div>
+            <div class="food-grid is-collapsed" id="foodGrid" role="group" aria-labelledby="foodLabel"></div>
         </div>
 
-        <button class="btn btn-submit" id="submitBtn">✨ 提交订单</button>
+        <div class="submit-dock">
+            <button class="btn btn-submit" id="submitBtn" type="button">✨ 提交订单</button>
+        </div>
     </div>
 
     <!-- 汇总卡片 -->
-    <div class="card">
+    <div class="card card-summary">
         <div class="section-header">
             <div class="section-title">
-                <span class="section-icon purple">📊</span>
+                <span class="section-icon" aria-hidden="true">📊</span>
                 实时汇总
             </div>
-            <button class="btn-copy" id="copyBtn">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <button class="btn-copy" id="copyBtn" type="button">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 复制
             </button>
         </div>
@@ -1082,36 +1488,36 @@
                 <tr><th>餐品</th><th>数量</th><th>小计</th></tr>
                 </thead>
                 <tbody id="summaryBody">
-                <tr><td colspan="3" style="text-align:center; color:var(--text-tertiary); padding: 24px;">加载中...</td></tr>
+                <tr><td colspan="3"><div class="empty-state"><p>加载中…</p></div></td></tr>
                 </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="2" style="text-align:right; padding-top:18px; font-weight:600; color:var(--text-secondary); background:transparent;">合计</td>
-                    <td class="total-amount" id="totalPrice" style="padding-top:18px; background:transparent;">¥0</td>
-                </tr>
-                </tfoot>
             </table>
+        </div>
+        <!-- 合计条：站点 .stat 的呈现方式，把总额单独拉出来 -->
+        <div class="total-row">
+            <span class="total-label">合计</span>
+            <span class="total-count" id="totalCount"></span>
+            <span class="total-amount" id="totalPrice">¥0</span>
         </div>
     </div>
 
     <!-- 订单记录 -->
-    <div class="card">
+    <div class="card card-records">
         <div class="section-header">
             <div class="section-title">
-                <span class="section-icon mint">📋</span>
+                <span class="section-icon" aria-hidden="true">📋</span>
                 点单记录
             </div>
         </div>
-        <div id="orderDetailList">
+        <div id="orderDetailList" role="list" aria-live="polite">
             <div class="empty-state">
-                <span class="empty-icon">🍱</span>
-                <p>加载中...</p>
+                <span class="empty-icon" aria-hidden="true">🍱</span>
+                <p>加载中…</p>
             </div>
         </div>
     </div>
 
     <footer>
-        Code with <span class="heart">♥</span> by Yuki<br>
+        Code with <span class="heart" aria-hidden="true">♥</span> by Yuki<br>
         © 2026 209点饭系统
     </footer>
 </div>
@@ -1139,6 +1545,9 @@
         ]
     };
 
+    // 折叠态预览几行（手机 2 列 × 2 行 = 4；桌面 3 列 × 2 行 = 6）
+    const PREVIEW_ROWS = 2;
+
     // ============ 设备标识 ============
     let deviceToken = localStorage.getItem('deviceToken');
     if (!deviceToken) {
@@ -1150,43 +1559,64 @@
     const state = {
         orders: [],
         selectedFoodIdx: null,
-        isSubmitting: false
+        selectedName: null,
+        isSubmitting: false,
+        // 上一次渲染所用的订单指纹，用来判断轮询结果是否真的变了
+        ordersSig: null,
+        // 上一次菜单排列的指纹，避免顺序没变时重建餐品节点
+        deckOrderSig: null,
+        // 名字格子的指纹，避免每次轮询都重建
+        nameGridSig: null,
+        // 是否首次成功拉到数据（首屏不该弹出「谁谁点了什么」）
+        firstLoad: true
     };
 
-    // ============ 主题管理 ============
-    function initTheme() {
-        const saved = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = saved || (prefersDark ? 'dark' : 'light');
-        applyTheme(theme);
+    // ============ 触感反馈 ============
+    // 手机上点选没有物理回馈，加一段极短振动。仅 Android Chrome 支持，
+    // iOS Safari 不支持 vibrate，静默跳过即可。
+    function tapFeedback(ms = 8) {
+        try {
+            if (navigator.vibrate) navigator.vibrate(ms);
+        } catch (_) { /* 用户未授权或浏览器不支持，忽略 */ }
     }
 
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        const btn = document.getElementById('themeToggle');
-        if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    // 订单指纹：只要成员或餐品有变化就算变了。
+    // 用来避免每 15 秒轮询都把两张列表整个重建一遍。
+    function ordersSignature(orders) {
+        return orders
+            .map(o => `${o.name}|${o.food}|${o.price}`)
+            .sort()
+            .join(';');
     }
 
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
-    }
+    // ============ 主题 ============
+    // 配色固定为深色霓虹、对齐幻想乡站点，不提供浅色主题。
+    // 若将来要加主题，注意四张角色立绘与站点一致是暗调的，浅色底会压不住。
+    const THEME = 'dark';
 
-    // 监听系统主题变化
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            applyTheme(e.matches ? 'dark' : 'light');
-        }
-    });
+    function applyTheme() {
+        document.documentElement.setAttribute('data-theme', THEME);
+        localStorage.setItem('theme', THEME);
+    }
 
     // ============ 工具函数 ============
-    function showToast(msg, isError = false) {
+    // 用 textContent 而不是 innerHTML：msg 里可能带服务端返回的错误文本
+    // type: 'ok'（默认）| 'error' | 'hint'（中性提示）
+    function showToast(msg, type = 'ok') {
         const toast = document.getElementById('toast');
-        toast.innerHTML = `${isError ? '⚠️' : '✅'} ${msg}`;
-        toast.style.background = isError
-            ? 'rgba(255, 70, 100, 0.92)'
-            : 'rgba(45, 35, 50, 0.92)';
+        toast.textContent = '';
+
+        const icon = document.createElement('span');
+        icon.className = 'toast-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = type === 'error' ? '⚠️' : type === 'hint' ? '💡' : '✅';
+
+        const text = document.createElement('span');
+        text.textContent = msg;
+
+        toast.append(icon, text);
+        toast.classList.toggle('error', type === 'error');
+        toast.classList.toggle('hint', type === 'hint');
         toast.classList.add('show');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
@@ -1205,135 +1635,440 @@
     }
 
     // ============ API ============
+    // 返回 { orders, schedule }。
+    // 定时状态由后端放在响应头 X-Rice-Schedule 里 —— 响应体仍是裸数组，
+    // 这样即使后端还没更新（或前端先部署），也只会拿不到 schedule 而不会崩。
     async function fetchOrders() {
         try {
             const res = await fetch(CONFIG.API_URL);
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            return await res.json();
+
+            const orders = await res.json();
+
+            let schedule = null;
+            const raw = res.headers.get('X-Rice-Schedule');
+            if (raw) {
+                try { schedule = JSON.parse(decodeURIComponent(raw)); } catch (_) { /* 头部损坏就当没有 */ }
+            }
+
+            return { orders, schedule };
         } catch (e) {
             console.error('Fetch error:', e);
             return null;
         }
     }
 
-    async function submitOrderToServer(data) {
+    // POST / DELETE 的差异只有 method、body 和兜底错误文案，
+    // 「发请求 + 失败时取出服务端错误信息」这段逻辑原本两边各写了一遍。
+    async function sendOrder(method, body, fallbackMsg) {
         const res = await fetch(CONFIG.API_URL, {
-            method: 'POST',
+            method,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(body)
         });
-        if (!res.ok) {
-            let errMsg = '提交失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
+        if (res.ok) return;
+        let errMsg = fallbackMsg;
+        try { const e = await res.json(); errMsg = e.error || errMsg; } catch (_) { /* 响应不是 JSON，用兜底文案 */ }
+        throw new Error(errMsg);
     }
 
-    async function deleteOrderFromServer(name) {
-        const res = await fetch(CONFIG.API_URL, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, token: deviceToken })
-        });
-        if (!res.ok) {
-            let errMsg = '删除失败';
-            try { const e = await res.json(); errMsg = e.error || errMsg; } catch(_) {}
-            throw new Error(errMsg);
-        }
+    function submitOrderToServer(data) {
+        return sendOrder('POST', data, '提交失败');
+    }
+
+    function deleteOrderFromServer(name) {
+        return sendOrder('DELETE', { name, token: deviceToken }, '撤销失败');
     }
 
     // ============ 渲染 ============
+    // 折叠态只有前几个位置是「黄金位」。按今天点得最多的排，
+    // 让最可能被点的餐品出现在折叠可见区，而不是永远按菜单固定顺序。
+    //
+    // 结果按「订单内容 + 自己的订单」缓存：这个函数在 resize、折叠切换等
+    // 路径上会被反复调用，每次都重扫订单并排序没必要。
+    let deckOrderCache = { key: null, order: null };
+
+    function deckOrder() {
+        const mine = localStorage.getItem('myOrderName');
+        const key = ordersSignature(state.orders) + '#' + mine;
+        if (deckOrderCache.key === key) return deckOrderCache.order;
+
+        const counts = new Map();
+        state.orders.forEach(o => counts.set(o.food, (counts.get(o.food) || 0) + 1));
+        const myFood = state.orders.find(o => o.name === mine)?.food;
+
+        const order = CONFIG.MENU
+            .map((item, i) => ({
+                i,
+                // 自己点过的那项放最前，方便回头核对
+                mineRank: myFood && item.name === myFood ? 0 : 1,
+                count: counts.get(item.name) || 0
+            }))
+            .sort((a, b) =>
+                a.mineRank - b.mineRank ||   // 先我自己点的
+                b.count - a.count ||          // 再今天点得多的
+                a.i - b.i                     // 最后保持菜单原序，避免同份数抖动
+            )
+            .map(x => x.i);
+
+        deckOrderCache = { key, order };
+        return order;
+    }
+
+    // 只在顺序真的变了、或首次渲染时才重建节点。
+    // 选餐只切 class 不重建：重建会让 13 个格子的入场动画集体重放，看起来就是「闪一下」。
     function renderFoodGrid() {
         const grid = document.getElementById('foodGrid');
-        const myName = localStorage.getItem('myOrderName');
+        const order = deckOrder();
+        const sig = order.join(',');
+
+        if (sig === state.deckOrderSig && grid.children.length) {
+            syncFoodSelection();
+            return;
+        }
+        state.deckOrderSig = sig;
 
         grid.innerHTML = '';
-        CONFIG.MENU.forEach((item, i) => {
+        order.forEach(i => {
+            const item = CONFIG.MENU[i];
             const div = document.createElement('div');
-            div.className = `food-item ${state.selectedFoodIdx === i ? 'active' : ''}`;
+            div.className = 'food-item';
+            div.dataset.idx = String(i);
+            div.setAttribute('role', 'button');
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('aria-pressed', 'false');
             div.innerHTML = `
-                <div class="checkmark">✓</div>
-                <span class="food-icon">${item.icon}</span>
+                <div class="checkmark" aria-hidden="true">✓</div>
+                <div class="food-count" aria-hidden="true"></div>
+                <span class="food-icon" aria-hidden="true">${item.icon}</span>
                 <span class="food-name">${escapeHtml(item.name)}</span>
                 <span class="food-price">¥${item.price}</span>
             `;
-            div.onclick = () => {
-                if (myName) return;
-                state.selectedFoodIdx = i;
-                renderFoodGrid();
-            };
             grid.appendChild(div);
+        });
+
+        updateFoodCounts();
+        // 节点是新建的，.is-hidden 标记会丢失，必须重新打一遍
+        applyPreviewCount();
+        syncFoodSelection();
+    }
+
+    // 在被点的餐品角上标出「已点 N 次」。
+    // 只在数量变化时才动 DOM，避免每轮轮询都触发徽标动画。
+    function updateFoodCounts() {
+        const counts = new Map();
+        state.orders.forEach(o => counts.set(o.food, (counts.get(o.food) || 0) + 1));
+
+        document.querySelectorAll('#foodGrid .food-item').forEach(el => {
+            const item = CONFIG.MENU[Number(el.dataset.idx)];
+            const n = counts.get(item.name) || 0;
+            const badge = el.querySelector('.food-count');
+            if (!badge) return;
+            const next = n > 0 ? `已点 ${n}` : '';
+            if (badge.textContent === next) return;
+            badge.textContent = next;
+            if (n > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                badge.classList.remove('pop');
+                void badge.offsetWidth;
+                badge.classList.add('pop');
+            }
         });
     }
 
-    function renderNameSelect() {
-        const select = document.getElementById('studentSelect');
-        const myName = localStorage.getItem('myOrderName');
-        const currentVal = select.value;
-
-        select.innerHTML = '<option value="">请选择名字...</option>';
-        CONFIG.NAMES.forEach(name => {
-            const ordered = state.orders.some(o => o.name === name);
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.text = name + (ordered ? ' (已点 ✓)' : '');
-            opt.disabled = ordered;
-            select.appendChild(opt);
+    // 原地同步选中态：只动 class 和 aria，不碰节点结构
+    function syncFoodSelection() {
+        const grid = document.getElementById('foodGrid');
+        grid.querySelectorAll('.food-item').forEach(el => {
+            const on = state.selectedFoodIdx === Number(el.dataset.idx);
+            el.classList.toggle('active', on);
+            el.setAttribute('aria-pressed', on ? 'true' : 'false');
         });
+    }
 
-        if (currentVal && !myName) select.value = currentVal;
+    function selectFood(i) {
+        if (localStorage.getItem('myOrderName')) return;
+        // CSS 的 pointer-events 只能拦住鼠标和触摸，键盘 Enter 仍会走到这里
+        if (state.schedule && state.schedule.enabled && !state.schedule.open) return;
+        if (state.selectedFoodIdx === i) return;
+
+        const grid = document.getElementById('foodGrid');
+        state.selectedFoodIdx = i;
+        syncFoodSelection();
+        tapFeedback(8);
+
+        // 只让「这一次刚选中」的那个抖一下，而不是每次重建都集体重放动画
+        const el = grid.querySelector(`.food-item[data-idx="${i}"]`);
+        if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            el.classList.remove('just-picked');
+            void el.offsetWidth; // 强制重排，让动画可以重复触发
+            el.classList.add('just-picked');
+            el.addEventListener('animationend', () => el.classList.remove('just-picked'), { once: true });
+        }
+    }
+
+    // ============ 菜单折叠 ============
+    // 折叠态可见数量由实际列数算出（手机 2 列 × 2 行 = 4；桌面 3 列 × 2 行 = 6，
+    // 正好铺满整行不留孤格），然后由 JS 给范围外的餐品打 .is-hidden 标记。
+    // 让 JS 决定「哪些可见」而不是让 CSS 去数数，是为了避免在选择器里用
+    // nth-child(n + var(...)) —— 那写法浏览器能跑，但 VS Code 的 CSS 解析器会报错。
+    function getPreviewCount() {
+        const grid = document.getElementById('foodGrid');
+        let cols = 2;
+        try {
+            const tpl = getComputedStyle(grid).gridTemplateColumns || '';
+            // 未布局时这里会是 'none'，会被误算成 1 列，所以只认真正的轨道值
+            const tracks = tpl.split(/\s+/).filter(t => /\d/.test(t));
+            if (tracks.length >= 2) cols = tracks.length;
+        } catch (_) { /* 计算样式取不到时退回 2 列 */ }
+        return Math.min(PREVIEW_ROWS * cols, CONFIG.MENU.length);
+    }
+
+    // 把当前可见数量落到 DOM 上，并返回该数量
+    function applyPreviewCount() {
+        const grid = document.getElementById('foodGrid');
+        const n = getPreviewCount();
+        // 按渲染顺序（而不是 data-idx）取前 n 个，与用户的视觉顺序一致
+        Array.prototype.forEach.call(grid.children, (el, i) => {
+            el.classList.toggle('is-hidden', i >= n);
+        });
+        return n;
+    }
+
+    // 折叠态下真正可见的菜单下标集合：排列后的前 N 个。
+    // 传入 count 时复用调用方已经算好的可见数量，避免同一次操作里重复遍历节点。
+    function visibleIndices(count) {
+        const n = (typeof count === 'number') ? count : applyPreviewCount();
+        return new Set(deckOrder().slice(0, n));
+    }
+
+    function updateDeckToggle() {
+        const grid = document.getElementById('foodGrid');
+        const btn = document.getElementById('deckToggle');
+        const txt = document.getElementById('deckToggleText');
+        const collapsed = grid.classList.contains('is-collapsed');
+        // 先把可见数量落到 DOM 上，再用它拼 aria-label（顺序反了会读到上次的值）
+        const preview = applyPreviewCount();
+
+        btn.classList.toggle('is-expanded', !collapsed);
+        btn.setAttribute('aria-expanded', String(!collapsed));
+        btn.setAttribute('aria-label', collapsed
+            ? `展开全部 ${CONFIG.MENU.length} 项菜单`
+            : `收起菜单，只显示前 ${preview} 项`);
+        txt.textContent = collapsed ? `全部 ${CONFIG.MENU.length} 项` : '收起';
+    }
+
+    function setDeckCollapsed(collapsed) {
+        const grid = document.getElementById('foodGrid');
+        // 可见数量只算一次，后面判断选择是否被藏起来直接复用
+        const preview = applyPreviewCount();
+
+        // 要收起、而当前选中的餐品会被藏起来 —— 必须清掉选择。
+        // 否则用户会提交一个自己在界面上根本看不到的餐品。
+        // 注意：可见与否取决于「排列后的位置」，而不是菜单下标 ——
+        // 重排之后两者不是一回事。
+        let cleared = null;
+        if (collapsed && state.selectedFoodIdx !== null && !visibleIndices(preview).has(state.selectedFoodIdx)) {
+            cleared = CONFIG.MENU[state.selectedFoodIdx];
+            state.selectedFoodIdx = null;
+            syncFoodSelection();
+        }
+
+        grid.classList.toggle('is-collapsed', collapsed);
+        updateDeckToggle();
+
+        if (cleared) showToast(`已取消「${cleared.name}」的选择（它被收起了）`, 'hint');
+    }
+
+    function toggleDeck() {
+        const grid = document.getElementById('foodGrid');
+        setDeckCollapsed(!grid.classList.contains('is-collapsed'));
+    }
+
+    // ============ 随机挑选 ============
+    // 治选择困难。只在「当前看得见」的餐品里随机，
+    // 否则可能选中一个收缩在下面、用户根本看不到的项。
+    function randomPickFood() {
+        if (localStorage.getItem('myOrderName')) {
+            return showToast('已经点过餐啦～', 'error');
+        }
+        const pool = [...visibleIndices()];
+        if (pool.length < 2) return;
+
+        // 别连着两次抽到同一项，否则会让人以为按钮坏了
+        let pick = pool[Math.floor(Math.random() * pool.length)];
+        if (pool.length > 1 && pick === state.selectedFoodIdx) {
+            pick = pool[(pool.indexOf(pick) + 1) % pool.length];
+        }
+
+        selectFood(pick);
+
+        const btn = document.getElementById('randomBtn');
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            btn.classList.remove('spin');
+            void btn.offsetWidth;
+            btn.classList.add('spin');
+            const el = document.querySelector(`#foodGrid .food-item[data-idx="${pick}"]`);
+            if (el) {
+                el.classList.remove('rolled');
+                void el.offsetWidth;
+                el.classList.add('rolled');
+            }
+        }
+        tapFeedback(12);
+    }
+
+    // ============ 名字点选 ============
+    // 做成头像格子而不是原生 select：手机端一眼看全、单击即选，
+    // 而且能直接在格子上显示「谁已经点过了、点的什么」。
+    function renderNameGrid() {
+        const grid = document.getElementById('nameGrid');
+        const myName = localStorage.getItem('myOrderName');
+        const byName = new Map(state.orders.map(o => [o.name, o]));
+
+        const sig = CONFIG.NAMES.join('|') + '#' + state.orders.map(o => o.name + o.food).sort().join(',') + '#' + myName;
+        if (sig !== state.nameGridSig || !grid.children.length) {
+            state.nameGridSig = sig;
+            grid.innerHTML = '';
+            CONFIG.NAMES.forEach(name => {
+                const orderInfo = byName.get(name);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'name-btn';
+                btn.dataset.name = name;
+                btn.innerHTML = `<span class="nm">${escapeHtml(name)}</span>
+                                 <span class="nf">${orderInfo ? escapeHtml(orderInfo.food) : ''}</span>`;
+                grid.appendChild(btn);
+            });
+        }
+
+        // 状态每轮都可能变（别人点了餐），这部分必须每次都同步
+        grid.querySelectorAll('.name-btn').forEach(btn => {
+            const name = btn.dataset.name;
+            const orderInfo = byName.get(name);
+            // 高亮的是「当前点选的人」（state.selectedName），
+            // 不是「已提交订单的人」（myOrderName）。两者必须分开判断，
+            // 混用会导致点选后格子不亮、点了没有任何反馈。
+            const picked = (state.selectedName === name);
+            const isMineOrder = (myName === name);
+            const isTaken = !!orderInfo && !isMineOrder;
+            btn.classList.toggle('active', picked || isMineOrder);
+            btn.classList.toggle('taken', isTaken);
+            // 刻意不用 disabled：disabled 的按钮不派发 click，
+            // 用户点下去会毫无反馈。改用 aria-disabled 表示语义，
+            // 真正的拦截交给 selectName()，它还能顺带弹一句「换一个名字吧」。
+            btn.disabled = false;
+            if (isTaken) {
+                // 不可操作时移除 aria-pressed —— aria-disabled 与 aria-pressed
+                // 同时出现会让辅助技术给出矛盾描述
+                btn.removeAttribute('aria-pressed');
+                btn.setAttribute('aria-disabled', 'true');
+                btn.setAttribute('aria-label', `${name}，已点${orderInfo.food}，不可选择`);
+                btn.title = `${name} 已点 ${orderInfo.food}`;
+            } else {
+                btn.removeAttribute('aria-disabled');
+                btn.setAttribute('aria-pressed', picked ? 'true' : 'false');
+                btn.setAttribute('aria-label', picked ? `${name}，已选择` : `选择 ${name}`);
+                btn.removeAttribute('title');
+            }
+        });
         updateSubmitButton();
     }
 
+    function selectName(name) {
+        if (localStorage.getItem('myOrderName')) return;
+
+        // 已被人占用的名字：格子是 disabled，事件委托这里再兜一层。
+        // 否则点下去毫无反应，用户会以为界面卡住了。
+        const taken = state.orders.find(o => o.name === name);
+        if (taken) {
+            showToast(`${name} 已经点了 ${taken.food}，换一个名字吧～`, 'hint');
+            return;
+        }
+        if (state.selectedName === name) return;
+        state.selectedName = name;
+        tapFeedback(8);
+        renderNameGrid();
+    }
+
+    // 主按钮承载两种动作：未点餐 = 提交；已点餐 = 撤销。
+    // 撤销放在主按钮上，是为了避免用户为了改单而去记录列表里找那个小 ×。
     function updateSubmitButton() {
         const btn = document.getElementById('submitBtn');
-        const grid = document.getElementById('foodGrid');
         const myName = localStorage.getItem('myOrderName');
+        const closed = !!(state.schedule && state.schedule.enabled && !state.schedule.open);
 
+        btn.disabled = false;
         if (myName) {
+            // 已点过的人仍要能撤销 —— 封盘不该把人锁死在自己的错误里
+            btn.classList.add('danger');
+            btn.textContent = '↩ 撤销我的订单（' + myName + '）';
+            btn.setAttribute('aria-label', `撤销 ${myName} 的订单`);
+        } else if (closed) {
+            btn.classList.remove('danger');
             btn.disabled = true;
-            btn.classList.add('locked');
-            btn.innerHTML = `✅ 已点餐 · ${escapeHtml(myName)}`;
-            grid.classList.add('locked');
+            btn.textContent = '🌙 ' + (state.schedule.message || '当前不在点单时间内');
+            btn.removeAttribute('aria-label');
         } else {
+            btn.classList.remove('danger');
             btn.disabled = state.isSubmitting;
-            btn.classList.remove('locked');
-            btn.innerHTML = state.isSubmitting ? '⏳ 提交中...' : '✨ 提交订单';
-            grid.classList.remove('locked');
+            btn.textContent = state.isSubmitting ? '⏳ 提交中…' : '✨ 提交订单';
+            btn.removeAttribute('aria-label');
+        }
+    }
+
+    async function handlePrimaryAction() {
+        if (localStorage.getItem('myOrderName')) {
+            await cancelPersonalOrder(localStorage.getItem('myOrderName'));
+        } else {
+            await submitOrder();
         }
     }
 
     function renderSummary() {
         const body = document.getElementById('summaryBody');
-        let total = 0, hasData = false;
-        body.innerHTML = '';
-
+        let total = 0, totalCount = 0;
+        // 先收集有份数的项，两趟处理：第一趟拿到总数才能算占比条宽度
+        const rows = [];
         CONFIG.MENU.forEach(m => {
             const count = state.orders.filter(o => o.food === m.name).length;
             if (count > 0) {
-                hasData = true;
                 const sub = count * m.price;
                 total += sub;
-                body.innerHTML += `<tr>
-                    <td style="display:flex;align-items:center;gap:8px;">
-                        <span style="font-size:1.15rem;">${m.icon}</span>
-                        <span>${escapeHtml(m.name)}</span>
-                    </td>
-                    <td><span class="count-badge">${count}</span></td>
-                    <td style="font-weight:800;color:var(--accent-pink-deep);">¥${sub}</td>
-                </tr>`;
+                totalCount += count;
+                rows.push({ m, count, sub });
             }
         });
 
-        if (!hasData) {
+        body.innerHTML = '';
+        if (!rows.length) {
             body.innerHTML = `<tr><td colspan="3">
                 <div class="empty-state">
-                    <span class="empty-icon">🛋️</span>
+                    <span class="empty-icon" aria-hidden="true">🛋️</span>
                     <p>还没人点餐，快来抢沙发！</p>
                 </div>
             </td></tr>`;
+        } else {
+            const maxCount = Math.max(...rows.map(r => r.count));
+            rows.forEach(({ m, count, sub }) => {
+                const pct = Math.round(count * 100 / totalCount);
+                const isLead = count === maxCount;
+                body.innerHTML += `<tr>
+                    <td>
+                        <div class="food-cell">
+                            <span class="food-cell-icon" aria-hidden="true">${m.icon}</span>
+                            <span class="food-cell-body">
+                                <span class="food-cell-name">${escapeHtml(m.name)}</span>
+                                <span class="share-bar${isLead ? ' lead' : ''}"><i style="width:${pct}%"></i></span>
+                            </span>
+                        </div>
+                    </td>
+                    <td><span class="count-badge">${count}</span></td>
+                    <td class="sub-amount">¥${sub}</td>
+                </tr>`;
+            });
         }
         document.getElementById('totalPrice').textContent = `¥${total}`;
+        document.getElementById('totalCount').textContent = totalCount ? `共 ${totalCount} 份` : '';
     }
 
     function renderOrderList() {
@@ -1355,7 +2090,8 @@
         sorted.forEach(o => {
             const isMyOrder = (myName === o.name);
             const row = document.createElement('div');
-            row.className = 'order-row';
+            row.className = 'order-row' + (isMyOrder ? ' is-mine' : '');
+            row.setAttribute('role', 'listitem');
             row.innerHTML = `
                 <div class="order-main">
                     <span class="order-name">
@@ -1363,17 +2099,17 @@
                         <span class="tag">${escapeHtml(o.food)}</span>
                     </span>
                     <span class="order-time">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                         ${formatTime(o.time)}
                     </span>
                 </div>
                 <div class="order-right">
                     <span class="order-price">¥${o.price || 0}</span>
                     ${isMyOrder ? `
-                    <button class="btn-delete" data-name="${escapeHtml(o.name)}" title="撤销">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <button class="btn-delete" type="button" data-name="${escapeHtml(o.name)}" title="撤销" aria-label="撤销 ${escapeHtml(o.name)} 的订单">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
-                    ` : '<div style="width: 32px"></div>'}
+                    ` : ''}
                 </div>
             `;
             list.appendChild(row);
@@ -1391,44 +2127,151 @@
         if (ok) {
             dot.className = 'sync-dot active';
             const now = new Date();
-            txt.textContent = `已同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
+            txt.textContent = `同步 ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')} ♡`;
         } else {
             dot.className = 'sync-dot error';
             txt.textContent = '离线 (╥_╥)';
         }
     }
 
+    // ============ 点单时段 ============
+    // 后端在响应头里给出 open / openTime / closeTime / nextChangeAt。
+    // 前端只负责显示与拦截提示，真正的拒绝在后端（避免只靠前端被绕过）。
+    function applySchedule(schedule) {
+        if (!schedule) return;
+
+        const changed = state.schedule?.open !== schedule.open
+            || state.schedule?.openTime !== schedule.openTime
+            || state.schedule?.closeTime !== schedule.closeTime;
+        state.schedule = schedule;
+
+        const banner = document.getElementById('scheduleBanner');
+        const grid = document.getElementById('foodGrid');
+
+        if (!schedule.enabled) {
+            // 没启用时段限制：不显示横幅，免得占地方，也不置灰菜单
+            banner.hidden = true;
+            grid.classList.remove('is-closed');
+        } else {
+            banner.hidden = false;
+            banner.classList.toggle('is-open', schedule.open);
+            banner.classList.toggle('is-closed', !schedule.open);
+            grid.classList.toggle('is-closed', !schedule.open);
+
+            if (schedule.open) {
+                banner.innerHTML =
+                    `<span class="sb-icon" aria-hidden="true">🕐</span>
+                     <span><span class="sb-title">可以点单</span>
+                     <span class="sb-sub">时段 <b>${escapeHtml(schedule.openTime)} – ${escapeHtml(schedule.closeTime)}</b>` +
+                     `${schedule.nextChangeAt ? '，' + untilText(schedule.nextChangeAt) + '截止' : ''}</span></span>`;
+            } else {
+                banner.innerHTML =
+                    `<span class="sb-icon" aria-hidden="true">🌙</span>
+                     <span><span class="sb-title">${escapeHtml(schedule.message || '当前不在点单时间内')}</span>
+                     <span class="sb-sub">点单时段 <b>${escapeHtml(schedule.openTime)} – ${escapeHtml(schedule.closeTime)}</b>` +
+                     `${schedule.nextChangeAt ? '，' + untilText(schedule.nextChangeAt) + '开放' : ''}</span></span>`;
+            }
+
+            // 封盘时已选中的餐品要清掉，否则按钮会以“已选好”的样子出现却点不动
+            if (!schedule.open && state.selectedFoodIdx !== null) {
+                state.selectedFoodIdx = null;
+                syncFoodSelection();
+            }
+        }
+
+        // 统一收尾：按钮状态只在这里更新一次
+        updateSubmitButton();
+        if (changed) tapFeedback(6);
+    }
+
+    /** 把时间戳说成「约 2 小时 15 分后」这种 */
+    function untilText(ts) {
+        const ms = Math.max(0, ts - Date.now());
+        const mins = Math.round(ms / 60000);
+        if (mins < 1) return '马上';
+        if (mins < 60) return `约 ${mins} 分钟后`;
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        return m ? `约 ${h} 小时 ${m} 分钟后` : `约 ${h} 小时后`;
+    }
+
     // ============ 核心逻辑 ============
+    // 返回 true 表示本机锁定状态发生了变化（需要重排菜单）
     function checkDeviceLock() {
         const myName = localStorage.getItem('myOrderName');
+        // 自己的订单在服务端不存在了（被清空或换了一天），解除本机锁定
         if (myName && !state.orders.some(o => o.name === myName)) {
             localStorage.removeItem('myOrderName');
             state.selectedFoodIdx = null;
-            renderFoodGrid();
+            state.selectedName = null;
+            syncFoodSelection();
+            return true;
         }
+        return false;
     }
 
     async function fetchData() {
-        const data = await fetchOrders();
-        if (data !== null) {
-            state.orders = data;
-            checkDeviceLock();
-            renderNameSelect();
-            refreshUI();
-            updateSyncStatus(true);
-        } else {
+        const result = await fetchOrders();
+
+        if (result === null) {
+            // 取数失败：只更新连接状态，保留上一次的数据继续展示
             updateSyncStatus(false);
+            return;
+        }
+
+        const data = result.orders;
+        applySchedule(result.schedule);
+
+        state.orders = data;
+        const unlocked = checkDeviceLock();
+
+        // 只有订单内容真的变了才重建两张列表：轮询每 15 秒一次，
+        // 无条件重建会让正在读记录的会员看到列表整体闪一下。
+        const sig = ordersSignature(state.orders);
+        if (sig !== state.ordersSig) {
+            const isFirst = state.firstLoad;
+            const prevNames = new Set((state.ordersPrev || []).map(o => o.name));
+            state.ordersSig = sig;
+            refreshUI();
+            // 菜单顺序和「已点 N 次」都跟着新数据走
+            renderFoodGrid();
+            // 首屏不弹通知，只有后续轮询发现新订单才提示
+            if (!isFirst) notifyNewOrders(prevNames, state.orders);
+            state.ordersPrev = [...state.orders];
+        } else if (unlocked) {
+            // 内容没变但本机解锁了，只需要把锁定的餐品恢复
+            updateSubmitButton();
+        }
+
+        renderNameGrid();
+        updateSyncStatus(true);
+        state.firstLoad = false;
+    }
+
+    // 轮询发现别人新点了餐，弹一条提示。
+    // 这是「实时」感受的来源：数据变了如果只是静默重排，用户察觉不到有人刚点单。
+    function notifyNewOrders(prevNames, orders) {
+        const fresh = orders.filter(o => !prevNames.has(o.name));
+        if (!fresh.length) return;
+        if (fresh.length === 1) {
+            showToast(`${fresh[0].name} 点了 ${fresh[0].food}`);
+        } else {
+            showToast(`新增 ${fresh.length} 份订单：${fresh.map(o => `${o.name}·${o.food}`).join('、')}`);
         }
     }
 
     async function submitOrder() {
         if (state.isSubmitting) return;
-        if (localStorage.getItem('myOrderName')) {
-            return showToast('已经点过餐啦～', true);
+        // 封盘时先拦住，省得白跑一次请求（后端同样会拒）
+        if (state.schedule && state.schedule.enabled && !state.schedule.open) {
+            return showToast(state.schedule.message || '当前不在点单时间内', 'error');
         }
-        const name = document.getElementById('studentSelect').value;
-        if (!name) return showToast('先选名字哦 (｡•́︿•̀｡)', true);
-        if (state.selectedFoodIdx === null) return showToast('还没选餐品呢～', true);
+        if (localStorage.getItem('myOrderName')) {
+            return showToast('已经点过餐啦～', 'error');
+        }
+        const name = state.selectedName;
+        if (!name) return showToast('先选名字哦 (｡•́︿•̀｡)', 'error');
+        if (state.selectedFoodIdx === null) return showToast('还没选餐品呢～', 'error');
 
         const food = CONFIG.MENU[state.selectedFoodIdx];
         state.isSubmitting = true;
@@ -1442,30 +2285,77 @@
             localStorage.setItem('myOrderName', name);
             await fetchData();
         } catch (e) {
-            showToast(e.message || '提交失败了 (╥_╥)', true);
+            showToast(e.message || '提交失败了 (╥_╥)', 'error');
         } finally {
             state.isSubmitting = false;
             updateSubmitButton();
         }
     }
 
+    // ============ 确认弹窗 ============
+    // 替代原生 confirm：样式可定制、不打断整页观感，且能把焦点管理做对。
+    let modalResolve = null;
+
+    function closeModal(result) {
+        const modal = document.getElementById('modal');
+        if (modal.hidden) return;
+        modal.hidden = true;
+        document.documentElement.style.removeProperty('overflow');
+        const resolve = modalResolve;
+        modalResolve = null;
+        if (resolve) resolve(result);
+    }
+
+    function askConfirm(descHtml, confirmText = '确认撤销') {
+        const modal = document.getElementById('modal');
+        document.getElementById('modalDesc').innerHTML = descHtml;
+        document.getElementById('modalConfirm').textContent = confirmText;
+        modal.hidden = false;
+        // 锁定背景滚动，避免弹窗开着时页面还在滚
+        document.documentElement.style.overflow = 'hidden';
+        // 焦点给「再想想」而不是「确认」：误触回车时不会直接执行破坏性操作
+        requestAnimationFrame(() => document.getElementById('modalCancel').focus());
+
+        return new Promise(resolve => { modalResolve = resolve; });
+    }
+
+    function initModal() {
+        const modal = document.getElementById('modal');
+        document.getElementById('modalCancel').addEventListener('click', () => closeModal(false));
+        document.getElementById('modalConfirm').addEventListener('click', () => closeModal(true));
+        // 点遮罩关闭
+        modal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(false));
+        // Esc 关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.hidden) closeModal(false);
+        });
+    }
+
     async function cancelPersonalOrder(name) {
-        if (!confirm(`撤销【${name}】的订单？`)) return;
+        if (!name) return;
+        const ok = await askConfirm(
+            `确定撤销 <b>${escapeHtml(name)}</b> 的订单吗？<br>撤销后需要重新点餐。`
+        );
+        if (!ok) return;
         try {
             await deleteOrderFromServer(name);
             showToast(`已撤销 ${name} 的订单 ♪`);
+            // 撤销后回到「还没点」的状态，而不是把界面锁死
             if (localStorage.getItem('myOrderName') === name) {
                 localStorage.removeItem('myOrderName');
                 state.selectedFoodIdx = null;
+                state.selectedName = null;
+                syncFoodSelection();
+                renderNameGrid();
             }
             await fetchData();
         } catch (e) {
-            showToast(e.message || '撤销失败了～', true);
+            showToast(e.message || '撤销失败了～', 'error');
         }
     }
 
     function copySummaryText() {
-        if (!state.orders.length) return showToast('还没有数据哦～', true);
+        if (!state.orders.length) return showToast('还没有数据哦～', 'error');
 
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
@@ -1493,7 +2383,7 @@
             document.body.appendChild(ta);
             ta.select();
             try { document.execCommand('copy'); showToast('复制成功 ♡'); }
-            catch(_) { showToast('复制失败...', true); }
+            catch(_) { showToast('复制失败...', 'error'); }
             ta.remove();
         };
 
@@ -1508,12 +2398,52 @@
 
     // ============ 初始化 ============
     async function init() {
-        initTheme();
+        applyTheme();
         renderFoodGrid();
+        initModal();
 
-        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-        document.getElementById('submitBtn').addEventListener('click', submitOrder);
+        document.getElementById('submitBtn').addEventListener('click', handlePrimaryAction);
         document.getElementById('copyBtn').addEventListener('click', copySummaryText);
+        document.getElementById('deckToggle').addEventListener('click', () => {
+            tapFeedback(6);
+            toggleDeck();
+        });
+        document.getElementById('randomBtn').addEventListener('click', randomPickFood);
+
+        // 名字点选：事件委托，单击即选
+        document.getElementById('nameGrid').addEventListener('click', (e) => {
+            const btn = e.target.closest('.name-btn');
+            if (btn && !btn.disabled) selectName(btn.dataset.name);
+        });
+
+        // 菜单默认折叠：初始只展示前 PREVIEW_ROWS 行
+        setDeckCollapsed(true);
+
+        // 跨断点改列数时，可见数量会从 4 变成 6，必须重新同步给 CSS
+        window.addEventListener('resize', () => {
+            applyPreviewCount();
+            // 列数变少时，原本可见的项可能被挤到预览范围外，同步一下选择状态
+            if (state.selectedFoodIdx !== null
+                && document.getElementById('foodGrid').classList.contains('is-collapsed')
+                && !visibleIndices().has(state.selectedFoodIdx)) {
+                setDeckCollapsed(true);
+            }
+        });
+
+        // 餐品选择用事件委托 + 键盘支持：
+        // 事件委托让格子重建后不必重新绑定，键盘支持让 Enter/Space 也能选。
+        const grid = document.getElementById('foodGrid');
+        grid.addEventListener('click', (e) => {
+            const item = e.target.closest('.food-item');
+            if (item) selectFood(Number(item.dataset.idx));
+        });
+        grid.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const item = e.target.closest('.food-item');
+            if (!item) return;
+            e.preventDefault();
+            selectFood(Number(item.dataset.idx));
+        });
 
         document.getElementById('orderDetailList').addEventListener('click', (e) => {
             const btn = e.target.closest('.btn-delete');
