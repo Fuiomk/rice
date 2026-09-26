@@ -1,58 +1,208 @@
-# 幻想乡 · Dream Portal (rice)
+# 🍚 205 点饭系统
 
-[![GitHub stars](https://img.shields.io/github/stars/Fuiomk/rice)](https://github.com/Fuiomk/rice/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Fuiomk/rice)](https://github.com/Fuiomk/rice/network)
-[![GitHub issues](https://img.shields.io/github/issues/Fuiomk/rice)](https://github.com/Fuiomk/rice/issues)
-[![GitHub license](https://img.shields.io/github/license/Fuiomk/rice)](https://github.com/Fuiomk/rice/blob/main/LICENSE) 
-[![Website](https://img.shields.io/website?url=https%3A%2F%2Fyukiom.us.ci)](https://yukiom.us.ci)
+寝室点饭用的小页面。打开、点名字、点餐品、提交，就这样。
 
-A creative web portal themed around Gensokyo from the Touhou Project, paired with a functional internal meal ordering system. The live site is hosted at [yukiom.us.ci](https://yukiom.us.ci).[reference:0]
+- **点饭页** —— 给同学用，手机上打开就能点
+- **后台** —— 给管饭的人用，看汇总、报单、改开关时间
 
-## ✨ About the Project
+后端跑在 Cloudflare Worker 上，数据存在 KV。零成本，不用服务器。
 
-This repository contains the source code for a unique web experience. The main page, or "Dream Portal," invites users into the mystical world of Gensokyo. In addition to its front-facing portal, the site includes a back-end system for a "Meal Ordering System" (点饭系统), demonstrating the blend of creative front-end design with practical internal tools.
+---
 
-## 🚀 Key Features
+## 给同学
 
-*   **Immersive Theming:** A fantasy-themed portal that brings the world of Gensokyo to life, complete with characters like Reimu, Marisa, Cirno, and Yuyuko.[reference:1]
-*   **Functional Meal Ordering:** An internal "点饭系统" allows users to place orders, with features for real-time summaries and an admin function to clear data.[reference:2]
-*   **Developer Portfolio:** Includes a personal developer profile page detailing the creator's tech stack and philosophy, built with Kotlin and Spring Boot.[reference:3]
-*   **Custom Domain:** The project is configured for and deployed to a custom domain, [yukiom.us.ci](https://yukiom.us.ci).[reference:4]
-*   **Visually Driven:** Heavily utilizes visual assets to create an engaging user experience.[reference:5]
+1. 打开点饭页
+2. **点自己的名字**（已经点过的人会是灰的，点他会提示你换一个）
+3. **点想吃的**（默认只显示 4 个，点「全部 13 项」能看全）
+4. 点 **「✨ 提交订单」**
 
-## 🧰 Built With
+点错了想改？提交后按钮会变成 **「↩ 撤销我的订单」**，点一下就重来，不用找人帮忙。
 
-*   **Languages:** HTML, CSS, JavaScript, Kotlin.[reference:6][reference:7]
-*   **Frameworks & Libraries:** 
-    *   Spring Boot (for backend services)[reference:8]
-    *   Compose Multiplatform[reference:9]
-    *   Kotlin Coroutines[reference:10]
-*   **Tools & Platforms:** IntelliJ IDEA, GitHub Pages.[reference:11][reference:12]
+> 页面每 15 秒自动刷新。有人刚下单会弹一条提示，不用手动刷。
 
-## 📂 Repository Structure
+---
 
-- **index.html:** The main entry point, "Dream Portal" (幻想乡). It features a stylized landing page with a system message and a fortune slip. [reference:13]
-- **CNAME:** Contains the custom domain `yukiom.us.ci` for GitHub Pages. [reference:14]
-- **/src:** Contains the internal "Meal Ordering System".
-  - **main.html:** The primary user interface for the "Meal Ordering System" (点饭系统). [reference:15]
-  - **test.html:** A statistical view for the ordering system, showcasing order summaries and management tools. [reference:16]
-- **/Web:** 
-  - **intro.html:** The developer's personal "about me" page, showcasing skills, philosophy, and tech stack. [reference:17]
-- **/img:** Stores the project's image assets (e.g., character portraits for Reimu, Marisa, Cirno, Yuyuko). [reference:18]
+## 给管饭的人
 
-## ⚙️ Getting Started
+后台地址：`你的域名/admin.html`　密码：**`123`**（没改过的话）
 
-To get a local copy up and running, follow these simple steps.
+上面能看：
 
-### Prerequisites
+- **实时汇总** —— 一共多少份、多少钱
+- **后厨报单** —— 按菜品统计，点「复制发给老板」直接发出去
+- **谁还没点** —— 列出来，点一下就复制成催单文案
+- **近期统计** —— 谁这周点了几次、该给你多少钱
+- **帮点一下** —— 替不会用手机的同学补单：选名字 → 点餐品 → 添加
 
-*   A modern web browser (Chrome, Firefox, Safari, etc.).
-*   (Optional) A local web server for the best experience with the ordering system.
+### 想改开关时间
 
-### Installation
+后台最下面的 **「定时设置」**：
 
-1.  Clone the repository:
-    ```sh
-    git clone https://github.com/Fuiomk/rice.git
+- **点单时段** —— 可以设多组，比如早饭 `06:00–09:00`、午饭 `10:00–11:00`
+- **清空时刻** —— 设成 `03:00`，就等于每天凌晨 3 点自动清掉昨天的单
+- 改完点保存，**立刻生效，不用重新部署**
+
+不在时段内的时候，点饭页会显示「今天点单已结束」，大家点不了 —— 但**已经点过的人仍然可以撤销自己的订单**，不会把人锁死。
+
+---
+
+## 部署
+
+> 只需要做一次。之后改设置都在后台点，不用碰这里。
+
+**1. 建 KV 命名空间**　Cloudflare 后台 → Workers & Pages → KV → 创建
+
+**2. 绑到 Worker**　Worker 的 Settings → Variables → KV Namespace Bindings
+
+| 变量名 | 值 |
+|---|---|
+| `Rice` | 选刚建的命名空间 |
+
+⚠️ 名字**必须正好是 `Rice`**，代码里写死了，绑错所有接口都会报错。
+
+**3. 设密码**（建议）　同一个页面加环境变量：
+
+| 变量名 | 值 |
+|---|---|
+| `ADMIN_PASSWORD` | 你自己想一个 |
+
+不设的话密码就是公开的 `123`，谁都能进后台清空数据。**设完记得告诉同学新密码。**
+
+**4. 传文件**　把点饭页和 `admin.html` 传到静态托管目录。
+
+**5. 改后端地址**　两个前端文件顶部都有这行，**两个都要改**：
 
 
+
+---
+
+## 文件说明
+
+| 文件 | 是什么 |
+|---|---|
+| 点饭页 | 同学点的那个页面，单文件 |
+| `admin.html` | 后台控制台，单文件 |
+| `rice_api.js` | 后端，Cloudflare Worker |
+| `img/` | 封面 + 四张人物立绘（已压成 WebP，最大的才 141KB） |
+
+三个文件都是独立的，没有构建步骤 —— 改完直接传上去就行。
+
+---
+
+## 出问题了怎么办
+
+<details>
+<summary><b>点饭页一直显示「离线」</b></summary>
+
+后端连不上。检查：
+
+1. 前端里的 `API_URL` 对不对（注意**两个文件都要改**）
+2. Worker 是不是在运行
+3. KV 绑定的名字是不是正好 `Rice`（绑错会返回「KV 綁定 Rice 不存在」）
+</details>
+
+<details>
+<summary><b>封面和人物卡片是空白的</b></summary>
+
+图片路径不对。点饭页里写的是 `img/opt/xxx.webp`，确认你的图片实际放在哪，把路径改一致。
+</details>
+
+<details>
+<summary><b>后台登录进去了但什么都看不到</b></summary>
+
+密码错了会被踢回登录页。如果确认密码对，检查 Worker 的 `ADMIN_PASSWORD` 环境变量是不是和你输入的一致。
+</details>
+
+<details>
+<summary><b>同学说点不了，但时段明明是开的</b></summary>
+
+让后台的人看一眼「定时设置」右上角的**状态标签**：
+
+- **开放中**（绿）＝ 能点
+- **已封盘**（粉）＝ 不在时段内
+
+如果显示「已封盘」但你觉得时间设得对，检查**是不是有多个时段** —— 只有落在**某一个**时段内才能点。
+</details>
+
+<details>
+<summary><b>昨天的订单没清掉</b></summary>
+
+清空是**惰性触发**的：到了「清空时刻」之后，要等**第一个人打开页面**才会清。
+
+如果一整天没人打开，就会留到第二天。想立刻清，后台点「开始新一天」。
+</details>
+
+<details>
+<summary><b>同学换手机后撤销不了自己的订单</b></summary>
+
+撤销靠的是浏览器里存的一个随机标识。换设备、换浏览器、清缓存之后就对不上了。
+
+让管饭的人在后台帮他撤掉。这是为了不要求登录而做的取舍。
+</details>
+
+---
+
+## 想改代码
+
+<details>
+<summary><b>几个容易踩的坑</b></summary>
+
+**菜单写在三个地方，改要一起改**
+
+点饭页、`admin.html`、`rice_api.js` 各有一份。曾经管理页漏了 `icon` 字段，结果 13 个餐品全显示成同一个 emoji。
+
+**折叠用的隐藏标记必须带父级限定**
+
+```css
+/* ✅ */
+.food-grid.is-collapsed .food-item.is-hidden { display: none; }
+
+/* ❌ 标记一旦打上就永久生效，展开也回不来 */
+.food-item.is-hidden { display: none; }
+```
+
+**轮询靠比对去重，别无条件重建页面**
+
+每 15 秒拉一次数据，内容没变就不重建。新增渲染逻辑时如果无条件重建，正在看页面的人会看到列表闪一下。**选中状态要记在 `state` 上，不要只放在 DOM 里。**
+
+**别在 CSS 选择器里用 `var()`**
+
+浏览器能跑，但 VS Code 会报 `Term expected`。要动态控制显示数量，让 JS 给元素打 class。
+
+**前端置灰只是体验，真正的拦截在后端**
+
+比如「不能重复下单」：前端把格子禁用了，后端也要校验。
+</details>
+
+<details>
+<summary><b>本地想试后端</b></summary>
+
+后端是标准 ES Module，不用部署也能跑：
+
+</details>
+
+<details>
+<summary><b>接口细节</b></summary>
+
+| 路径 | 方法 | 要密码 | 说明 |
+|---|---|:--:|---|
+| `/` | GET | — | 取订单。**响应体是裸数组**，定时状态在响应头 `X-Rice-Schedule` |
+| `/` | POST | — | 下单，公开 |
+| `/` | DELETE | 视情况 | 撤销单条 / 清空全部 |
+| `/settings` | GET/POST | ✅ | 读写定时设置 |
+| `/stats` | GET | ✅ | 近 N 天统计 |
+
+用响应头而不是改成 `{orders, schedule}`，是为了让**旧版前端不会因为后端升级而立刻坏掉**。
+
+`POST /settings` 的 `action` 三选一：`update`（改设置）、`clearNow`（只清订单）、`startNewDay`（清空+记为今天）。
+
+时间字段格式必须是 `HH:MM`，写错返回 400 并说明是哪一项 —— **不会静默接受然后退回「全天开放」**，那样用户以为设了限制、其实没有。
+</details>
+
+<details>
+<summary><b>为什么不用账号体系</b></summary>
+
+后台只有一个共享密码。
+
+对 9 个人的寝室来说，多账号、多角色是负担而不是帮助。代价是**看不出「是谁清空了数据」**。如果哪天需要区分操作人，再引入不迟。
+</details>
